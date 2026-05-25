@@ -2,10 +2,9 @@ import Stripe from "stripe";
 import { Resend } from "resend";
 import type { NextRequest } from "next/server";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const resend = new Resend(process.env.RESEND_API_KEY!);
-
 export async function POST(request: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  const resend = new Resend(process.env.RESEND_API_KEY!);
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
 

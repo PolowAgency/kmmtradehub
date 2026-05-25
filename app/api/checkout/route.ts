@@ -1,9 +1,8 @@
 import Stripe from "stripe";
 import { redirect } from "next/navigation";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export async function GET() {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://kmmtradehub.com";
 
   const session = await stripe.checkout.sessions.create({
