@@ -49,13 +49,13 @@ export function HeroSection() {
       {/* Image de fond */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1800&q=80"
+          src="/hero-bg.png"
           alt=""
           fill
           priority
           sizes="100vw"
           className="object-cover object-center"
-          style={{ filter: "brightness(0.16) saturate(0.4)" }}
+          style={{ filter: "brightness(0.18) saturate(0.5) hue-rotate(15deg)" }}
         />
         <div className="absolute inset-0" style={{
           background: "linear-gradient(to bottom, rgba(10,10,10,0.5) 0%, rgba(10,10,10,0.15) 50%, rgba(10,10,10,0.97) 100%)",
