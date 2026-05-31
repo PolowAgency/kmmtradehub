@@ -23,7 +23,7 @@ export default function ConfidentialitePage() {
       <ul>
         <li>Nom et prénom (formulaire de contact et paiement)</li>
         <li>Adresse email (formulaire de contact, paiement, newsletter)</li>
-        <li>Données de paiement (traitées par Stripe — nous n&apos;y avons pas accès)</li>
+        <li>Données de paiement (traitées par Stripe nous n&apos;y avons pas accès)</li>
         <li>Données de navigation (cookies techniques)</li>
       </ul>
 
@@ -56,9 +56,9 @@ export default function ConfidentialitePage() {
         partagées avec nos prestataires techniques :
       </p>
       <ul>
-        <li><strong className="text-cream/80">Stripe</strong> — traitement des paiements</li>
-        <li><strong className="text-cream/80">Resend</strong> — envoi d&apos;emails transactionnels</li>
-        <li><strong className="text-cream/80">Vercel</strong> — hébergement du site</li>
+        <li><strong className="text-cream/80">Stripe</strong> traitement des paiements</li>
+        <li><strong className="text-cream/80">Resend</strong> envoi d&apos;emails transactionnels</li>
+        <li><strong className="text-cream/80">Vercel</strong> hébergement du site</li>
       </ul>
 
       <h2>Tes droits</h2>

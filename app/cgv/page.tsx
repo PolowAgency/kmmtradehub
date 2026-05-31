@@ -12,14 +12,14 @@ export default function CGVPage() {
       title="Conditions générales de vente"
       subtitle="CGV applicables à l'achat de l'offre KMM VIP."
     >
-      <h2>Article 1 — Objet</h2>
+      <h2>Article 1 Objet</h2>
       <p>
         Les présentes conditions générales de vente régissent les ventes
         de l&apos;offre KMM VIP proposée par KMMTRADEHUB. Toute commande
         implique l&apos;acceptation pleine et entière des présentes CGV.
       </p>
 
-      <h2>Article 2 — Offre et prix</h2>
+      <h2>Article 2 Offre et prix</h2>
       <p>
         L&apos;offre KMM VIP est proposée au prix de <strong className="text-cream/80">50€ TTC par mois</strong>{" "}
         sans engagement de durée. L&apos;abonnement est résiliable à tout moment.
@@ -29,7 +29,7 @@ export default function CGVPage() {
         avec un préavis de 30 jours communiqué aux abonnés actifs.
       </p>
 
-      <h2>Article 3 — Commande et paiement</h2>
+      <h2>Article 3 Commande et paiement</h2>
       <p>
         Le paiement est effectué en ligne via Stripe, plateforme de paiement
         sécurisée. Nous acceptons les cartes bancaires principales.
@@ -41,7 +41,7 @@ export default function CGVPage() {
         le paiement.
       </p>
 
-      <h2>Article 4 — Nature du service</h2>
+      <h2>Article 4 Nature du service</h2>
       <p>
         KMM VIP est une offre de contenus éducatifs sur le trading. Il ne
         s&apos;agit pas d&apos;un service de conseil en investissement. KMMTRADEHUB
@@ -52,7 +52,7 @@ export default function CGVPage() {
         des risques de perte en capital.
       </p>
 
-      <h2>Article 5 — Droit de rétractation</h2>
+      <h2>Article 5 Droit de rétractation</h2>
       <p>
         Conformément à l&apos;article L221-28 du Code de la consommation, le droit
         de rétractation ne s&apos;applique pas aux contenus numériques dont
@@ -64,21 +64,21 @@ export default function CGVPage() {
         tu renonces expressément à ton droit de rétractation de 14 jours.
       </p>
 
-      <h2>Article 6 — Responsabilité</h2>
+      <h2>Article 6 Responsabilité</h2>
       <p>
         KMMTRADEHUB ne saurait être tenu responsable des pertes financières
         résultant de décisions de trading prises sur la base des contenus
         proposés. Les informations sont fournies à titre éducatif uniquement.
       </p>
 
-      <h2>Article 7 — Propriété intellectuelle</h2>
+      <h2>Article 7 Propriété intellectuelle</h2>
       <p>
         Tous les contenus accessibles via KMM VIP sont la propriété exclusive
         de KMMTRADEHUB. Toute reproduction, distribution ou revente est
         strictement interdite.
       </p>
 
-      <h2>Article 8 — Droit applicable et litiges</h2>
+      <h2>Article 8 Droit applicable et litiges</h2>
       <p>
         Les présentes CGV sont soumises au droit français. Tout litige sera
         soumis à la compétence exclusive des tribunaux français.

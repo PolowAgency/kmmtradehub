@@ -1,6 +1,8 @@
 import Stripe from "stripe";
 import { Resend } from "resend";
 import type { NextRequest } from "next/server";
+import { createOrInviteStudent } from "@/lib/learning";
+import { escapeHtml } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -31,6 +33,7 @@ export async function POST(request: NextRequest) {
     const customerName = session.customer_details?.name ?? "Membre";
 
     if (customerEmail) {
+      await createOrInviteStudent(customerEmail, customerName);
       await resend.emails.send({
         from: "KMM VIP <noreply@kmmtradehub.com>",
         to: customerEmail,
@@ -44,6 +47,7 @@ export async function POST(request: NextRequest) {
 }
 
 function buildWelcomeEmail(name: string): string {
+  const safeName = escapeHtml(name);
   return `
 <!DOCTYPE html>
 <html lang="fr">
@@ -57,16 +61,21 @@ function buildWelcomeEmail(name: string): string {
     <h1 style="color:#D4AF37; font-size:24px; margin-bottom:8px;">KMMTRADEHUB</h1>
     <p style="color:#8B8B8B; font-size:12px; letter-spacing:2px; text-transform:uppercase; margin-bottom:32px;">Accès VIP confirmé</p>
 
-    <h2 style="color:#F5F5F0; font-size:20px; margin-bottom:16px;">Bienvenue, ${name} !</h2>
+    <h2 style="color:#F5F5F0; font-size:20px; margin-bottom:16px;">Bienvenue, ${safeName} !</h2>
 
     <p style="color:#8B8B8B; line-height:1.7; margin-bottom:16px;">
       Ton paiement a été accepté. Tu fais maintenant partie de KMM VIP.
     </p>
 
-    <p style="color:#8B8B8B; line-height:1.7; margin-bottom:24px;">
-      Tu vas recevoir sous peu un email séparé avec les instructions détaillées
-      pour accéder à ton espace privé et à tous les contenus.
+    <p style="color:#8B8B8B; line-height:1.7; margin-bottom:16px;">
+      Tu vas recevoir sous peu un email séparé avec le lien pour définir ton mot de passe
+      et accéder à ton espace privé.
     </p>
+
+    <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://kmmtradehub.com"}/login"
+       style="display:inline-block; background:#D4AF37; color:#0A0A0A; font-weight:700; font-size:14px; padding:14px 28px; border-radius:10px; text-decoration:none; margin-bottom:24px;">
+      Accéder à mon espace →
+    </a>
 
     <div style="background:#111111; border:1px solid rgba(212,175,55,0.2); border-radius:12px; padding:20px; margin-bottom:32px;">
       <p style="color:#D4AF37; font-size:13px; font-weight:600; margin:0 0 8px;">
@@ -79,17 +88,18 @@ function buildWelcomeEmail(name: string): string {
     </div>
 
     <p style="color:#8B8B8B; font-size:12px; margin-bottom:4px;">
-      Une question ? Contacte-nous à{" "}
+      Une question ? Contacte-nous à
       <a href="mailto:contact@kmmtradehub.com" style="color:#D4AF37;">
         contact@kmmtradehub.com
       </a>
     </p>
 
     <p style="color:#555; font-size:11px; margin-top:32px;">
-      © ${new Date().getFullYear()} KMMTRADEHUB — Tous droits réservés
+      © ${new Date().getFullYear()} KMMTRADEHUB Tous droits réservés
     </p>
   </div>
 </body>
-</html>
+  </html>
   `;
 }
+

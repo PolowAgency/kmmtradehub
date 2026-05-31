@@ -22,7 +22,7 @@ const PROBLEMS = [
   {
     icon: Zap,
     title: "Décisions impulsives",
-    desc: "FOMO, revenge trading, entrées non planifiées — des pièges classiques.",
+    desc: "FOMO, revenge trading, entrées non planifiées des pièges classiques.",
   },
   {
     icon: Brain,

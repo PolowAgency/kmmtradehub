@@ -73,7 +73,7 @@ export function CreatorSection() {
 
             <p className="text-muted leading-relaxed mb-8">
               L&apos;objectif est simple : te donner le cadre que j&apos;aurais
-              voulu avoir quand j&apos;ai commencé. Pas des promesses — une méthode.
+              voulu avoir quand j&apos;ai commencé. Pas des promesses une méthode.
             </p>
 
             <div className="space-y-3 mb-8">
@@ -98,7 +98,7 @@ export function CreatorSection() {
                 un cadre de travail sérieux pour ceux qui veulent progresser
                 avec discipline.&rdquo;
               </p>
-              <p className="text-xs text-gold/50 font-medium mt-3">— KMM, créateur de KMM VIP</p>
+              <p className="text-xs text-gold/50 font-medium mt-3"> KMM, créateur de KMM VIP</p>
             </div>
           </motion.div>
         </div>

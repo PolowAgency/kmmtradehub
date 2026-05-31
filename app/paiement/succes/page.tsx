@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { CheckCircle, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Paiement réussi — Bienvenue dans KMM VIP",
+  title: "Paiement réussi Bienvenue dans KMM VIP",
   description: "Ton accès KMM VIP est confirmé. Bienvenue.",
 };
 

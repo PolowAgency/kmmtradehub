@@ -1,0 +1,37 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { AppSidebar } from "@/components/app/AppSidebar";
+import { AppBottomNav } from "@/components/app/AppBottomNav";
+
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
+
+  const [{ data: profile }, { data: latestPost }] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    supabase.from("community_posts").select("created_at").eq("is_published", true).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+  ]);
+
+  const hasNewCommunity = latestPost
+    ? !profile?.community_last_seen_at || new Date(latestPost.created_at) > new Date(profile.community_last_seen_at)
+    : false;
+
+  return (
+    <div className="min-h-screen bg-[#0A0A0A] flex">
+      {/* Sidebar desktop */}
+      <AppSidebar profile={profile} hasNewCommunity={hasNewCommunity} />
+
+      {/* Main content */}
+      <main className="flex-1 min-w-0 pb-20 md:pb-0 md:ml-64">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          {children}
+        </div>
+      </main>
+
+      {/* Bottom nav mobile */}
+      <AppBottomNav hasNewCommunity={hasNewCommunity} />
+    </div>
+  );
+}

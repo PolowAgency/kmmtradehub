@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import type { NextRequest } from "next/server";
+import { escapeHtml, rateLimit } from "@/lib/utils";
 
 interface ContactPayload {
   name: string;
@@ -8,6 +9,12 @@ interface ContactPayload {
 }
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 5 requêtes par IP par heure
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (!rateLimit(`contact:${ip}`, 5, 60 * 60 * 1000)) {
+    return Response.json({ error: "Trop de tentatives. Réessaie dans une heure." }, { status: 429 });
+  }
+
   const resend = new Resend(process.env.RESEND_API_KEY!);
   let payload: ContactPayload;
 
@@ -28,7 +35,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Invalid email" }, { status: 400 });
   }
 
-  if (message.length > 2000) {
+  if (name.length > 100 || message.length > 2000) {
     return Response.json({ error: "Message too long" }, { status: 400 });
   }
 
@@ -46,12 +53,4 @@ export async function POST(request: NextRequest) {
   });
 
   return Response.json({ success: true }, { status: 200 });
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }

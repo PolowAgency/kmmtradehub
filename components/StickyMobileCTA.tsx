@@ -28,7 +28,7 @@ export function StickyMobileCTA() {
             href="/offre#paiement"
             className="flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-gold text-[#0A0A0A] font-bold text-sm glow-gold tracking-wide"
           >
-            Rejoindre KMM VIP — 50€/mois
+            Rejoindre KMM VIP 50€/mois
             <ArrowRight size={15} />
           </Link>
           <p className="text-center text-[10px] text-muted/50 mt-2">

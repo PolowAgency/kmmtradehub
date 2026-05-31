@@ -119,6 +119,20 @@ export function HeroSection() {
           </Button>
         </motion.div>
 
+        {/* PWA badge */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.62 }}
+          className="flex items-center justify-center gap-2 mb-3"
+        >
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[11px] text-muted/60">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/icon-192.png" alt="" className="w-4 h-4 rounded-sm" />
+            Disponible sur mobile sans App Store
+          </div>
+        </motion.div>
+
         {/* Disclaimer */}
         <motion.p
           initial={{ opacity: 0 }}

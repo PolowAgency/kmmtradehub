@@ -135,7 +135,7 @@ export function PricingSection() {
                 </div>
 
                 <p className="text-xs text-gold/60 font-medium tracking-wide mb-6">
-                  Sans engagement — résiliable en 1 clic
+                  Sans engagement résiliable en 1 clic
                 </p>
 
                 <p className="text-sm text-muted leading-relaxed mb-8">

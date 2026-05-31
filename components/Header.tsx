@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 const NAV_LINKS = [
   { label: "Accueil", href: "/" },
@@ -11,6 +12,8 @@ const NAV_LINKS = [
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
 ];
+
+const STUDENT_LINK = { label: "Espace élèves", href: "/login" };
 
 export function Header() {
   const pathname = usePathname();
@@ -22,10 +25,6 @@ export function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -43,12 +42,7 @@ export function Header() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 sm:h-20">
 
         {/* Logo */}
-        <Link href="/" className="flex items-baseline gap-1 group">
-          <span className="text-gold font-bold text-lg tracking-wider">KMM</span>
-          <span className="text-cream/50 text-xs tracking-[0.2em] uppercase group-hover:text-cream/70 transition-colors">
-            TRADEHUB
-          </span>
-        </Link>
+        <Logo href="/" size="sm" />
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
@@ -68,7 +62,13 @@ export function Header() {
         </nav>
 
         {/* CTA desktop */}
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-3">
+          <Link
+            href={STUDENT_LINK.href}
+            className="text-xs tracking-widest uppercase font-medium text-muted hover:text-cream transition-colors px-4 py-2.5 rounded-full border border-white/[0.08] hover:border-white/[0.18]"
+          >
+            {STUDENT_LINK.label}
+          </Link>
           <Link
             href="/offre#paiement"
             className="text-xs tracking-widest uppercase font-semibold text-[#0A0A0A] bg-gold hover:bg-gold-light transition-colors px-6 py-2.5 rounded-full glow-gold"
@@ -104,7 +104,14 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <div className="px-4 py-5">
+          <div className="px-4 py-5 space-y-3">
+            <Link
+              href={STUDENT_LINK.href}
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-center w-full py-3.5 text-xs tracking-widest uppercase font-medium text-cream border border-white/[0.12] rounded-lg hover:border-white/[0.25] transition-colors"
+            >
+              {STUDENT_LINK.label}
+            </Link>
             <Link
               href="/offre#paiement"
               onClick={() => setMobileOpen(false)}
@@ -112,7 +119,7 @@ export function Header() {
             >
               Rejoindre KMM VIP
             </Link>
-            <p className="text-center text-[10px] text-muted/50 mt-3 tracking-wider">
+            <p className="text-center text-[10px] text-muted/50 mt-1 tracking-wider">
               50€ / mois · Sans engagement
             </p>
           </div>

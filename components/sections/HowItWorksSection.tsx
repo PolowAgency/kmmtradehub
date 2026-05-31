@@ -22,7 +22,7 @@ const STEPS = [
     number: "03",
     icon: TrendingUp,
     title: "Tu progresses avec méthode",
-    desc: "Contenus, analyses, rappels de discipline — tout est là pour t'aider à construire une routine sérieuse.",
+    desc: "Contenus, analyses, rappels de discipline tout est là pour t'aider à construire une routine sérieuse.",
     highlight: "Dès maintenant",
   },
 ];

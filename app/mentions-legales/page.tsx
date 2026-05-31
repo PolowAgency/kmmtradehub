@@ -21,7 +21,7 @@ export default function MentionsLegalesPage() {
         <strong className="text-cream/80">Site web :</strong> kmmtradehub.com
       </p>
       <p>
-        Directeur de la publication : [Nom du responsable — à compléter]
+        Directeur de la publication : [Nom du responsable à compléter]
       </p>
 
       <h2>Hébergement</h2>

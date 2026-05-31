@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { League_Spartan } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({
-  variable: "--font-geist-sans",
+const leagueSpartan = League_Spartan({
+  variable: "--font-league-spartan",
   subsets: ["latin"],
   display: "swap",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "KMMTRADEHUB — Apprends à trader avec méthode et discipline",
+    default: "KMMTRADEHUB Apprends à trader avec méthode et discipline",
     template: "%s | KMMTRADEHUB",
   },
   description:
@@ -31,26 +32,31 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: process.env.NEXT_PUBLIC_APP_URL ?? "https://kmmtradehub.com",
     siteName: "KMMTRADEHUB",
-    title: "KMMTRADEHUB — Apprends à trader avec méthode et discipline",
+    title: "KMMTRADEHUB Apprends à trader avec méthode et discipline",
     description:
       "KMM VIP : une approche structurée du trading. Gestion du risque, discipline, méthode de progression.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "KMMTRADEHUB — Apprends à trader avec méthode",
+    title: "KMMTRADEHUB Apprends à trader avec méthode",
     description:
       "KMM VIP : une approche structurée du trading sans promesse irréaliste.",
   },
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? "https://kmmtradehub.com"
   ),
+  icons: {
+    icon: "/favicon-32.png",
+    apple: "/icon-192.png",
+  },
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${geist.variable} h-full antialiased`}>
+    <html lang="fr" className={`${leagueSpartan.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#0A0A0A] text-cream">
         {children}
       </body>

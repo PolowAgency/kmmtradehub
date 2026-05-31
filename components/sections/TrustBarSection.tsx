@@ -17,7 +17,7 @@ function AnimatedNumber({ end, suffix }: { end: number; suffix: string }) {
 
   useEffect(() => {
     if (!inView) return;
-    if (end === 0) { setCount(0); return; }
+    if (end === 0) return;
     const duration = 1400;
     const steps = 55;
     const increment = end / steps;
