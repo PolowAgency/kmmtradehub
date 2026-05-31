@@ -204,11 +204,11 @@ export function QuizClient({ quizId, title, description, passingScore, questions
         <div className="space-y-2.5">
           {q.quiz_answers.map((answer) => {
             const isSelected = selectedId === answer.id;
-            const showResult = isConfirmed;
+            const showResult = isConfirmed && !!currentReview;
             const isRight = currentReview?.correctAnswerId === answer.id;
 
             let cls = "border border-white/[0.08] text-muted hover:border-gold/30 hover:text-cream";
-            if (isSelected && !showResult) cls = "border-gold/40 bg-gold/5 text-cream";
+            if (isSelected) cls = "border-gold/40 bg-gold/5 text-cream";
             if (showResult && isRight) cls = "border-emerald-400/40 bg-emerald-400/5 text-emerald-300";
             if (showResult && isSelected && !isRight) cls = "border-red-400/40 bg-red-400/5 text-red-300";
 
@@ -220,9 +220,9 @@ export function QuizClient({ quizId, title, description, passingScore, questions
                 className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-left text-sm transition-all duration-200 ${cls} disabled:cursor-default`}
               >
                 <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
-                  isSelected && !showResult ? "border-gold bg-gold/20" :
                   showResult && isRight ? "border-emerald-400" :
                   showResult && isSelected && !isRight ? "border-red-400" :
+                  isSelected ? "border-gold bg-gold/20" :
                   "border-white/[0.15]"
                 }`}>
                   {showResult && isRight && <CheckCircle2 size={12} className="text-emerald-400" />}
