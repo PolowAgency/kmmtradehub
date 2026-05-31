@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, XCircle, ArrowRight, Trophy } from "lucide-react";
+import { CheckCircle2, XCircle, ArrowRight, Trophy, Loader2 } from "lucide-react";
 import { BadgeUnlockedModal } from "@/components/app/BadgeUnlockedModal";
 
 interface BadgeInfo {
@@ -48,9 +48,27 @@ export function QuizClient({ quizId, title, description, passingScore, questions
     setSelected((prev) => ({ ...prev, [current]: answerId }));
   }
 
-  function handleConfirm() {
-    if (!selectedId) return;
+  async function handleConfirm() {
+    if (!selectedId || !q) return;
     setConfirmed((prev) => ({ ...prev, [current]: true }));
+
+    const res = await fetch(`/api/learning/quizzes/${quizId}/check`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ questionId: q.id, answerId: selectedId }),
+    });
+
+    if (res.ok) {
+      const data = await res.json() as { isCorrect: boolean; correctAnswerId: string | null; explanation: string | null };
+      setReview((prev) => ({
+        ...prev,
+        [q.id]: {
+          isCorrect: data.isCorrect,
+          correctAnswerId: data.correctAnswerId,
+          explanation: data.explanation,
+        },
+      }));
+    }
   }
 
   async function handleNext() {
@@ -206,11 +224,13 @@ export function QuizClient({ quizId, title, description, passingScore, questions
             const isSelected = selectedId === answer.id;
             const showResult = isConfirmed && !!currentReview;
             const isRight = currentReview?.correctAnswerId === answer.id;
+            const isPending = isConfirmed && !currentReview;
 
             let cls = "border border-white/[0.08] text-muted hover:border-gold/30 hover:text-cream";
-            if (isSelected) cls = "border-gold/40 bg-gold/5 text-cream";
+            if (isSelected && !showResult) cls = `border-gold/40 bg-gold/5 text-cream${isPending ? " opacity-70" : ""}`;
             if (showResult && isRight) cls = "border-emerald-400/40 bg-emerald-400/5 text-emerald-300";
             if (showResult && isSelected && !isRight) cls = "border-red-400/40 bg-red-400/5 text-red-300";
+            if (showResult && !isSelected && isRight) cls = "border-emerald-400/20 bg-emerald-400/5 text-emerald-300/60";
 
             return (
               <button
@@ -262,6 +282,11 @@ export function QuizClient({ quizId, title, description, passingScore, questions
             className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gold text-[#0A0A0A] font-semibold text-sm hover:bg-gold-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Valider
+          </button>
+        ) : isPending ? (
+          <button disabled className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gold/50 text-[#0A0A0A] font-semibold text-sm cursor-not-allowed">
+            <Loader2 size={15} className="animate-spin" />
+            Vérification…
           </button>
         ) : (
           <button
