@@ -42,6 +42,7 @@ export function QuizClient({ quizId, title, description, passingScore, questions
   const selectedId = selected[current];
   const currentReview = q ? review[q.id] : undefined;
   const isCorrect = currentReview?.isCorrect;
+  const isPending = !!isConfirmed && !currentReview;
 
   function handleSelect(answerId: string) {
     if (isConfirmed) return;
@@ -224,7 +225,6 @@ export function QuizClient({ quizId, title, description, passingScore, questions
             const isSelected = selectedId === answer.id;
             const showResult = isConfirmed && !!currentReview;
             const isRight = currentReview?.correctAnswerId === answer.id;
-            const isPending = isConfirmed && !currentReview;
 
             let cls = "border border-white/[0.08] text-muted hover:border-gold/30 hover:text-cream";
             if (isSelected && !showResult) cls = `border-gold/40 bg-gold/5 text-cream${isPending ? " opacity-70" : ""}`;
