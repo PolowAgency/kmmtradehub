@@ -15,7 +15,7 @@ export default async function ProfilePage() {
     { data: progress },
   ] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
-    supabase.from("streaks").select("*").eq("student_id", user.id).single(),
+    supabase.from("streaks").select("*").eq("student_id", user.id).maybeSingle(),
     supabase.from("student_badges").select("*, badges(*)").eq("student_id", user.id),
     supabase.from("quiz_results").select("*").eq("student_id", user.id).order("completed_at", { ascending: false }).limit(5),
     supabase.from("student_progress").select("completed").eq("student_id", user.id).eq("completed", true),

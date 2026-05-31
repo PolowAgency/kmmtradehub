@@ -254,12 +254,12 @@ export function QuizClient({ quizId, title, description, passingScore, questions
       )}
 
       {/* Actions */}
-      <div className="flex justify-end">
+      <div className="flex sm:justify-end">
         {!isConfirmed ? (
           <button
             onClick={handleConfirm}
             disabled={!selectedId}
-            className="px-6 py-3 rounded-xl bg-gold text-[#0A0A0A] font-semibold text-sm hover:bg-gold-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gold text-[#0A0A0A] font-semibold text-sm hover:bg-gold-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Valider
           </button>
@@ -267,7 +267,7 @@ export function QuizClient({ quizId, title, description, passingScore, questions
           <button
             onClick={handleNext}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gold text-[#0A0A0A] font-semibold text-sm hover:bg-gold-light transition-colors"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gold text-[#0A0A0A] font-semibold text-sm hover:bg-gold-light transition-colors"
           >
             {current < totalQ - 1 ? "Question suivante" : saving ? "Enregistrement…" : "Voir les résultats"}
             <ArrowRight size={16} />

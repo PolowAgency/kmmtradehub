@@ -113,7 +113,7 @@ export function ChatRoom({ userId, isAdmin, initialMessages }: Props) {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-8rem)] md:h-[calc(100dvh-6rem)] max-h-[720px]">
+    <div className="flex flex-col h-full">
 
       {/* Message épinglé */}
       {pinned && (
@@ -191,17 +191,21 @@ export function ChatRoom({ userId, isAdmin, initialMessages }: Props) {
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
             placeholder="Écrire un message…"
             rows={1}
+            enterKeyHint="send"
+            inputMode="text"
+            autoComplete="off"
+            autoCorrect="on"
             className="flex-1 bg-transparent text-sm text-cream placeholder-muted/50 resize-none focus:outline-none leading-relaxed max-h-24"
           />
           <button
             onClick={handleSend}
             disabled={!text.trim() || sending}
-            className="flex items-center justify-center w-8 h-8 rounded-xl bg-gold text-[#0A0A0A] hover:bg-gold-light transition-colors disabled:opacity-40 shrink-0"
+            className="flex items-center justify-center w-10 h-10 rounded-xl bg-gold text-[#0A0A0A] hover:bg-gold-light transition-colors disabled:opacity-40 shrink-0"
           >
-            <Send size={14} />
+            <Send size={16} />
           </button>
         </div>
-        <p className="text-muted/30 text-[10px] text-center mt-1.5">Entrée pour envoyer · Shift+Entrée pour aller à la ligne</p>
+        <p className="hidden sm:block text-muted/30 text-[10px] text-center mt-1.5">Entrée pour envoyer · Shift+Entrée pour aller à la ligne</p>
       </div>
     </div>
   );

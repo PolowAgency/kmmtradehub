@@ -169,3 +169,23 @@ body {
   border-radius: 12px;
   margin: 1em 0;
 }
+
+/* ── Safe area insets (iPhone notch / home indicator) ───── */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Bottom nav height + safe area combined */
+.bottom-nav-offset {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* No scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Touch-friendly tap highlight */
+* { -webkit-tap-highlight-color: transparent; }
