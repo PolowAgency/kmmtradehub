@@ -43,7 +43,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
       {/* Bottom nav mobile */}
       <AppBottomNav hasNewCommunity={hasNewCommunity} isAdmin={profile?.role === "admin"} />
-      <OnboardingModal userId={user.id} userName={profile?.full_name?.split(" ")[0] ?? "Trader"} />
+      <OnboardingModal
+        userId={user.id}
+        userName={profile?.full_name?.split(" ")[0] ?? "Trader"}
+        isNewUser={profile?.created_at
+          ? Date.now() - new Date(profile.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
+          : false}
+      />
     </div>
   );
 }

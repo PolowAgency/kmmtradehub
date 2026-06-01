@@ -29,16 +29,17 @@ const STEPS = [
   },
 ];
 
-export function OnboardingModal({ userId, userName }: { userId: string; userName: string }) {
+export function OnboardingModal({ userId, userName, isNewUser }: { userId: string; userName: string; isNewUser: boolean }) {
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
 
   useEffect(() => {
+    if (!isNewUser) return;
     const key = `onboarded_${userId}`;
     if (!localStorage.getItem(key)) {
       setVisible(true);
     }
-  }, [userId]);
+  }, [userId, isNewUser]);
 
   function dismiss() {
     localStorage.setItem(`onboarded_${userId}`, "1");
