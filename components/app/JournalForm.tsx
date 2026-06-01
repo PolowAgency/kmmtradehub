@@ -6,13 +6,48 @@ import { createClient } from "@/lib/supabase/client";
 import { Save, Loader2 } from "lucide-react";
 
 const PAIRS = ["XAUUSD", "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "USDCAD", "GBPJPY", "NASDAQ", "SP500", "BTCUSD"];
+
 const EMOTIONS = [
-  { value: "confident",   label: "Confiant",   emoji: "💪" },
-  { value: "neutral",     label: "Neutre",     emoji: "😐" },
-  { value: "fearful",     label: "Anxieux",    emoji: "😰" },
-  { value: "greedy",      label: "Gourmand",   emoji: "🤑" },
-  { value: "frustrated",  label: "Frustré",    emoji: "😤" },
+  { value: "confident",  label: "Confiant",  emoji: "💪" },
+  { value: "neutral",    label: "Neutre",    emoji: "😐" },
+  { value: "fearful",    label: "Anxieux",   emoji: "😰" },
+  { value: "greedy",     label: "Gourmand",  emoji: "🤑" },
+  { value: "frustrated", label: "Frustré",   emoji: "😤" },
 ];
+
+const INDICATORS_LIST = [
+  { id: "EMA20",   label: "EMA 20",     emoji: "📈" },
+  { id: "EMA50",   label: "EMA 50",     emoji: "📈" },
+  { id: "EMA200",  label: "EMA 200",    emoji: "📈" },
+  { id: "RSI",     label: "RSI",        emoji: "⚡" },
+  { id: "MACD",    label: "MACD",       emoji: "🔀" },
+  { id: "STOCH",   label: "Stoch.",     emoji: "🎯" },
+  { id: "BB",      label: "Bollinger",  emoji: "🎸" },
+  { id: "ATR",     label: "ATR",        emoji: "📏" },
+  { id: "VOL",     label: "Volume",     emoji: "📊" },
+  { id: "SR",      label: "S/R",        emoji: "🧱" },
+];
+
+const IND_PREFIX = "[IND:";
+const IND_SEP = "]\n";
+
+function encodeIndicators(indicators: string[], notes: string): string {
+  if (indicators.length === 0) return notes;
+  return `${IND_PREFIX}${indicators.join(",")}${IND_SEP}${notes}`;
+}
+
+function decodeIndicators(raw: string | null): { indicators: string[]; notes: string } {
+  if (!raw) return { indicators: [], notes: "" };
+  if (raw.startsWith(IND_PREFIX)) {
+    const endIdx = raw.indexOf(IND_SEP);
+    if (endIdx !== -1) {
+      const indStr = raw.slice(IND_PREFIX.length, endIdx);
+      const notes = raw.slice(endIdx + IND_SEP.length);
+      return { indicators: indStr ? indStr.split(",") : [], notes };
+    }
+  }
+  return { indicators: [], notes: raw };
+}
 
 interface JournalEntry {
   id: string;
@@ -41,6 +76,8 @@ export function JournalForm({ userId, entry }: Props) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const decoded = decodeIndicators(entry?.notes ?? null);
+
   const [form, setForm] = useState({
     traded_at:      entry?.traded_at ?? new Date().toISOString().slice(0, 10),
     pair:           entry?.pair ?? "XAUUSD",
@@ -53,11 +90,19 @@ export function JournalForm({ userId, entry }: Props) {
     pnl:            entry?.pnl?.toString() ?? "",
     emotion:        entry?.emotion ?? "neutral",
     screenshot_url: entry?.screenshot_url ?? "",
-    notes:          entry?.notes ?? "",
+    notes:          decoded.notes,
   });
+
+  const [selectedIndicators, setSelectedIndicators] = useState<string[]>(decoded.indicators);
 
   function set(key: string, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function toggleIndicator(id: string) {
+    setSelectedIndicators((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -79,7 +124,7 @@ export function JournalForm({ userId, entry }: Props) {
       pnl:            form.pnl         ? parseFloat(form.pnl)         : null,
       emotion:        form.emotion || null,
       screenshot_url: form.screenshot_url || null,
-      notes:          form.notes || null,
+      notes:          encodeIndicators(selectedIndicators, form.notes),
       updated_at:     new Date().toISOString(),
     };
 
@@ -146,9 +191,9 @@ export function JournalForm({ userId, entry }: Props) {
         <label className="text-muted text-xs uppercase tracking-widest">Résultat</label>
         <div className="flex gap-3">
           {([
-            { value: "win",        label: "Gagnant",   color: "emerald" },
-            { value: "loss",       label: "Perdant",   color: "red" },
-            { value: "breakeven",  label: "Breakeven", color: "amber" },
+            { value: "win",       label: "Gagnant",   color: "emerald" },
+            { value: "loss",      label: "Perdant",   color: "red" },
+            { value: "breakeven", label: "Breakeven", color: "amber" },
           ] as const).map(({ value, label, color }) => (
             <button
               key={value}
@@ -183,8 +228,7 @@ export function JournalForm({ userId, entry }: Props) {
               step="any"
               value={form[key as keyof typeof form]}
               onChange={(e) => set(key, e.target.value)}
-              placeholder=""
-              className="w-full bg-surface-2 border border-white/[0.07] rounded-xl px-3 py-2.5 text-sm text-cream focus:outline-none focus:border-gold/30 placeholder-muted/30"
+              className="w-full bg-surface-2 border border-white/[0.07] rounded-xl px-3 py-2.5 text-sm text-cream focus:outline-none focus:border-gold/30"
             />
           </div>
         ))}
@@ -201,6 +245,36 @@ export function JournalForm({ userId, entry }: Props) {
           placeholder="Ex: 120 ou -45"
           className="w-full bg-surface-2 border border-white/[0.07] rounded-xl px-3 py-2.5 text-sm text-cream focus:outline-none focus:border-gold/30 placeholder-muted/30"
         />
+      </div>
+
+      {/* Indicateurs utilisés */}
+      <div className="space-y-2">
+        <label className="text-muted text-xs uppercase tracking-widest">Indicateurs utilisés</label>
+        <div className="flex gap-2 flex-wrap">
+          {INDICATORS_LIST.map(({ id, label, emoji }) => {
+            const active = selectedIndicators.includes(id);
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => toggleIndicator(id)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
+                  active
+                    ? "bg-gold/10 border-gold/30 text-gold"
+                    : "bg-surface-2 border-white/[0.07] text-muted hover:border-white/[0.15] hover:text-cream"
+                }`}
+              >
+                <span className="text-sm leading-none">{emoji}</span>
+                {label}
+              </button>
+            );
+          })}
+        </div>
+        {selectedIndicators.length > 0 && (
+          <p className="text-muted/50 text-[10px]">
+            {selectedIndicators.length} indicateur{selectedIndicators.length > 1 ? "s" : ""} sélectionné{selectedIndicators.length > 1 ? "s" : ""}
+          </p>
+        )}
       </div>
 
       {/* Émotion */}

@@ -17,25 +17,30 @@ import {
   LogOut,
   X,
   Shield,
+  BarChart2,
+  Layers,
+  ClipboardList,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const MAIN_NAV = [
-  { label: "Home",       href: "/app/dashboard",  icon: LayoutDashboard },
-  { label: "Modules",    href: "/app/modules",     icon: BookOpen },
-  { label: "Communauté", href: "/app/community",   icon: Users },
-  { label: "Journal",    href: "/app/journal",     icon: NotebookPen },
+  { label: "Home",      href: "/app/dashboard",  icon: LayoutDashboard },
+  { label: "Modules",   href: "/app/modules",    icon: BookOpen },
+  { label: "Graphique", href: "/app/chart",      icon: BarChart2 },
+  { label: "Journal",   href: "/app/journal",    icon: NotebookPen },
 ];
 
 const MORE_NAV = [
-  { label: "Membres",     href: "/app/members",       icon: Users },
-  { label: "Lives",       href: "/app/live",         icon: Radio },
-  { label: "Chat",        href: "/app/chat",          icon: MessageSquare },
-  { label: "Classement",  href: "/app/leaderboard",   icon: Medal },
-  { label: "Ressources",  href: "/app/resources",     icon: FileText },
-  { label: "Résultats",   href: "/app/results",       icon: Trophy },
-  { label: "Mon profil",  href: "/app/profile",       icon: User },
+  { label: "Indicateurs", href: "/app/indicators",  icon: Layers },
+  { label: "Checklist",   href: "/app/checklist",   icon: ClipboardList },
+  { label: "Membres",     href: "/app/members",     icon: Users },
+  { label: "Communauté",  href: "/app/community",   icon: MessageSquare },
+  { label: "Lives",       href: "/app/live",        icon: Radio },
+  { label: "Classement",  href: "/app/leaderboard", icon: Medal },
+  { label: "Ressources",  href: "/app/resources",   icon: FileText },
+  { label: "Résultats",   href: "/app/results",     icon: Trophy },
+  { label: "Mon profil",  href: "/app/profile",     icon: User },
 ];
 
 export function AppBottomNav({ hasNewCommunity, isAdmin }: { hasNewCommunity?: boolean; isAdmin?: boolean }) {

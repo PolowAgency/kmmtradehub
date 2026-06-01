@@ -17,6 +17,9 @@ import {
   NotebookPen,
   Medal,
   Flame,
+  BarChart2,
+  Layers,
+  ClipboardList,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Logo } from "@/components/Logo";
@@ -25,17 +28,20 @@ import type { Database } from "@/lib/supabase/types";
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 const NAV = [
-  { label: "Dashboard",   href: "/app/dashboard",    icon: LayoutDashboard },
-  { label: "Modules",     href: "/app/modules",       icon: BookOpen },
-  { label: "Membres",     href: "/app/members",       icon: Users },
-  { label: "Communauté",  href: "/app/community",     icon: Globe },
-  { label: "Chat",        href: "/app/chat",          icon: MessageSquare },
-  { label: "Lives",       href: "/app/live",          icon: Radio },
-  { label: "Journal",     href: "/app/journal",       icon: NotebookPen },
-  { label: "Classement",  href: "/app/leaderboard",   icon: Medal },
-  { label: "Ressources",  href: "/app/resources",     icon: FileText },
-  { label: "Résultats",   href: "/app/results",       icon: Trophy },
-  { label: "Mon profil",  href: "/app/profile",       icon: User },
+  { label: "Dashboard",    href: "/app/dashboard",    icon: LayoutDashboard },
+  { label: "Modules",      href: "/app/modules",      icon: BookOpen },
+  { label: "Graphique",    href: "/app/chart",        icon: BarChart2 },
+  { label: "Indicateurs",  href: "/app/indicators",   icon: Layers },
+  { label: "Checklist",    href: "/app/checklist",    icon: ClipboardList },
+  { label: "Membres",      href: "/app/members",      icon: Users },
+  { label: "Communauté",   href: "/app/community",    icon: Globe },
+  { label: "Chat",         href: "/app/chat",         icon: MessageSquare },
+  { label: "Lives",        href: "/app/live",         icon: Radio },
+  { label: "Journal",      href: "/app/journal",      icon: NotebookPen },
+  { label: "Classement",   href: "/app/leaderboard",  icon: Medal },
+  { label: "Ressources",   href: "/app/resources",    icon: FileText },
+  { label: "Résultats",    href: "/app/results",      icon: Trophy },
+  { label: "Mon profil",   href: "/app/profile",      icon: User },
 ];
 
 export function AppSidebar({
