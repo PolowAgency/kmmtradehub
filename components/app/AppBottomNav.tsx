@@ -29,6 +29,7 @@ const MAIN_NAV = [
 ];
 
 const MORE_NAV = [
+  { label: "Membres",     href: "/app/members",       icon: Users },
   { label: "Lives",       href: "/app/live",         icon: Radio },
   { label: "Chat",        href: "/app/chat",          icon: MessageSquare },
   { label: "Classement",  href: "/app/leaderboard",   icon: Medal },

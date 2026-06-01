@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppSidebar } from "@/components/app/AppSidebar";
 import { AppBottomNav } from "@/components/app/AppBottomNav";
+import { OnboardingModal } from "@/components/app/OnboardingModal";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -9,9 +10,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: latestPost }] = await Promise.all([
+  const [{ data: profile }, { data: latestPost }, { data: streak }, { count: completedCount }, { count: totalCount }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase.from("community_posts").select("created_at").eq("is_published", true).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+    supabase.from("streaks").select("current_streak").eq("student_id", user.id).maybeSingle(),
+    supabase.from("student_progress").select("*", { count: "exact", head: true }).eq("student_id", user.id).eq("completed", true),
+    supabase.from("lessons").select("*", { count: "exact", head: true }).eq("is_published", true),
   ]);
 
   const hasNewCommunity = latestPost
@@ -21,7 +25,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen bg-[#0A0A0A] flex">
       {/* Sidebar desktop */}
-      <AppSidebar profile={profile} hasNewCommunity={hasNewCommunity} />
+      <AppSidebar
+        profile={profile}
+        hasNewCommunity={hasNewCommunity}
+        completedLessons={completedCount ?? 0}
+        totalLessons={totalCount ?? 0}
+        currentStreak={streak?.current_streak ?? 0}
+        userId={user.id}
+      />
 
       {/* Main content */}
       <main className="flex-1 min-w-0 pb-20 md:pb-0 md:ml-64">
@@ -32,6 +43,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
       {/* Bottom nav mobile */}
       <AppBottomNav hasNewCommunity={hasNewCommunity} isAdmin={profile?.role === "admin"} />
+      <OnboardingModal userId={user.id} userName={profile?.full_name?.split(" ")[0] ?? "Trader"} />
     </div>
   );
 }
