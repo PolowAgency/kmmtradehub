@@ -19,7 +19,7 @@ type QuizAccessRow = Pick<
 
 type BadgeAwardProgressRow = {
   lesson_id: string;
-  lessons: Array<{ module_id: string | null }> | null;
+  lessons: { module_id: string | null } | null;
 };
 
 type AccessState = {
@@ -209,7 +209,7 @@ export async function awardStudentBadges(userId: string) {
 
   const allBadges = badgesRes.data ?? [];
   const earnedIds = new Set(earnedBadgesRes.data?.map((badge) => badge.badge_id) ?? []);
-  const completedProgressRows = (completedProgressRes.data ?? []) as BadgeAwardProgressRow[];
+  const completedProgressRows = (completedProgressRes.data ?? []) as unknown as BadgeAwardProgressRow[];
   const publishedLessons = (lessonsRes.data ?? []) as Array<Pick<LessonRow, "id" | "module_id">>;
   const completedLessonsCount = completedProgressRows.length;
   const streakDays = streakRes.data?.current_streak ?? 0;
@@ -217,7 +217,7 @@ export async function awardStudentBadges(userId: string) {
 
   const lessonsByModule: Record<string, number> = {};
   for (const progress of completedProgressRows) {
-    const moduleId = progress.lessons?.[0]?.module_id;
+    const moduleId = progress.lessons?.module_id;
     if (moduleId) {
       lessonsByModule[moduleId] = (lessonsByModule[moduleId] ?? 0) + 1;
     }
