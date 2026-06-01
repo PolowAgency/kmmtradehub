@@ -6,6 +6,16 @@ import Link from "next/link";
 
 const SECTIONS = [
   {
+    title: "🥇 XAUUSD — Or spécifique",
+    items: [
+      { id: "gold_session",  label: "Je trade pendant une session active (Londres 9h-18h ou NY 14h-23h)" },
+      { id: "gold_overlap",  label: "L'overlap Londres/NY (14h-18h) est idéal — je le privilégie si possible" },
+      { id: "gold_dxy",      label: "J'ai vérifié la direction du DXY (Dollar Index) — or et DXY sont inversés" },
+      { id: "gold_news",     label: "Pas de news US majeures dans les 30 min (NFP, CPI, décision Fed)" },
+      { id: "gold_level",    label: "J'ai identifié les niveaux psychologiques clés (ex: 2000$, 2050$, 2100$)" },
+    ],
+  },
+  {
     title: "📊 Analyse de marché",
     items: [
       { id: "trend_htf",  label: "La tendance HTF (H4/Daily) est clairement identifiée" },
@@ -40,13 +50,20 @@ const SECTIONS = [
       { id: "no_revenge",   label: "Ce n'est pas un trade de revanche après une perte" },
       { id: "no_fomo",      label: "Je ne prends pas ce trade par FOMO (peur de rater)" },
       { id: "calm",         label: "Je suis dans un état d'esprit calme et concentré" },
-      { id: "no_news",      label: "Il n'y a pas de news économique majeure imminente" },
       { id: "plan_ok",      label: "Ce trade fait partie de mon plan de trading" },
     ],
   },
 ];
 
 const ALL_IDS = SECTIONS.flatMap((s) => s.items.map((i) => i.id));
+
+const GOLD_TIPS = [
+  { emoji: "⚡", text: "L'overlap Londres/NY (14h–18h heure de Paris) est la meilleure fenêtre pour trader l'or." },
+  { emoji: "📉", text: "DXY monte → or baisse. DXY baisse → or monte. Toujours vérifier en premier." },
+  { emoji: "📰", text: "NFP (1er vendredi du mois) et décision Fed = éviter de trader 30 min avant et après." },
+  { emoji: "🎯", text: "ATR moyen de l'or en H1 ≈ 3–8$. Ne jamais mettre un SL plus petit que l'ATR." },
+  { emoji: "🧱", text: "Les niveaux ronds (2000$, 2050$, 2100$...) sont des aimants psychologiques très forts." },
+];
 
 export default function ChecklistPage() {
   const [checked, setChecked] = useState<Set<string>>(new Set());
@@ -74,7 +91,7 @@ export default function ChecklistPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-cream text-2xl font-bold">Checklist pre-trade</h1>
-          <p className="text-muted text-sm mt-0.5">Valide chaque point avant de passer un ordre.</p>
+          <p className="text-muted text-sm mt-0.5">Valide chaque point avant de passer un ordre sur l'or.</p>
         </div>
         <button
           onClick={reset}
@@ -83,6 +100,17 @@ export default function ChecklistPage() {
           <RefreshCw size={13} />
           Reset
         </button>
+      </div>
+
+      {/* Tips Gold */}
+      <div className="bg-gold/5 border border-gold/15 rounded-2xl p-4 space-y-2">
+        <p className="text-gold text-xs font-bold uppercase tracking-widest mb-3">🥇 Rappels XAUUSD</p>
+        {GOLD_TIPS.map((tip, i) => (
+          <div key={i} className="flex items-start gap-2.5">
+            <span className="text-sm shrink-0">{tip.emoji}</span>
+            <p className="text-cream/75 text-xs leading-relaxed">{tip.text}</p>
+          </div>
+        ))}
       </div>
 
       {/* Barre globale */}
@@ -99,9 +127,7 @@ export default function ChecklistPage() {
         <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${
-              allGreen
-                ? "bg-emerald-400"
-                : "bg-gradient-to-r from-gold/70 to-gold"
+              allGreen ? "bg-emerald-400" : "bg-gradient-to-r from-gold/70 to-gold"
             }`}
             style={{ width: `${pct}%` }}
           />
@@ -110,7 +136,7 @@ export default function ChecklistPage() {
           <div className="mt-4 flex items-center justify-between bg-emerald-400/10 border border-emerald-400/20 rounded-xl px-4 py-3">
             <div className="flex items-center gap-2">
               <CheckCircle2 size={16} className="text-emerald-400" />
-              <span className="text-emerald-400 text-sm font-semibold">Setup validé — tu peux trader !</span>
+              <span className="text-emerald-400 text-sm font-semibold">Setup validé — tu peux trader l'or !</span>
             </div>
             <Link
               href="/app/journal/new"
@@ -156,9 +182,7 @@ export default function ChecklistPage() {
                     type="button"
                     onClick={() => toggle(item.id)}
                     className={`w-full flex items-center gap-4 px-5 py-3.5 text-left transition-all ${
-                      isChecked
-                        ? "bg-emerald-400/5"
-                        : "hover:bg-white/[0.02]"
+                      isChecked ? "bg-emerald-400/5" : "hover:bg-white/[0.02]"
                     }`}
                   >
                     <span className="shrink-0">
@@ -180,19 +204,19 @@ export default function ChecklistPage() {
         );
       })}
 
-      {/* CTA bas */}
+      {/* CTAs */}
       <div className="flex gap-3 pb-4">
         <Link
           href="/app/indicators"
           className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-white/[0.08] text-muted text-sm hover:text-cream hover:border-white/[0.15] transition-all"
         >
-          📚 Revoir les indicateurs
+          📚 Indicateurs
         </Link>
         <Link
           href="/app/chart"
           className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-white/[0.08] text-muted text-sm hover:text-cream hover:border-white/[0.15] transition-all"
         >
-          📈 Ouvrir le graphique
+          📈 Graphique or
         </Link>
       </div>
     </div>
