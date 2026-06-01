@@ -22,7 +22,7 @@ export default async function ModuleDetailPage({ params }: { params: Promise<{ i
       .from("modules")
       .select("*, lessons(id, title, duration_minutes, order_index, is_published)")
       .eq("id", id)
-      .single(),
+      .maybeSingle(),
     supabase.from("student_progress").select("lesson_id, completed").eq("student_id", user.id),
     supabase.from("quizzes").select("id, title, lesson_id").eq("module_id", id),
   ]);

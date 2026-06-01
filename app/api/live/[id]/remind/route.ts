@@ -10,7 +10,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const supabase = await createClient();
 
   // Fetch live info
-  const { data: live } = await supabase.from("lives").select("title, scheduled_at").eq("id", id).single();
+  const { data: live } = await supabase.from("lives").select("title, scheduled_at").eq("id", id).maybeSingle();
   if (!live) return NextResponse.json({ error: "Live not found" }, { status: 404 });
 
   // Upsert reminder
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   });
 
   await resend.emails.send({
-    from: "KMM Trade <noreply@kmmtrade.fr>",
+    from: "KMM Trade <noreply@kmmtradehub.com>",
     to: email,
     subject: `Rappel activé ${live.title}`,
     html: `

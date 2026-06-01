@@ -24,7 +24,7 @@ export default async function JournalEntryPage({ params }: { params: Promise<{ i
     .select("*")
     .eq("id", id)
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!entry) notFound();
 

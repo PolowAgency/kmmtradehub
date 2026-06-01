@@ -30,7 +30,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ pos
       .from("community_posts")
       .select("*, community_categories(id,name,icon), profiles(full_name,email), community_attachments(*), community_reactions(user_id,reaction_type), community_bookmarks(user_id)")
       .eq("id", postId)
-      .single(),
+      .maybeSingle(),
     supabase
       .from("community_comments")
       .select("*, profiles(full_name,email), community_reactions(user_id,reaction_type)")

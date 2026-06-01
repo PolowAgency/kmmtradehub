@@ -23,7 +23,7 @@ export default async function LessonPage({ params }: { params: Promise<{ id: str
 
   const [{ data: lesson }, { data: progress }, { data: quizzes }, { data: noteRow }] = await Promise.all([
     supabase.from("lessons").select("*, modules(id, title)").eq("id", id).single(),
-    supabase.from("student_progress").select("completed").eq("student_id", user.id).eq("lesson_id", id).single(),
+    supabase.from("student_progress").select("completed").eq("student_id", user.id).eq("lesson_id", id).maybeSingle(),
     supabase.from("quizzes").select("id, title").eq("lesson_id", id),
     supabase.from("lesson_notes").select("content").eq("user_id", user.id).eq("lesson_id", id).maybeSingle(),
   ]);

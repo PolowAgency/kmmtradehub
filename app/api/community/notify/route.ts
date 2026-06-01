@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   if (!postId) return NextResponse.json({ error: "Missing postId" }, { status: 400 });
 
   // Fetch the post
-  const { data: post } = await supabase.from("community_posts").select("title, content").eq("id", postId).single();
+  const { data: post } = await supabase.from("community_posts").select("title, content").eq("id", postId).maybeSingle();
   if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
 
   // Fetch all student emails
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   for (let i = 0; i < emails.length; i += batchSize) {
     const batch = emails.slice(i, i + batchSize);
     await resend.emails.send({
-      from: "KMM Trade <noreply@kmmtrade.fr>",
+      from: "KMM Trade <noreply@kmmtradehub.com>",
       to: batch,
       subject: `Nouveau post KMM ${post.title}`,
       html: `
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
           <h2 style="color:#C9A84C;margin-bottom:8px;">Nouveau post dans la communauté</h2>
           <h3 style="color:#F5F0E8;margin-bottom:12px;">${post.title}</h3>
           ${snippet ? `<p style="color:#888;font-size:14px;line-height:1.6;margin-bottom:24px;">${snippet}…</p>` : ""}
-          <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://kmmtrade.fr"}/app/community"
+          <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://kmmtradehub.com"}/app/community"
              style="display:inline-block;background:#C9A84C;color:#0A0A0A;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:10px;font-size:14px;">
             Voir le post →
           </a>

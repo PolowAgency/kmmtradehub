@@ -6,8 +6,9 @@ import { createServiceClient } from "@/lib/supabase/service";
 // vercel.json : { "crons": [{ "path": "/api/cron/live-reminders", "schedule": "*/30 * * * *" }] }
 export async function GET(req: NextRequest) {
   // Vercel Cron envoie Authorization: Bearer <CRON_SECRET>
+  const secret = process.env.CRON_SECRET;
   const auth = req.headers.get("authorization");
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!secret || auth !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

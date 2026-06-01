@@ -14,7 +14,7 @@ export default async function QuizPage({ params }: { params: Promise<{ id: strin
     .from("quizzes")
     .select("id, lesson_id, title, description, passing_score, quiz_questions(id, question, order_index, explanation, quiz_answers(id, answer, order_index))")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (!quiz) notFound();
 

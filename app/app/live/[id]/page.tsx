@@ -22,7 +22,7 @@ export default async function LiveDetailPage({ params }: { params: Promise<{ id:
     { count: attendeeCount },
     { data: reminderRow },
   ] = await Promise.all([
-    supabase.from("lives").select("*").eq("id", id).single(),
+    supabase.from("lives").select("*").eq("id", id).maybeSingle(),
     supabase.from("live_replays").select("*").eq("live_id", id).order("created_at"),
     supabase.from("live_messages").select("*, profiles(full_name, email)").eq("live_id", id).eq("is_deleted", false).order("created_at").limit(200),
     supabase.from("live_questions").select("*, profiles(full_name, email)").eq("live_id", id).eq("is_deleted", false).order("created_at"),

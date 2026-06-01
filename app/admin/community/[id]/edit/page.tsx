@@ -13,7 +13,7 @@ export default async function AdminEditPostPage({ params }: { params: Promise<{ 
       .from("community_posts")
       .select("*, community_attachments(*)")
       .eq("id", id)
-      .single(),
+      .maybeSingle(),
     supabase.from("community_categories").select("id, name, icon").order("order_index"),
   ]);
 
