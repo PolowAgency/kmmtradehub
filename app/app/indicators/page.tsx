@@ -178,9 +178,95 @@ const INDICATORS = [
       ],
     },
   },
+  {
+    id: "bookmap",
+    name: "Bookmap — Heatmap de liquidité",
+    emoji: "🔥",
+    category: "Order Flow",
+    categoryColor: "text-red-400 bg-red-400/10 border-red-400/20",
+    tagline: "Voir où les gros joueurs ont placé leurs ordres",
+    description: "Bookmap est une plateforme d'analyse du carnet d'ordres (order book) visualisé sous forme de heatmap. Contrairement aux indicateurs classiques, Bookmap montre la liquidité en temps réel : où sont les acheteurs et vendeurs AVANT que le prix n'y arrive.",
+    kmm: "KMM utilise Bookmap en complément des indicateurs techniques pour valider les niveaux S/R : si une zone Bollinger ou EMA 200 coïncide avec un mur de liquidité visible sur Bookmap → signal très fort. Sur l'or, les institutionnels laissent des traces claires dans le carnet d'ordres.",
+    settings: "Bookmap.com · Plan Standard (~99$/mois) ou Annual (~69$/mois). Version gratuite disponible avec données limitées.",
+    signal: "Zone rouge/chaude AU-DESSUS du prix = mur de vendeurs = résistance réelle. Zone bleue/froide EN-DESSOUS = mur d'acheteurs = support réel. Un gros ordre qui disparaît soudainement = move imminent.",
+    tips: [
+      "Les zones de liquidité Bookmap sont souvent les mêmes que tes S/R tracés manuellement — ça confirme tes niveaux",
+      "Sur XAUUSD, chercher les gros clusters au niveau des chiffres ronds (2000$, 2050$...)",
+      "Un iceberg order (ordre qui se reconstruit en permanence) = niveau institutionnel très fort",
+      "Combiner : EMA 200 + RSI oversold + mur de liquidité Bookmap = setup très haute probabilité",
+    ],
+    mt5: {
+      path: "Bookmap est une plateforme indépendante — pas un indicateur MT5",
+      note: "Bookmap se connecte aux données de marché via votre broker ou des flux de données comme Rithmic/CQG (futures) ou OANDA (forex/gold).",
+      steps: [
+        { label: "Télécharger", params: "Aller sur bookmap.com → Download → Installer l'application desktop (Windows/Mac)" },
+        { label: "Créer un compte", params: "S'inscrire sur bookmap.com. Une version gratuite (Bookmap Free) est disponible avec les données en différé." },
+        { label: "Connecter le broker", params: "Dans Bookmap → Add Connection → Choisir votre broker ou flux de données. Pour l'or spot : OANDA ou Dukascopy." },
+        { label: "Ouvrir XAUUSD", params: "Dans la liste des instruments, chercher XAUUSD ou XAU/USD. Double-cliquer pour ouvrir le graphique heatmap." },
+        { label: "Lire la heatmap", params: "Couleurs chaudes (jaune/rouge) = gros sell orders. Couleurs froides (bleu/violet) = gros buy orders. Les bulles = trades exécutés (taille = volume)." },
+        { label: "Activer l'iceberg detector", params: "Dans Settings → Iceberg Detector. Coche cette option pour voir les ordres cachés qui se reconstituent." },
+      ],
+    },
+  },
+  {
+    id: "volumeprofile",
+    name: "Volume Profile",
+    emoji: "📐",
+    category: "Order Flow",
+    categoryColor: "text-red-400 bg-red-400/10 border-red-400/20",
+    tagline: "Identifier les niveaux de prix où tout le monde a tradé",
+    description: "Le Volume Profile affiche la distribution du volume échangé à chaque niveau de prix sur une période. Il révèle les zones d'intérêt majeur : là où les institutionnels ont le plus tradé.",
+    kmm: "KMM utilise le Volume Profile pour affiner les entrées : le POC (Point of Control = niveau avec le plus de volume) est souvent un aimant à prix. Combiné avec une EMA et RSI, il donne des entrées précises avec de gros acteurs comme référence.",
+    settings: "Disponible gratuitement sur TradingView (indicateur natif) · Sur MT5 : installer 'Volume Profile' depuis le marché MQL5",
+    signal: "POC (Point of Control) = niveau avec le plus de volume = fort aimant à prix. Value Area High/Low = zones de déséquilibre potentiel. Prix en dehors de la Value Area → retour probable vers le POC.",
+    tips: [
+      "Le POC du jour précédent est souvent un support/résistance le lendemain sur l'or",
+      "Une Value Area étroite = marché en consolidation, breakout imminent",
+      "Combiner Volume Profile journalier et hebdomadaire pour voir les niveaux institutionnels long terme",
+      "Sur TradingView : chercher 'Volume Profile Fixed Range' pour analyser une zone spécifique",
+    ],
+    mt5: {
+      path: "TradingView : Indicateurs → chercher 'Volume Profile' (gratuit, natif)",
+      note: "Sur MT5, Volume Profile n'est pas natif — il faut l'installer depuis la marketplace MQL5.",
+      steps: [
+        { label: "Sur TradingView (recommandé)", params: "Ouvrir TradingView → cliquer sur 'Indicateurs' → chercher 'Volume Profile Fixed Range' ou 'Volume Profile Visible Range' → Ajouter." },
+        { label: "Utiliser Fixed Range", params: "Sélectionner la plage de temps à analyser (ex: la semaine en cours). Le profil s'affiche à droite du graphique." },
+        { label: "Identifier le POC", params: "La ligne la plus longue = POC (Point of Control). C'est le niveau de prix le plus échangé de la période." },
+        { label: "Sur MT5", params: "Outils → MQL5 Market → chercher 'Volume Profile' → télécharger une version gratuite (ex: 'Volume Profile Chart'). Attacher au graphique." },
+      ],
+    },
+  },
+  {
+    id: "dom",
+    name: "DOM — Depth of Market (MT5 natif)",
+    emoji: "📋",
+    category: "Order Flow",
+    categoryColor: "text-red-400 bg-red-400/10 border-red-400/20",
+    tagline: "Le carnet d'ordres en temps réel dans MT5",
+    description: "Le DOM (Depth of Market ou profondeur de marché) affiche les ordres d'achat et de vente actuellement en attente dans le carnet d'ordres. C'est la version simplifiée de Bookmap, disponible directement dans MT5 sans coût supplémentaire.",
+    kmm: "Le DOM est utile pour voir immédiatement avant une entrée s'il y a un déséquilibre marqué entre acheteurs et vendeurs. Si la pression est clairement côté achat → momentum haussier. Utile en scalping sur l'or pendant l'overlap London/NY.",
+    settings: "Natif MT5 — aucun téléchargement nécessaire",
+    signal: "Plus d'ordres à l'achat qu'à la vente = pression haussière. Gros ordre unique d'un côté = mur potentiel. Disparition soudaine d'un gros ordre = move imminent (manipulation possible).",
+    tips: [
+      "Le DOM MT5 montre seulement les ordres de votre broker — pas l'ensemble du marché comme Bookmap",
+      "Sur le Forex et l'or spot, le DOM est moins fiable qu'en futures (marché décentralisé)",
+      "Utiliser surtout pour confirmer le momentum avant d'appuyer sur le bouton",
+      "Coupler avec Bookmap pour une analyse complète : DOM pour l'instant T, Bookmap pour l'historique",
+    ],
+    mt5: {
+      path: "Affichage → Profondeur du Marché  (ou Ctrl+B sur le symbole)",
+      note: "Le DOM est entièrement gratuit et natif dans MT5. Il s'ouvre en une seconde.",
+      steps: [
+        { label: "Ouvrir le DOM", params: "Dans la Observation du marché (Ctrl+M) → clic droit sur XAUUSD → Profondeur du Marché. Ou depuis le graphique : Ctrl+B." },
+        { label: "Lire le DOM", params: "Colonne gauche = SELL orders (asks). Colonne droite = BUY orders (bids). Les prix sont au centre. Les volumes sont indiqués à côté." },
+        { label: "Repérer les déséquilibres", params: "Si la somme des bids est nettement supérieure aux asks → pression acheteuse. Chercher les gros blocs isolés = niveaux clés." },
+        { label: "Passer un ordre depuis le DOM", params: "Tu peux cliquer directement sur un niveau de prix dans le DOM pour placer un ordre limit. Pratique pour les entrées précises sur l'or." },
+      ],
+    },
+  },
 ];
 
-const CATEGORIES = ["Tous", "Tendance", "Momentum", "Volatilité", "Volume", "Structure"];
+const CATEGORIES = ["Tous", "Tendance", "Momentum", "Volatilité", "Volume", "Structure", "Order Flow"];
 
 const MT5_STEPS = [
   { step: "1", title: "Ouvrir MT5", desc: "Lance MetaTrader 5 et ouvre un graphique (ex: XAUUSD en H1)" },
@@ -225,7 +311,7 @@ export default function IndicatorsPage() {
 
         {mt5Open && (
           <div className="border-t border-white/[0.05] px-4 pb-5 pt-4 space-y-3">
-            <p className="text-muted/70 text-xs">Tous les indicateurs ci-dessous sont <span className="text-cream font-semibold">déjà inclus dans MT5</span> — aucun téléchargement nécessaire. Voici comment les activer :</p>
+            <p className="text-muted/70 text-xs">Les indicateurs classiques (EMA, RSI, MACD...) sont <span className="text-cream font-semibold">déjà inclus dans MT5</span> — aucun téléchargement. Les outils Order Flow (Bookmap, Volume Profile) sont des plateformes séparées détaillées dans leur section.</p>
             <div className="space-y-2">
               {MT5_STEPS.map(({ step, title, desc }) => (
                 <div key={step} className="flex items-start gap-3">
@@ -329,7 +415,9 @@ export default function IndicatorsPage() {
                   <div className="bg-blue-400/5 border border-blue-400/15 rounded-xl p-3 space-y-3">
                     <div className="flex items-center gap-2">
                       <Monitor size={14} className="text-blue-400 shrink-0" />
-                      <p className="text-blue-400 text-xs font-semibold">Installation MT5</p>
+                      <p className="text-blue-400 text-xs font-semibold">
+                        {ind.category === "Order Flow" ? "Accès & Installation" : "Installation MT5"}
+                      </p>
                     </div>
                     <p className="text-cream/70 text-xs font-mono bg-black/20 rounded-lg px-3 py-2">{ind.mt5.path}</p>
                     {ind.mt5.note && (
