@@ -27,11 +27,13 @@ const SECTIONS = [
   {
     title: "📈 Confirmation des indicateurs",
     items: [
-      { id: "ema_align",  label: "Les EMA 20/50/200 sont alignées dans la direction du trade" },
-      { id: "rsi_ok",     label: "Le RSI n'est pas en zone de surachat/survente extrême" },
-      { id: "macd_conf",  label: "Le MACD confirme la direction du trade" },
-      { id: "stoch_ok",   label: "Le stochastique est sorti de la zone extrême" },
-      { id: "vol_ok",     label: "Le volume soutient le mouvement" },
+      { id: "ema_align",    label: "Les EMA 20/50/200 sont alignées dans la direction du trade" },
+      { id: "williamsr_ok", label: "Le Williams %R confirme (< -80 pour acheter, > -20 pour vendre)" },
+      { id: "roc_ok",       label: "Le ROC est positif et montant (achat) ou négatif et descendant (vente)" },
+      { id: "pvt_ok",       label: "Le PVT confirme la direction — pas de divergence PVT/prix" },
+      { id: "darkbands_ok", label: "Dark Bands MT5 donne un signal dans la même direction" },
+      { id: "bookmap_ok",   label: "Bookmap ne montre pas de mur de liquidité contraire imminent" },
+      { id: "vol_ok",       label: "Le volume (PVT) soutient le mouvement" },
     ],
   },
   {
@@ -58,11 +60,11 @@ const SECTIONS = [
 const ALL_IDS = SECTIONS.flatMap((s) => s.items.map((i) => i.id));
 
 const GOLD_TIPS = [
-  { emoji: "⚡", text: "L'overlap Londres/NY (14h–18h heure de Paris) est la meilleure fenêtre pour trader l'or." },
-  { emoji: "📉", text: "DXY monte → or baisse. DXY baisse → or monte. Toujours vérifier en premier." },
-  { emoji: "📰", text: "NFP (1er vendredi du mois) et décision Fed = éviter de trader 30 min avant et après." },
-  { emoji: "🎯", text: "ATR moyen de l'or en H1 ≈ 3–8$. Ne jamais mettre un SL plus petit que l'ATR." },
-  { emoji: "🧱", text: "Les niveaux ronds (2000$, 2050$, 2100$...) sont des aimants psychologiques très forts." },
+  { emoji: "⚡", text: "L'overlap Londres/NY (14h–18h) est la meilleure fenêtre — volume et volatilité maximaux sur l'or." },
+  { emoji: "📉", text: "DXY monte → or baisse. DXY baisse → or monte. Vérifier en premier." },
+  { emoji: "🎯", text: "Méthode KMM : M10 pour le contexte + M1 pour l'entrée précise. Williams %R + ROC + PVT + Dark Bands." },
+  { emoji: "📰", text: "NFP et décision Fed = éviter de trader 30 min avant et après — volatilité extrême." },
+  { emoji: "🧱", text: "Les niveaux ronds (2000$, 2050$...) ET les murs Bookmap = S/R institutionnels à privilégier." },
 ];
 
 export default function ChecklistPage() {

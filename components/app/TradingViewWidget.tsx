@@ -14,11 +14,11 @@ const SYMBOLS = [
 const INTERVALS = [
   { label: "1m",  value: "1" },
   { label: "5m",  value: "5" },
+  { label: "10m", value: "10" },
   { label: "15m", value: "15" },
   { label: "1h",  value: "60" },
   { label: "4h",  value: "240" },
   { label: "1j",  value: "D" },
-  { label: "1s",  value: "W" },
 ];
 
 declare global {
@@ -30,7 +30,7 @@ declare global {
 export function TradingViewWidget() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [symbol, setSymbol]     = useState("FX:XAUUSD");
-  const [interval, setInterval] = useState("60");
+  const [interval, setInterval] = useState("10");
   const widgetRef = useRef<string>("");
 
   useEffect(() => {
