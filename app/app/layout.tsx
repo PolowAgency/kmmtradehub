@@ -31,7 +31,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </main>
 
       {/* Bottom nav mobile */}
-      <AppBottomNav hasNewCommunity={hasNewCommunity} />
+      <AppBottomNav hasNewCommunity={hasNewCommunity} isAdmin={profile?.role === "admin"} />
     </div>
   );
 }

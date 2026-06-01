@@ -16,6 +16,7 @@ import {
   User,
   LogOut,
   X,
+  Shield,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -36,7 +37,7 @@ const MORE_NAV = [
   { label: "Mon profil",  href: "/app/profile",       icon: User },
 ];
 
-export function AppBottomNav({ hasNewCommunity }: { hasNewCommunity?: boolean }) {
+export function AppBottomNav({ hasNewCommunity, isAdmin }: { hasNewCommunity?: boolean; isAdmin?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
@@ -91,6 +92,22 @@ export function AppBottomNav({ hasNewCommunity }: { hasNewCommunity?: boolean })
                 </Link>
               );
             })}
+            {/* Admin */}
+            {isAdmin && (
+              <Link
+                href="/admin"
+                onClick={() => setOpen(false)}
+                className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-2xl transition-all border border-dashed ${
+                  pathname.startsWith("/admin")
+                    ? "border-gold/30 text-gold"
+                    : "border-white/[0.08] text-muted hover:text-cream"
+                }`}
+              >
+                <Shield size={20} strokeWidth={1.8} />
+                <span className="text-[10px] font-medium">Admin</span>
+              </Link>
+            )}
+
             {/* Déconnexion */}
             <button
               onClick={handleLogout}
