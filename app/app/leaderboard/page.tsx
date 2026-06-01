@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Trophy, Flame, Award } from "lucide-react";
 import type { Metadata } from "next";
 
+export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: "Classement" };
 
 export default async function LeaderboardPage() {
@@ -90,6 +91,13 @@ export default async function LeaderboardPage() {
       )}
 
       {/* Top liste */}
+      {ranked.length === 0 && (
+        <div className="flex flex-col items-center py-16 gap-3 text-center">
+          <Trophy size={36} className="text-muted/30" />
+          <p className="text-cream font-medium">Classement en cours de chargement</p>
+          <p className="text-muted text-sm">Les scores apparaîtront ici dès que des élèves complètent des leçons.</p>
+        </div>
+      )}
       <div className="space-y-2">
         {ranked.map((p, idx) => {
           const isMe = p.id === user.id;

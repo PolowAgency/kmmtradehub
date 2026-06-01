@@ -6,6 +6,8 @@ import { StreakWidget } from "@/components/app/StreakWidget";
 import { XPBar } from "@/components/app/XPBar";
 import { BadgeCard } from "@/components/app/BadgeCard";
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

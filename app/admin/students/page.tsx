@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { Users, BookOpen, Trophy } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminStudentsPage() {
   const supabase = await createClient();
 
@@ -48,16 +50,16 @@ export default async function AdminStudentsPage() {
                 <p className="text-cream text-sm font-medium truncate">{st.full_name ?? ""}</p>
                 <p className="text-muted text-xs truncate">{st.email}</p>
               </div>
-              <div className="hidden sm:flex items-center gap-4 shrink-0">
-                <span className="flex items-center gap-1.5 text-muted text-xs">
-                  <BookOpen size={12} className="text-gold" />{completed}
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="flex items-center gap-1 text-muted text-xs">
+                  <BookOpen size={11} className="text-gold" />{completed}
                 </span>
-                <span className="flex items-center gap-1.5 text-muted text-xs">
-                  <Trophy size={12} className="text-gold" />{badges}
+                <span className="flex items-center gap-1 text-muted text-xs">
+                  <Trophy size={11} className="text-gold" />{badges}
                 </span>
-                <span className="text-muted text-xs">🔥 {streak}j</span>
+                <span className="text-muted text-xs">🔥{streak}</span>
               </div>
-              <p className="text-muted text-[10px] shrink-0 hidden md:block">
+              <p className="text-muted text-[10px] shrink-0 hidden sm:block">
                 {new Date(st.created_at).toLocaleDateString("fr-FR")}
               </p>
             </div>

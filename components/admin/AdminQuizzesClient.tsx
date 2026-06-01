@@ -1,21 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, Trash2, HelpCircle, ChevronDown, ChevronUp, CheckCircle2, XCircle, Users, BarChart3 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
-type Quiz = { id: string; title: string; description: string | null; passing_score: number; module_id: string | null; lesson_id: string | null; quiz_questions?: Array<{ id: string }> };
+type QuizAnswer = { id: string; answer: string; is_correct: boolean; order_index: number };
+type QuizQuestion = { id: string; question: string; order_index: number; explanation: string | null; quiz_answers: QuizAnswer[] };
+type Quiz = {
+  id: string;
+  title: string;
+  description: string | null;
+  passing_score: number;
+  module_id: string | null;
+  lesson_id: string | null;
+  quiz_questions?: QuizQuestion[];
+};
 type Module = { id: string; title: string };
 type Lesson = { id: string; title: string; module_id: string };
+type QuizResult = { quiz_id: string; score: number; passed: boolean; student_id: string };
 
 export function AdminQuizzesClient({
   initialQuizzes,
   modules,
   lessons,
+  quizResults,
 }: {
   initialQuizzes: Quiz[];
   modules: Module[];
   lessons: Lesson[];
+  quizResults: QuizResult[];
 }) {
   const [quizzes, setQuizzes] = useState(initialQuizzes);
   const [showForm, setShowForm] = useState(false);
@@ -56,11 +69,10 @@ export function AdminQuizzesClient({
         module_id: form.module_id || null,
         lesson_id: form.lesson_id || null,
       })
-      .select("*, quiz_questions(id)")
+      .select("*, quiz_questions(id, question, order_index, explanation, quiz_answers(id, answer, is_correct, order_index))")
       .single();
 
     if (quiz) {
-      // Insert questions + answers
       for (let i = 0; i < validQuestions.length; i++) {
         const q = validQuestions[i];
         if (!q.question.trim()) continue;
@@ -205,24 +217,105 @@ export function AdminQuizzesClient({
             <p className="text-muted text-sm">Aucun quiz.</p>
           </div>
         )}
-        {quizzes.map((quiz) => (
-          <div key={quiz.id} className="bg-surface-2 border border-white/[0.06] rounded-xl overflow-hidden">
-            <div className="flex items-center gap-4 p-4">
-              <div className="flex-1 min-w-0">
-                <p className="text-cream text-sm font-medium truncate">{quiz.title}</p>
-                <p className="text-muted text-xs">{quiz.quiz_questions?.length ?? 0} question{(quiz.quiz_questions?.length ?? 0) > 1 ? "s" : ""} · Score min : {quiz.passing_score}%</p>
+        {quizzes.map((quiz) => {
+          const results = quizResults.filter((r) => r.quiz_id === quiz.id);
+          const attempts = results.length;
+          const passed = results.filter((r) => r.passed).length;
+          const avgScore = attempts > 0 ? Math.round(results.reduce((s, r) => s + r.score, 0) / attempts) : null;
+          const sortedQuestions = [...(quiz.quiz_questions ?? [])].sort((a, b) => a.order_index - b.order_index);
+
+          return (
+            <div key={quiz.id} className="bg-surface-2 border border-white/[0.06] rounded-xl overflow-hidden">
+              <div className="flex items-center gap-4 p-4">
+                <div className="flex-1 min-w-0">
+                  <p className="text-cream text-sm font-medium truncate">{quiz.title}</p>
+                  <p className="text-muted text-xs">{sortedQuestions.length} question{sortedQuestions.length > 1 ? "s" : ""} · Score min : {quiz.passing_score}%</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  {/* Stats tentatives */}
+                  {attempts > 0 && (
+                    <div className="hidden sm:flex items-center gap-3 mr-2">
+                      <span className="flex items-center gap-1 text-xs text-muted">
+                        <Users size={11} className="text-gold" /> {attempts}
+                      </span>
+                      <span className="flex items-center gap-1 text-xs text-muted">
+                        <BarChart3 size={11} className="text-gold" /> {avgScore}%
+                      </span>
+                      <span className={`text-xs font-semibold ${passed === attempts ? "text-emerald-400" : "text-amber-400"}`}>
+                        {passed}/{attempts} réussi{passed > 1 ? "s" : ""}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setExpanded(expanded === quiz.id ? null : quiz.id)}
+                    className="p-2 rounded-lg text-muted hover:text-cream transition-colors"
+                    title="Voir le détail"
+                  >
+                    {expanded === quiz.id ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                  </button>
+                  <button onClick={() => handleDelete(quiz.id)} className="p-2 rounded-lg text-muted hover:text-red-400 hover:bg-red-400/5 transition-colors">
+                    <Trash2 size={15} />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <button onClick={() => setExpanded(expanded === quiz.id ? null : quiz.id)} className="p-2 rounded-lg text-muted hover:text-cream transition-colors">
-                  {expanded === quiz.id ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-                </button>
-                <button onClick={() => handleDelete(quiz.id)} className="p-2 rounded-lg text-muted hover:text-red-400 hover:bg-red-400/5 transition-colors">
-                  <Trash2 size={15} />
-                </button>
-              </div>
+
+              {/* Panel détail */}
+              {expanded === quiz.id && (
+                <div className="border-t border-white/[0.06] px-4 pb-4 pt-3 space-y-4">
+
+                  {/* Stats mobiles */}
+                  {attempts > 0 && (
+                    <div className="flex items-center gap-4 sm:hidden flex-wrap">
+                      <span className="flex items-center gap-1 text-xs text-muted"><Users size={11} className="text-gold" /> {attempts} tentatives</span>
+                      <span className="flex items-center gap-1 text-xs text-muted"><BarChart3 size={11} className="text-gold" /> Moy. {avgScore}%</span>
+                      <span className={`text-xs font-semibold ${passed === attempts ? "text-emerald-400" : "text-amber-400"}`}>{passed}/{attempts} réussi{passed > 1 ? "s" : ""}</span>
+                    </div>
+                  )}
+
+                  {attempts === 0 && (
+                    <p className="text-muted/50 text-xs italic">Aucune tentative pour ce quiz.</p>
+                  )}
+
+                  {/* Questions */}
+                  {sortedQuestions.length === 0 ? (
+                    <p className="text-muted/50 text-xs italic">Aucune question dans ce quiz.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-xs text-muted uppercase tracking-widest font-medium">Questions</p>
+                      {sortedQuestions.map((q, qi) => {
+                        const sortedAnswers = [...q.quiz_answers].sort((a, b) => a.order_index - b.order_index);
+                        return (
+                          <div key={q.id} className="bg-surface-3 border border-white/[0.05] rounded-xl p-3 space-y-2">
+                            <p className="text-cream text-sm font-medium">
+                              <span className="text-gold/60 text-xs mr-2">{qi + 1}.</span>
+                              {q.question}
+                            </p>
+                            <div className="space-y-1.5 pl-4">
+                              {sortedAnswers.map((a) => (
+                                <div key={a.id} className={`flex items-center gap-2 text-xs ${a.is_correct ? "text-emerald-400" : "text-muted/60"}`}>
+                                  {a.is_correct
+                                    ? <CheckCircle2 size={12} className="shrink-0" />
+                                    : <XCircle size={12} className="shrink-0 text-muted/30" />
+                                  }
+                                  {a.answer}
+                                </div>
+                              ))}
+                            </div>
+                            {q.explanation && (
+                              <p className="text-muted/60 text-xs italic pl-4 border-l border-gold/15 ml-4">
+                                {q.explanation}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

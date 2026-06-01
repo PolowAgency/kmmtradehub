@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Users, BookOpen, FileText, HelpCircle, ArrowRight, TrendingUp } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
   const supabase = await createClient();
 
