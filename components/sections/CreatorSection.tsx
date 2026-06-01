@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { BarChart3, Clock, Shield } from "lucide-react";
 
@@ -24,16 +25,18 @@ export function CreatorSection() {
             className="relative"
           >
             <div className="relative rounded-2xl overflow-hidden border border-gold/15">
-              <div
-                className="w-full aspect-[4/5] flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, #0F0F0F 0%, #151508 60%, #0F0F0F 100%)" }}
-              >
-                <div className="text-center">
-                  <div className="w-28 h-28 rounded-full bg-gold/8 border-2 border-gold/20 mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-4xl font-bold text-gradient-gold">K</span>
-                  </div>
-                  <p className="text-xs text-muted/40 tracking-widest uppercase">Photo à venir</p>
-                </div>
+              <div className="relative w-full aspect-[4/5]">
+                <Image
+                  src="/creator-photo.jpg"
+                  alt="Setup de trading KMM"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover object-center"
+                  style={{ filter: "brightness(0.92) saturate(1.05)" }}
+                />
+                <div className="absolute inset-0" style={{
+                  background: "linear-gradient(to bottom, transparent 55%, rgba(10,10,10,0.65) 100%)",
+                }} />
               </div>
 
               {/* Coins dorés */}

@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 
 const STATS = [
   { end: 300, suffix: "+", label: "Membres dans la communauté" },
-  { end: 3, suffix: " ans", label: "D'expérience sur les marchés" },
+  { end: 6, suffix: " ans", label: "D'expérience sur les marchés" },
   { end: 50, suffix: "€", label: "Par mois, sans engagement" },
   { end: 0, suffix: "", label: "Promesse de gain ou de résultat" },
 ];
