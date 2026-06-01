@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, CheckCircle2, PlayCircle, BookOpen } from "lucide-react";
-import { StreakWidget } from "@/components/app/StreakWidget";
+import { ArrowRight, CheckCircle2, PlayCircle, BookOpen, BarChart2, Layers, ClipboardList } from "lucide-react";
 import { XPBar } from "@/components/app/XPBar";
 import { BadgeCard } from "@/components/app/BadgeCard";
 
@@ -109,8 +108,31 @@ export default async function DashboardPage() {
       {/* Progression */}
       <XPBar completed={completedLessons} total={totalLessons} />
 
-      {/* Streak */}
-      <StreakWidget currentStreak={currentStreak} longestStreak={longestStreak} />
+      {/* Outils de trading */}
+      <div className="bg-surface-2 border border-white/[0.07] rounded-2xl p-5">
+        <p className="text-muted text-xs uppercase tracking-widest mb-4">Outils de trading</p>
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { href: "/app/chart",      icon: BarChart2,     label: "Graphique",    sub: "Live TradingView",  color: "text-blue-400",    bg: "bg-blue-400/10" },
+            { href: "/app/indicators", icon: Layers,        label: "Indicateurs",  sub: "EMA · RSI · MACD",  color: "text-gold",        bg: "bg-gold/10" },
+            { href: "/app/checklist",  icon: ClipboardList, label: "Checklist",    sub: "Avant de trader",   color: "text-emerald-400", bg: "bg-emerald-400/10" },
+          ].map(({ href, icon: Icon, label, sub, color, bg }) => (
+            <Link
+              key={href}
+              href={href}
+              className="flex flex-col items-center text-center gap-2 p-3 rounded-xl border border-white/[0.06] hover:border-gold/20 transition-all group"
+            >
+              <div className={`w-10 h-10 rounded-xl ${bg} flex items-center justify-center`}>
+                <Icon size={18} className={color} />
+              </div>
+              <div>
+                <p className="text-cream text-xs font-semibold">{label}</p>
+                <p className="text-muted text-[10px] mt-0.5">{sub}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
 
       {/* Modules */}
       <div>
