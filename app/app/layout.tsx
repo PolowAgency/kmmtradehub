@@ -46,9 +46,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <OnboardingModal
         userId={user.id}
         userName={profile?.full_name?.split(" ")[0] ?? "Trader"}
-        isNewUser={profile?.created_at
-          ? Date.now() - new Date(profile.created_at).getTime() < 7 * 24 * 60 * 60 * 1000
-          : false}
+        onboardingDone={(profile as Record<string, unknown>)?.onboarding_done === true}
       />
     </div>
   );

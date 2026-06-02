@@ -15,10 +15,10 @@ const STEPS = [
     title: "Ce que tu vas trouver",
     desc: null,
     items: [
-      { icon: BookOpen, color: "text-gold",         bg: "bg-gold/10",         label: "Modules & leçons",         sub: "Progresse à ton rythme" },
-      { icon: Users,    color: "text-blue-400",      bg: "bg-blue-400/10",     label: "Communauté",               sub: "Échange avec les membres" },
-      { icon: Trophy,   color: "text-purple-400",    bg: "bg-purple-400/10",   label: "Quiz & résultats",         sub: "Teste tes connaissances" },
-      { icon: Flame,    color: "text-orange-400",    bg: "bg-orange-400/10",   label: "Streaks & badges",         sub: "Reste régulier" },
+      { icon: BookOpen, color: "text-gold",        bg: "bg-gold/10",        label: "Modules & leçons",   sub: "Progresse à ton rythme" },
+      { icon: Users,    color: "text-blue-400",     bg: "bg-blue-400/10",    label: "Communauté",         sub: "Échange avec les membres" },
+      { icon: Trophy,   color: "text-purple-400",   bg: "bg-purple-400/10",  label: "Quiz & résultats",   sub: "Teste tes connaissances" },
+      { icon: Flame,    color: "text-orange-400",   bg: "bg-orange-400/10",  label: "Streaks & badges",   sub: "Reste régulier" },
     ],
   },
   {
@@ -29,21 +29,26 @@ const STEPS = [
   },
 ];
 
-export function OnboardingModal({ userId, userName, isNewUser }: { userId: string; userName: string; isNewUser: boolean }) {
+export function OnboardingModal({
+  userId,
+  userName,
+  onboardingDone,
+}: {
+  userId: string;
+  userName: string;
+  onboardingDone: boolean;
+}) {
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    if (!isNewUser) return;
-    const key = `onboarded_${userId}`;
-    if (!localStorage.getItem(key)) {
-      setVisible(true);
-    }
-  }, [userId, isNewUser]);
+    if (!onboardingDone) setVisible(true);
+  }, [onboardingDone]);
 
-  function dismiss() {
-    localStorage.setItem(`onboarded_${userId}`, "1");
+  async function dismiss() {
     setVisible(false);
+    // Persister côté Supabase — ne jamais réafficher sur aucun appareil
+    await fetch("/api/user/onboarding", { method: "POST" });
   }
 
   function next() {
@@ -61,16 +66,14 @@ export function OnboardingModal({ userId, userName, isNewUser }: { userId: strin
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Overlay */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={dismiss} />
 
-      {/* Modal */}
       <div className="relative w-full max-w-sm bg-surface border border-white/[0.08] rounded-3xl overflow-hidden shadow-2xl">
-        {/* Gradient top */}
-        <div className="absolute top-0 inset-x-0 h-32 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.12) 0%, transparent 70%)" }} />
+        <div
+          className="absolute top-0 inset-x-0 h-32 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.12) 0%, transparent 70%)" }}
+        />
 
-        {/* Close */}
         <button
           onClick={dismiss}
           className="absolute top-4 right-4 p-1.5 rounded-full text-muted hover:text-cream hover:bg-white/[0.06] transition-all z-10"
@@ -79,22 +82,16 @@ export function OnboardingModal({ userId, userName, isNewUser }: { userId: strin
         </button>
 
         <div className="px-6 pt-8 pb-6">
-          {/* Emoji */}
           <div className="text-5xl text-center mb-4">{current.emoji}</div>
 
-          {/* Title */}
           <h2 className="text-cream text-xl font-bold text-center mb-2">
-            {step === 0 ? (
-              <>{userName}, {current.title}</>
-            ) : current.title}
+            {step === 0 ? <>{userName}, {current.title}</> : current.title}
           </h2>
 
-          {/* Desc */}
           {current.desc && (
             <p className="text-muted text-sm text-center leading-relaxed mb-5">{current.desc}</p>
           )}
 
-          {/* Items */}
           {current.items && (
             <div className="space-y-2.5 mb-5 mt-4">
               {current.items.map(({ icon: Icon, color, bg, label, sub }) => (
@@ -111,7 +108,6 @@ export function OnboardingModal({ userId, userName, isNewUser }: { userId: strin
             </div>
           )}
 
-          {/* Step dots */}
           <div className="flex items-center justify-center gap-1.5 mb-5">
             {STEPS.map((_, i) => (
               <div
@@ -123,7 +119,6 @@ export function OnboardingModal({ userId, userName, isNewUser }: { userId: strin
             ))}
           </div>
 
-          {/* CTA */}
           <button
             onClick={next}
             className="w-full flex items-center justify-center gap-2 bg-gold text-[#0A0A0A] font-bold text-sm py-3 rounded-2xl hover:bg-gold-light transition-colors"
