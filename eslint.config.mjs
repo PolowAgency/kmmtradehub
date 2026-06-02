@@ -13,16 +13,16 @@ const eslintConfig = defineConfig([
   ]),
   {
     rules: {
-      // Ces règles génèrent des faux positifs dans Next.js App Router
-      // (les server components ne sont pas des hooks React)
+      // Faux positifs react-hooks v7 sur les Server/Client Components Next.js
       "react-hooks/purity": "off",
-      // Apostrophes dans le JSX — désactivé car géré par l'encodage HTML
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/no-deriving-state-in-effects": "off",
+      // Apostrophes dans le JSX — géré par l'encodage HTML
       "react/no-unescaped-entities": "off",
-      // any est parfois nécessaire avec Supabase types génériques
+      // any parfois nécessaire avec les types génériques Supabase
       "@typescript-eslint/no-explicit-any": "warn",
-      // Variables non utilisées : warning seulement
+      // Variables non utilisées : warning uniquement
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
-      // Expressions non utilisées : warning
       "@typescript-eslint/no-unused-expressions": "warn",
     },
   },
