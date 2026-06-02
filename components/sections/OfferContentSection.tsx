@@ -1,44 +1,44 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, BarChart3, Target, Shield, Lock, Bell } from "lucide-react";
+import { GraduationCap, NotebookPen, ListChecks, BarChart2, Users, Trophy } from "lucide-react";
 
 const OFFER_ITEMS = [
   {
-    icon: BookOpen,
-    title: "Contenus pédagogiques",
-    desc: "Des ressources structurées pour comprendre les fondamentaux du trading : analyse, psychologie, gestion du capital.",
-    badge: "Éducation",
+    icon: GraduationCap,
+    title: "Modules & leçons structurés",
+    desc: "Une progression séquentielle verrouillée du débutant à l'avancé. Chaque leçon se termine par un quiz pour valider tes acquis.",
+    badge: "Formation",
   },
   {
-    icon: BarChart3,
-    title: "Analyses de marché",
-    desc: "Des lectures de marché régulières pour affiner ta compréhension des dynamiques de prix.",
-    badge: "Analyse",
+    icon: NotebookPen,
+    title: "Journal de trading",
+    desc: "Enregistre chaque trade : direction, R:R, PnL, émotion, screenshot. Import direct depuis MT5 et export CSV.",
+    badge: "Suivi",
   },
   {
-    icon: Target,
-    title: "Méthode de travail",
-    desc: "Un process clair et reproductible pour structurer tes séances d'analyse et tes prises de décision.",
+    icon: ListChecks,
+    title: "Checklist pre-trade XAUUSD",
+    desc: "5 sections complètes : sessions Or, analyse HTF/LTF, indicateurs KMM, setup & gestion, psychologie. Valide chaque setup avant d'entrer.",
     badge: "Méthode",
   },
   {
-    icon: Shield,
-    title: "Gestion du risque",
-    desc: "Les règles essentielles pour protéger ton capital et survivre sur le long terme.",
-    badge: "Risque",
+    icon: BarChart2,
+    title: "Bibliothèque d'indicateurs",
+    desc: "15+ indicateurs KMM documentés avec settings recommandés, signaux à surveiller et guide d'installation MT5 étape par étape.",
+    badge: "Outils",
   },
   {
-    icon: Lock,
-    title: "Accès privé",
-    desc: "Un espace dédié pour les membres KMM VIP avec accès aux contenus exclusifs.",
-    badge: "Exclusif",
+    icon: Users,
+    title: "Communauté & Lives",
+    desc: "Posts, chat en temps réel, messagerie privée, annuaire membres. Sessions live avec replays et agenda des prochains streams.",
+    badge: "Communauté",
   },
   {
-    icon: Bell,
-    title: "Rappels de discipline",
-    desc: "Des rappels réguliers pour maintenir une approche rigoureuse et éviter les biais comportementaux.",
-    badge: "Discipline",
+    icon: Trophy,
+    title: "Progression & gamification",
+    desc: "Badges à débloquer, streaks quotidiennes, barre XP et leaderboard. Ta progression devient visible et motivante.",
+    badge: "Progression",
   },
 ];
 

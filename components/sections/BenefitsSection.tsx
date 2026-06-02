@@ -5,24 +5,24 @@ import { Check } from "lucide-react";
 
 const BENEFITS = [
   {
-    title: "Mieux comprendre les marchés",
-    desc: "Développe une lecture objective des dynamiques de prix et des comportements de marché.",
+    title: "Une méthode complète sur l'Or (XAUUSD)",
+    desc: "Sessions, niveaux, DXY, indicateurs — tout ce qu'il faut analyser avant chaque trade sur l'Or.",
   },
   {
-    title: "Structurer ses décisions",
-    desc: "Apprends à entrer et sortir du marché selon des critères clairs, pas selon l'émotion.",
+    title: "Valider chaque setup avant d'entrer",
+    desc: "La checklist pre-trade en 5 sections t'oblige à vérifier les conditions avant d'appuyer sur Buy ou Sell.",
   },
   {
-    title: "Éviter les erreurs classiques",
-    desc: "Identifie et corrige les biais comportementaux qui coûtent le plus cher aux débutants.",
+    title: "Analyser tes trades, pas juste les faire",
+    desc: "Le journal te permet de mesurer ton winrate, ton R:R moyen, tes émotions — et de progresser avec des données réelles.",
   },
   {
-    title: "Construire une routine sérieuse",
-    desc: "Mets en place des habitudes de travail qui favorisent la constance et la discipline.",
+    title: "Comprendre les outils que tu utilises",
+    desc: "Chaque indicateur KMM est documenté : pourquoi il est là, comment le lire, ce qu'il signale vraiment.",
   },
   {
-    title: "Progresser avec un cadre clair",
-    desc: "Avance étape par étape avec une méthode structurée plutôt que de naviguer à l'aveugle.",
+    title: "Progresser dans un cadre motivant",
+    desc: "Streaks, badges, leaderboard — la progression gamifiée rend la discipline plus facile à tenir dans la durée.",
   },
 ];
 
@@ -105,29 +105,30 @@ export function BenefitsSection() {
 
               <div className="relative">
                 <p className="text-xs tracking-widest uppercase text-gold/60 font-medium mb-6">
-                  Approche KMM VIP
+                  Dans la plateforme
                 </p>
 
                 {[
-                  { step: "01", label: "Comprendre les bases" },
-                  { step: "02", label: "Apprendre la méthode" },
-                  { step: "03", label: "Gérer le risque" },
-                  { step: "04", label: "Développer la discipline" },
-                  { step: "05", label: "Construire la constance" },
+                  { icon: "📚", label: "Modules & leçons", sub: "Progression séquentielle" },
+                  { icon: "✅", label: "Checklist pre-trade", sub: "XAUUSD — 5 sections" },
+                  { icon: "📒", label: "Journal de trading", sub: "Import MT5 · Export CSV" },
+                  { icon: "📈", label: "Indicateurs KMM", sub: "15+ outils documentés" },
+                  { icon: "🏆", label: "Badges & Leaderboard", sub: "Streaks · XP · Classement" },
+                  { icon: "📡", label: "Lives & Sessions 1:1", sub: "Direct + replays + appels" },
                 ].map((item, i) => (
                   <motion.div
-                    key={item.step}
+                    key={item.label}
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: 0.4 + i * 0.08 }}
-                    className="flex items-center gap-4 py-3 border-b border-white/5 last:border-0"
+                    transition={{ duration: 0.3, delay: 0.4 + i * 0.07 }}
+                    className="flex items-center gap-3 py-2.5 border-b border-white/5 last:border-0"
                   >
-                    <span className="text-xs font-bold text-gold/40 w-6 shrink-0">
-                      {item.step}
-                    </span>
-                    <div className="flex-1 h-px bg-gold/10" />
-                    <span className="text-sm text-cream/80">{item.label}</span>
+                    <span className="text-base w-6 shrink-0 text-center">{item.icon}</span>
+                    <div className="flex-1">
+                      <p className="text-sm text-cream/90 font-medium leading-none mb-0.5">{item.label}</p>
+                      <p className="text-[11px] text-muted">{item.sub}</p>
+                    </div>
                   </motion.div>
                 ))}
               </div>
