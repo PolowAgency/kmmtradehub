@@ -51,7 +51,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <OnboardingModal
         userId={user.id}
         userName={profile?.full_name?.split(" ")[0] ?? "Trader"}
-        onboardingDone={(profile as Record<string, unknown>)?.onboarding_done === true}
+        onboardingDone={Boolean((profile as Record<string, unknown>)?.onboarding_done)}
       />
     </div>
   );

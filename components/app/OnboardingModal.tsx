@@ -48,7 +48,11 @@ export function OnboardingModal({
   async function dismiss() {
     setVisible(false);
     // Persister côté Supabase — ne jamais réafficher sur aucun appareil
-    await fetch("/api/user/onboarding", { method: "POST" });
+    try {
+      await fetch("/api/user/onboarding", { method: "POST" });
+    } catch {
+      // fail silently — la prochaine session demandera à nouveau mais c'est acceptable
+    }
   }
 
   function next() {
