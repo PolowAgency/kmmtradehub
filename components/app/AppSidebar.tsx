@@ -20,6 +20,7 @@ import {
   BarChart2,
   Layers,
   ClipboardList,
+  PhoneCall,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Logo } from "@/components/Logo";
@@ -33,6 +34,7 @@ const NAV = [
   { label: "Graphique",    href: "/app/chart",        icon: BarChart2 },
   { label: "Indicateurs",  href: "/app/indicators",   icon: Layers },
   { label: "Checklist",    href: "/app/checklist",    icon: ClipboardList },
+  { label: "Session 1:1",  href: "/app/calls",        icon: PhoneCall },
   { label: "Membres",      href: "/app/members",      icon: Users },
   { label: "Messages",     href: "/app/messages",     icon: MessageSquare },
   { label: "Communauté",   href: "/app/community",    icon: Globe },

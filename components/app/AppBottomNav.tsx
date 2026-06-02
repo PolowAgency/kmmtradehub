@@ -20,6 +20,7 @@ import {
   BarChart2,
   Layers,
   ClipboardList,
+  PhoneCall,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -32,6 +33,7 @@ const MAIN_NAV = [
 ];
 
 const MORE_NAV = [
+  { label: "Session 1:1", href: "/app/calls",        icon: PhoneCall },
   { label: "Indicateurs", href: "/app/indicators",  icon: Layers },
   { label: "Checklist",   href: "/app/checklist",   icon: ClipboardList },
   { label: "Membres",     href: "/app/members",     icon: Users },
