@@ -8,7 +8,10 @@ ALTER TABLE profiles
   ADD COLUMN IF NOT EXISTS onboarding_done BOOLEAN NOT NULL DEFAULT FALSE;
 
 -- 2. Ajouter une contrainte UNIQUE sur badges.name (nécessaire pour ON CONFLICT)
-ALTER TABLE badges ADD CONSTRAINT IF NOT EXISTS badges_name_unique UNIQUE (name);
+DO $$ BEGIN
+  ALTER TABLE badges ADD CONSTRAINT badges_name_unique UNIQUE (name);
+EXCEPTION WHEN duplicate_table THEN NULL;
+END $$;
 
 -- 3. Insérer les badges par défaut
 INSERT INTO badges (name, description, icon, condition_type, condition_value) VALUES

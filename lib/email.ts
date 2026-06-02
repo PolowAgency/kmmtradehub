@@ -1,8 +1,10 @@
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM   = "KMM VIP <notifications@kmmtradehub.com>";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kmmtradehub.com";
+// onboarding@resend.dev = domaine sandbox Resend, fonctionne sans vérification de domaine
+// Quand kmmtradehub.com sera vérifié dans Resend, remplacer par : notifications@kmmtradehub.com
+const FROM   = "KMM VIP <onboarding@resend.dev>";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://kmmtradehub.vercel.app";
 
 function base(content: string) {
   return `<!DOCTYPE html>
