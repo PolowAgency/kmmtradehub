@@ -1,6 +1,8 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY);
+}
 // onboarding@resend.dev = domaine sandbox Resend, fonctionne sans vérification de domaine
 // Quand kmmtradehub.com sera vérifié dans Resend, remplacer par : notifications@kmmtradehub.com
 const FROM   = "KMM VIP <onboarding@resend.dev>";
@@ -43,7 +45,7 @@ function btn(href: string, label: string) {
 
 // ── Email : badge débloqué ──────────────────────────────────────
 export async function sendBadgeEmail(to: string, name: string, badgeName: string, badgeIcon: string) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM, to,
     subject: `${badgeIcon} Tu as débloqué le badge "${badgeName}" !`,
     html: base(`
@@ -65,7 +67,7 @@ export async function sendBadgeEmail(to: string, name: string, badgeName: string
 
 // ── Email : nouveau post de Kevin ───────────────────────────────
 export async function sendNewPostEmail(to: string, name: string, postTitle: string, postId: string) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM, to,
     subject: `📢 Nouveau post KMM : "${postTitle}"`,
     html: base(`
@@ -90,7 +92,7 @@ export async function sendNewPostEmail(to: string, name: string, postTitle: stri
 export async function sendLiveScheduledEmail(to: string, name: string, liveTitle: string, liveId: string, scheduledAt: string) {
   const date = new Date(scheduledAt).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const time = new Date(scheduledAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM, to,
     subject: `📡 Live prévu : "${liveTitle}" — ${date} à ${time}`,
     html: base(`
@@ -114,7 +116,7 @@ export async function sendLiveScheduledEmail(to: string, name: string, liveTitle
 
 // ── Email : bienvenue ───────────────────────────────────────────
 export async function sendWelcomeEmail(to: string, name: string) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM, to,
     subject: `🎯 Bienvenue dans KMM VIP, ${name} !`,
     html: base(`
