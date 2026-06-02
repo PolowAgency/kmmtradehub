@@ -127,6 +127,33 @@ export default async function ModuleDetailPage({ params }: { params: Promise<{ i
         </div>
       </div>
 
+      {/* Certificat de complétion */}
+      {pct === 100 && lessons.length > 0 && (
+        <div className="relative overflow-hidden rounded-2xl border border-gold/40 p-6 text-center"
+          style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%)" }}>
+          {/* Coins décoratifs */}
+          <div className="absolute top-0 left-0 w-12 h-12">
+            <div className="absolute top-3 left-3 w-6 h-px bg-gold/50" />
+            <div className="absolute top-3 left-3 h-6 w-px bg-gold/50" />
+          </div>
+          <div className="absolute bottom-0 right-0 w-12 h-12">
+            <div className="absolute bottom-3 right-3 w-6 h-px bg-gold/50" />
+            <div className="absolute bottom-3 right-3 h-6 w-px bg-gold/50" />
+          </div>
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+          <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+
+          <div className="text-4xl mb-3">🏆</div>
+          <p className="text-gold text-[10px] uppercase tracking-widest font-bold mb-1">Certificat de complétion</p>
+          <h3 className="text-cream text-lg font-bold mb-1">{mod.title}</h3>
+          <p className="text-muted text-sm">Module complété avec succès · KMM VIP</p>
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gold/15 border border-gold/25">
+            <CheckCircle2 size={14} className="text-gold" />
+            <span className="text-gold text-xs font-semibold">{lessons.length} leçon{lessons.length > 1 ? "s" : ""} maîtrisée{lessons.length > 1 ? "s" : ""}</span>
+          </div>
+        </div>
+      )}
+
       {/* Module quiz */}
       {quizzes && quizzes.length > 0 && (
         <div>

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import { Users, BookOpen, Trophy } from "lucide-react";
+import { Users, BookOpen, Trophy, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export const dynamic = 'force-dynamic';
 
@@ -39,9 +40,10 @@ export default async function AdminStudentsPage() {
           const streak = st.streaks?.[0]?.current_streak ?? 0;
 
           return (
-            <div
+            <Link
               key={st.id}
-              className="flex items-center gap-4 bg-surface-2 border border-white/[0.06] rounded-xl p-4"
+              href={`/admin/students/${st.id}`}
+              className="flex items-center gap-4 bg-surface-2 border border-white/[0.06] rounded-xl p-4 hover:border-gold/20 transition-all group"
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-surface-3 text-muted font-semibold shrink-0">
                 {st.full_name?.[0]?.toUpperCase() ?? "?"}
@@ -62,7 +64,8 @@ export default async function AdminStudentsPage() {
               <p className="text-muted text-[10px] shrink-0 hidden sm:block">
                 {new Date(st.created_at).toLocaleDateString("fr-FR")}
               </p>
-            </div>
+              <ChevronRight size={15} className="text-muted/30 group-hover:text-gold transition-colors shrink-0" />
+            </Link>
           );
         })}
       </div>

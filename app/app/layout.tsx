@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppSidebar } from "@/components/app/AppSidebar";
 import { AppBottomNav } from "@/components/app/AppBottomNav";
 import { OnboardingModal } from "@/components/app/OnboardingModal";
+import { NotificationBell } from "@/components/app/NotificationBell";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -36,6 +37,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
       {/* Main content */}
       <main className="flex-1 min-w-0 pb-20 md:pb-0 md:ml-64">
+        {/* Top bar mobile avec cloche */}
+        <div className="md:hidden flex items-center justify-end px-4 pt-4 pb-0">
+          <NotificationBell userId={user.id} />
+        </div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {children}
         </div>

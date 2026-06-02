@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Plus, TrendingUp, TrendingDown, Minus, ExternalLink } from "lucide-react";
+import { Plus, TrendingUp, TrendingDown, ExternalLink, Download } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Journal de trading" };
@@ -40,12 +40,24 @@ export default async function JournalPage() {
           <h1 className="text-cream text-2xl font-bold">Journal de trading</h1>
           <p className="text-muted text-sm mt-0.5">{all.length} trade{all.length !== 1 ? "s" : ""} enregistré{all.length !== 1 ? "s" : ""}</p>
         </div>
-        <Link
-          href="/app/journal/new"
-          className="flex items-center gap-2 bg-gold text-[#0A0A0A] font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-gold-light transition-colors shrink-0"
-        >
-          <Plus size={15} /> Nouveau trade
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          {all.length > 0 && (
+            <a
+              href="/api/journal/export"
+              className="flex items-center gap-2 border border-white/[0.1] text-muted hover:text-cream text-sm px-3 py-2.5 rounded-xl transition-colors"
+              title="Exporter en CSV"
+            >
+              <Download size={14} />
+              <span className="hidden sm:inline">CSV</span>
+            </a>
+          )}
+          <Link
+            href="/app/journal/new"
+            className="flex items-center gap-2 bg-gold text-[#0A0A0A] font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-gold-light transition-colors"
+          >
+            <Plus size={15} /> Nouveau trade
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}

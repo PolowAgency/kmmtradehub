@@ -16,6 +16,7 @@ import {
   X,
   MessageSquare,
   Radio,
+  Award,
 } from "lucide-react";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -30,6 +31,7 @@ const NAV = [
   { label: "Lives",       href: "/admin/live",         icon: Radio },
   { label: "Uploads",     href: "/admin/uploads",      icon: Upload },
   { label: "Quiz",        href: "/admin/quizzes",      icon: HelpCircle },
+  { label: "Badges",      href: "/admin/badges",       icon: Award },
   { label: "Analytics",   href: "/admin/analytics",    icon: BarChart3 },
 ];
 
@@ -150,6 +152,7 @@ export function AdminSidebar() {
             { label: "Leçons",     href: "/admin/lessons",   icon: FileText },
             { label: "Uploads",    href: "/admin/uploads",   icon: Upload },
             { label: "Quiz",       href: "/admin/quizzes",   icon: HelpCircle },
+            { label: "Badges",     href: "/admin/badges",    icon: Award },
             { label: "Analytics",  href: "/admin/analytics", icon: BarChart3 },
             { label: "Vue élève",  href: "/app/dashboard",   icon: ArrowLeft },
           ].map(({ label, href, icon: Icon }) => (
