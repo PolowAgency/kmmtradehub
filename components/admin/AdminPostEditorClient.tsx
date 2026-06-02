@@ -163,17 +163,67 @@ export function AdminPostEditorClient({ categories, post, userId }: Props) {
         </select>
       </div>
 
-      {/* Contenu */}
+      {/* Contenu — éditeur enrichi */}
       <div>
-        <label className="block text-xs text-muted uppercase tracking-widest mb-2">Contenu (HTML)</label>
+        <label className="block text-xs text-muted uppercase tracking-widest mb-2">Contenu</label>
+        {/* Toolbar */}
+        <div className="flex items-center gap-1 flex-wrap bg-surface-3 border border-white/[0.08] border-b-0 rounded-t-xl px-3 py-2">
+          {[
+            { label: "B",  title: "Gras",       wrap: (s: string) => `<strong>${s}</strong>` },
+            { label: "I",  title: "Italique",    wrap: (s: string) => `<em>${s}</em>` },
+            { label: "H2", title: "Titre",       wrap: (s: string) => `<h2>${s}</h2>` },
+            { label: "¶",  title: "Paragraphe",  wrap: (s: string) => `<p>${s}</p>` },
+          ].map(({ label, title, wrap }) => (
+            <button
+              key={label}
+              type="button"
+              title={title}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                const ta = document.getElementById("post-content") as HTMLTextAreaElement | null;
+                if (!ta) return;
+                const start = ta.selectionStart;
+                const end = ta.selectionEnd;
+                const selected = content.slice(start, end) || title;
+                const newText = content.slice(0, start) + wrap(selected) + content.slice(end);
+                setContent(newText);
+              }}
+              className="px-2 py-1 rounded text-xs font-bold text-muted hover:text-cream hover:bg-white/[0.06] transition-all"
+            >
+              {label}
+            </button>
+          ))}
+          <div className="w-px h-4 bg-white/[0.1] mx-1" />
+          {[
+            { label: "• Liste",  snippet: "<ul>\n  <li>Élément 1</li>\n  <li>Élément 2</li>\n</ul>" },
+            { label: "🔔 Alerte", snippet: '<div class="alert">⚠️ Message important</div>' },
+            { label: "📊 Setup",  snippet: "<p><strong>Setup :</strong> Description du trade</p>\n<p><strong>Entrée :</strong> X$</p>\n<p><strong>SL :</strong> X$ · <strong>TP :</strong> X$</p>" },
+          ].map(({ label, snippet }) => (
+            <button
+              key={label}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                const ta = document.getElementById("post-content") as HTMLTextAreaElement | null;
+                if (!ta) return;
+                const pos = ta.selectionStart;
+                setContent(content.slice(0, pos) + "\n" + snippet + "\n" + content.slice(pos));
+              }}
+              className="px-2 py-1 rounded text-xs text-muted hover:text-cream hover:bg-white/[0.06] transition-all"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         <textarea
+          id="post-content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="<p>Contenu du post…</p>"
-          rows={10}
-          className="w-full bg-surface-2 border border-white/[0.08] rounded-xl px-4 py-3 text-cream text-sm font-mono focus:outline-none focus:border-gold/40 transition-colors resize-y"
+          placeholder="Écris ton post ici… ou utilise les boutons de mise en forme ci-dessus."
+          rows={12}
+          className="w-full bg-surface-2 border border-white/[0.08] rounded-b-xl px-4 py-3 text-cream text-sm font-mono focus:outline-none focus:border-gold/40 transition-colors resize-y"
         />
-        <p className="text-muted/50 text-[10px] mt-1">HTML basique supporté : &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, &lt;strong&gt;, &lt;em&gt;, etc.</p>
+        <p className="text-muted/50 text-[10px] mt-1">HTML supporté. Utilise les boutons pour formater rapidement.</p>
       </div>
 
       {/* Pièces jointes */}

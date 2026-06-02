@@ -34,6 +34,7 @@ const NAV = [
   { label: "Indicateurs",  href: "/app/indicators",   icon: Layers },
   { label: "Checklist",    href: "/app/checklist",    icon: ClipboardList },
   { label: "Membres",      href: "/app/members",      icon: Users },
+  { label: "Messages",     href: "/app/messages",     icon: MessageSquare },
   { label: "Communauté",   href: "/app/community",    icon: Globe },
   { label: "Chat",         href: "/app/chat",         icon: MessageSquare },
   { label: "Lives",        href: "/app/live",         icon: Radio },

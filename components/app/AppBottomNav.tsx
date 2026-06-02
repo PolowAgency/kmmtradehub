@@ -35,6 +35,7 @@ const MORE_NAV = [
   { label: "Indicateurs", href: "/app/indicators",  icon: Layers },
   { label: "Checklist",   href: "/app/checklist",   icon: ClipboardList },
   { label: "Membres",     href: "/app/members",     icon: Users },
+  { label: "Messages",    href: "/app/messages",    icon: MessageSquare },
   { label: "Communauté",  href: "/app/community",   icon: MessageSquare },
   { label: "Lives",       href: "/app/live",        icon: Radio },
   { label: "Classement",  href: "/app/leaderboard", icon: Medal },

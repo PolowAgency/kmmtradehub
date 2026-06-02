@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Trophy, Flame, BookOpen, Users } from "lucide-react";
+import { Trophy, Flame, BookOpen, Users, MessageSquare } from "lucide-react";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const dynamic = 'force-dynamic';
@@ -132,9 +133,20 @@ export default async function MembersPage() {
               </div>
 
               {/* Membre depuis */}
-              <p className="text-muted/40 text-[9px] mt-2">
+              <p className="text-muted/40 text-[9px] mt-1.5">
                 {m.joinedDaysAgo === 0 ? "Aujourd'hui" : m.joinedDaysAgo === 1 ? "Hier" : `Il y a ${m.joinedDaysAgo}j`}
               </p>
+
+              {/* Bouton message */}
+              {!m.isMe && (
+                <Link
+                  href={`/app/messages/${m.id}`}
+                  className="mt-2 flex items-center gap-1 text-[10px] text-muted hover:text-gold transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MessageSquare size={10} /> Message
+                </Link>
+              )}
             </div>
           ))}
         </div>

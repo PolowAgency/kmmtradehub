@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Plus, TrendingUp, TrendingDown, ExternalLink, Download } from "lucide-react";
+import { Plus, TrendingUp, TrendingDown, ExternalLink, Download, Upload } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Journal de trading" };
@@ -41,6 +41,14 @@ export default async function JournalPage() {
           <p className="text-muted text-sm mt-0.5">{all.length} trade{all.length !== 1 ? "s" : ""} enregistré{all.length !== 1 ? "s" : ""}</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href="/app/journal/import"
+            className="flex items-center gap-2 border border-white/[0.1] text-muted hover:text-cream text-sm px-3 py-2.5 rounded-xl transition-colors"
+            title="Importer depuis MT5"
+          >
+            <Upload size={14} />
+            <span className="hidden sm:inline">MT5</span>
+          </Link>
           {all.length > 0 && (
             <a
               href="/api/journal/export"
