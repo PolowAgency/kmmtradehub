@@ -7,7 +7,10 @@
 ALTER TABLE profiles
   ADD COLUMN IF NOT EXISTS onboarding_done BOOLEAN NOT NULL DEFAULT FALSE;
 
--- 2. S'assurer que les badges par défaut existent
+-- 2. Ajouter une contrainte UNIQUE sur badges.name (nécessaire pour ON CONFLICT)
+ALTER TABLE badges ADD CONSTRAINT IF NOT EXISTS badges_name_unique UNIQUE (name);
+
+-- 3. Insérer les badges par défaut
 INSERT INTO badges (name, description, icon, condition_type, condition_value) VALUES
   ('Premier pas',     'Complète ta première leçon',         '🎯', 'lessons_completed', 1),
   ('Sur la lancée',   'Complète 5 leçons',                  '🔥', 'lessons_completed', 5),

@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Upload, Trash2, Pin, Eye, EyeOff, X, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, Trash2, Pin, Eye, EyeOff, X, Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
@@ -36,6 +36,9 @@ export function AdminPostEditorClient({ categories, post, userId }: Props) {
   const [attachments, setAttachments] = useState<Attachment[]>(post?.community_attachments ?? []);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [notifying, setNotifying] = useState(false);
+  const [notifResult, setNotifResult] = useState<string | null>(null);
+  const [savedPostId, setSavedPostId] = useState(post?.id ?? "");
   const [linkUrl, setLinkUrl] = useState("");
   const [linkName, setLinkName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -118,11 +121,31 @@ export function AdminPostEditorClient({ categories, post, userId }: Props) {
           attachments.map((a) => ({ post_id: newPost.id, url: a.url, name: a.name, type: a.type, file_size: a.file_size ?? null }))
         );
       }
+      if (newPost) setSavedPostId(newPost.id);
       router.push("/admin/community");
     }
 
     setSaving(false);
     router.refresh();
+  }
+
+  async function handleNotify() {
+    const pid = savedPostId;
+    if (!pid || !title.trim()) return;
+    setNotifying(true);
+    setNotifResult(null);
+    try {
+      const res = await fetch("/api/admin/notify-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId: pid, postTitle: title }),
+      });
+      const data = await res.json() as { sent?: number };
+      setNotifResult(`✅ Email envoyé à ${data.sent ?? 0} élève${(data.sent ?? 0) > 1 ? "s" : ""}`);
+    } catch {
+      setNotifResult("❌ Erreur d'envoi");
+    }
+    setNotifying(false);
   }
 
   const TYPE_EMOJI: Record<string, string> = { image: "🖼️", pdf: "📄", video: "🎬", link: "🔗" };
@@ -301,18 +324,35 @@ export function AdminPostEditorClient({ categories, post, userId }: Props) {
         </button>
       </div>
 
-      {/* Save */}
-      <div className="flex gap-3 pt-2">
-        <button
-          onClick={handleSave}
-          disabled={!title.trim() || saving || uploading}
-          className="px-6 py-3 rounded-xl bg-gold text-[#0A0A0A] font-bold text-sm hover:bg-gold-light transition-colors disabled:opacity-50"
-        >
-          {saving ? "Enregistrement…" : isEdit ? "Mettre à jour" : "Publier le post"}
-        </button>
-        <Link href="/admin/community" className="px-6 py-3 rounded-xl border border-white/[0.12] text-muted hover:text-cream text-sm transition-colors">
-          Annuler
-        </Link>
+      {/* Save + Notify */}
+      <div className="space-y-3 pt-2">
+        <div className="flex gap-3 flex-wrap">
+          <button
+            onClick={handleSave}
+            disabled={!title.trim() || saving || uploading}
+            className="px-6 py-3 rounded-xl bg-gold text-[#0A0A0A] font-bold text-sm hover:bg-gold-light transition-colors disabled:opacity-50"
+          >
+            {saving ? "Enregistrement…" : isEdit ? "Mettre à jour" : "Publier le post"}
+          </button>
+          <Link href="/admin/community" className="px-6 py-3 rounded-xl border border-white/[0.12] text-muted hover:text-cream text-sm transition-colors">
+            Annuler
+          </Link>
+        </div>
+
+        {/* Bouton notification email */}
+        {savedPostId && (
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={handleNotify}
+              disabled={notifying}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-blue-400/25 bg-blue-400/5 text-blue-400 hover:bg-blue-400/10 text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              {notifying ? <Loader2 size={14} className="animate-spin" /> : <Mail size={14} />}
+              {notifying ? "Envoi en cours…" : "📧 Notifier tous les élèves par email"}
+            </button>
+            {notifResult && <p className="text-sm text-muted">{notifResult}</p>}
+          </div>
+        )}
       </div>
     </div>
   );

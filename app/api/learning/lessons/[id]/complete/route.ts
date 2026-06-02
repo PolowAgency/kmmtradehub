@@ -8,6 +8,7 @@ import {
   updateStudentStreak,
 } from "@/lib/learning";
 import { createServiceClient } from "@/lib/supabase/service";
+import { sendBadgeEmail } from "@/lib/email";
 
 export async function POST(
   _request: NextRequest,
@@ -64,6 +65,16 @@ export async function POST(
   await updateStudentStreak(user.id);
   const moduleState = await getModuleCompletionState(user.id, lesson.module_id);
   const badges = await awardStudentBadges(user.id);
+
+  // Envoyer un email pour chaque badge débloqué
+  if (badges.length > 0) {
+    const { data: profile } = await service.from("profiles").select("email, full_name").eq("id", user.id).single();
+    if (profile?.email) {
+      for (const badge of badges) {
+        sendBadgeEmail(profile.email, profile.full_name?.split(" ")[0] ?? "Trader", badge.name, badge.icon).catch(() => {});
+      }
+    }
+  }
 
   return NextResponse.json({
     success: true,

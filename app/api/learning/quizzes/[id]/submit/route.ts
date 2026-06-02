@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/types";
 import { awardStudentBadges, canAccessQuiz } from "@/lib/learning";
 import { createServiceClient } from "@/lib/supabase/service";
+import { sendBadgeEmail } from "@/lib/email";
 
 type SubmitPayload = {
   answers?: Record<string, string>;
@@ -126,6 +127,15 @@ export async function POST(
   }
 
   const badges = passed ? await awardStudentBadges(user.id) : [];
+
+  if (badges.length > 0) {
+    const { data: profile } = await service.from("profiles").select("email, full_name").eq("id", user.id).single();
+    if (profile?.email) {
+      for (const badge of badges) {
+        sendBadgeEmail(profile.email, profile.full_name?.split(" ")[0] ?? "Trader", badge.name, badge.icon).catch(() => {});
+      }
+    }
+  }
 
   return NextResponse.json({
     success: true,
