@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/types";
-import { awardStudentBadges, canAccessQuiz } from "@/lib/learning";
+import { awardStudentBadges, canAccessQuiz, updateStudentStreak } from "@/lib/learning";
 import { createServiceClient } from "@/lib/supabase/service";
 import { sendBadgeEmail } from "@/lib/email";
 
@@ -126,6 +126,7 @@ export async function POST(
     }
   }
 
+  if (passed) await updateStudentStreak(user.id);
   const badges = passed ? await awardStudentBadges(user.id) : [];
 
   if (badges.length > 0) {
