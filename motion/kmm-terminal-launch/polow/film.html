@@ -18,6 +18,8 @@ html,body{background:#000;overflow:hidden}
 .o{color:var(--o)}
 .gr{color:var(--g)}
 .tag{position:absolute;left:0;right:0;text-align:center;font:500 24px/1 Mono,monospace;letter-spacing:.14em;color:#8e8a84;z-index:6}
+#floor{position:absolute;left:0;top:0;width:1080px;height:1500px;z-index:5;background:linear-gradient(180deg,rgba(7,7,7,.5) 0,rgba(7,7,7,.82) 160px,#070707 520px)}
+#pool{position:absolute;left:0;top:0;width:900px;height:120px;margin:-60px 0 0 -450px;border-radius:50%;z-index:5;background:radial-gradient(closest-side,rgba(232,196,104,.20),transparent);mix-blend-mode:screen}
 #shade{position:absolute;left:0;right:0;bottom:0;height:900px;z-index:5;background:linear-gradient(180deg,transparent,rgba(5,5,5,.82) 60%,rgba(5,5,5,.92))}
 #dot{position:absolute;left:0;top:0;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;z-index:8;
  background:radial-gradient(circle at 35% 30%,#f7e2a6,#e8c468 55%,#b8923e);box-shadow:0 0 26px rgba(232,196,104,.85),0 0 80px rgba(232,196,104,.45)}
@@ -33,18 +35,19 @@ html,body{background:#000;overflow:hidden}
 <div id="stage"><div id="cam">
   <div class="glow" id="g1"></div><div class="glow" id="g2"></div>
   <canvas id="gl" width="1080" height="1920"></canvas>
+  <div id="floor"></div><div id="pool"></div>
   <div id="shade"></div>
-  <div class="line" id="t1" style="top:1390px;font-size:136px">Ton terminal.</div>
-  <div class="line" id="t2" style="top:1390px;font-size:136px">Ta formation.</div>
+  <div class="line" id="t1" style="top:1560px;font-size:128px">Ton terminal.</div>
+  <div class="line" id="t2" style="top:1560px;font-size:128px">Ta formation.</div>
   <div class="line" id="t3" style="top:262px;font-size:150px">KMM Terminal.</div>
-  <div class="line" id="t4" style="top:1540px;font-size:104px">Lis le marché.</div>
-  <div class="line" id="t5" style="top:1540px;font-size:104px">Un tap.</div>
-  <div class="line" id="t6" style="top:1540px;font-size:104px">Apprends.</div>
+  <div class="line" id="t4" style="top:1572px;font-size:100px">Lis le marché.</div>
+  <div class="line" id="t5" style="top:1572px;font-size:100px">Un tap.</div>
+  <div class="line" id="t6" style="top:1572px;font-size:100px">Apprends.</div>
   <div class="line" id="t7" style="top:1560px;font-size:84px">Tout au même endroit.</div>
   <div class="line" id="c1" style="top:1120px;font-size:100px">Ton terminal.</div>
   <div class="line" id="c2" style="top:1232px;font-size:100px">Ta formation.</div>
   <div class="line gr" id="c3" style="top:1344px;font-size:100px">Enfin dans ta poche.</div>
-  <p class="tag" id="demo" style="top:1690px">DÉMO · DONNÉES DE SIMULATION</p>
+  <p class="tag" id="demo" style="top:1712px">DÉMO · DONNÉES DE SIMULATION</p>
   <svg id="logo" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lgc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96"/><stop offset="50%" stop-color="#e8c468"/><stop offset="100%" stop-color="#b8923e"/></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lgc)" style="font-family:Quicksand,sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
   <p class="tag" id="url" style="top:1612px;font:500 40px/1 Disp,sans-serif;letter-spacing:-.01em;color:#8e8a84">kmmterminal.com</p>
   <div id="dot"></div>
@@ -99,7 +102,7 @@ const RIM=new THREE.PointLight(0xe8c468,42,14,2); SC.add(RIM);
 const RIM2=new THREE.PointLight(0xe8c468,9,12,2); RIM2.position.set(-3,-2,-1.5); SC.add(RIM2);
 SC.add(new THREE.AmbientLight(0xffffff,.07));
 
-const PHONES=[]; let SCREEN_BB=null;
+const PHONES=[]; let SCREEN_BB=null, REFL=null, REFLG=null;
 function planar(mesh){const g=mesh.geometry; g.computeBoundingBox(); const bb=g.boundingBox,p=g.attributes.position,w=bb.max.x-bb.min.x,h=bb.max.y-bb.min.y,uv=new Float32Array(p.count*2);
   for(let i=0;i<p.count;i++){uv[i*2]=(p.getX(i)-bb.min.x)/w; uv[i*2+1]=(p.getY(i)-bb.min.y)/h;} g.setAttribute('uv',new THREE.BufferAttribute(uv,2)); return bb;}
 function makeTex(){const t=new THREE.Texture(); t.encoding=THREE.sRGBEncoding; t.anisotropy=8; t.minFilter=THREE.LinearFilter; t.generateMipmaps=false; return t;}
@@ -117,6 +120,7 @@ const loaded=new Promise(res=>new THREE.GLTFLoader().parse(GLB,'',G=>{
   for(let k=0;k<3;k++){ const m=base.clone(true), grp=new THREE.Group(), tex=makeTex(); let scr=null;
     m.traverse(c=>{ if(c.isMesh&&c.name.indexOf('front-glass')===0){ const bb=planar(c); if(!SCREEN_BB) SCREEN_BB=bb; c.material=new THREE.MeshBasicMaterial({map:tex,toneMapped:false}); scr=c; } });
     grp.add(m); SC.add(grp); PHONES.push({grp,tex,scr,cur:-1}); }
+  REFL=PHONES[0].grp.children[0].clone(true); REFLG=new THREE.Group(); REFLG.add(REFL); REFLG.scale.y=-1; SC.add(REFLG);
   res(); },e=>console.log('GLB',e)));
 
 /* Carte signal qui sort de l'écran : vraie carte de l'onglet Signals, dessinée sur canvas */
@@ -136,29 +140,29 @@ function screenPx(ph,x,y){ const bb=SCREEN_BB; const v=new THREE.Vector3(lerp(bb
 const T={drop:b(8), tapEsp:b(17), tapForm:b(21), trio:b(24), merge:b(28), cta:b(30)};
 // caméra : [t, [cx,cy,cz, tx,ty,tz, fov]]
 const CAMK=[
-  [0,      [1.25,1.15,1.95, 0.62,0.88,0, 30]],      // macro : tranche en titane + haut de l'écran, prix en direct
-  [b(4),   [0.95,0.15,2.5, 0.10,0.05,0, 30]],       // glisse le long de la tranche (une seule prise)
-  [b(8)-.001,[-0.85,-1.0,2.15, -0.15,-0.75,0, 30]],
-  [b(8),   [0,0.05,11.8, 0,0.12,0, 26]],             // le drop : le téléphone arrive
-  [b(16)-.35,[0,0.05,10.6, 0,0.10,0, 26]],          // lente poussée
-  [b(16)+.25,[0.15,0.95,5.6, 0,0.78,0, 26]],         // gros plan : haut de l'écran pour le tap
-  [b(19.4),[0.10,0.88,5.3, 0,0.72,0, 26]],
-  [b(20.4),[0,-0.02,8.4, 0,0.02,0, 26]],            // recul : l'écran entier
-  [b(24),  [0,0,8.9, 0,0.02,0, 26]],
-  [b(25.4),[0,0.1,17.5, 0,0.05,0, 26]],             // surprise : changement d'échelle, trois écrans
-  [b(28),  [0,0.1,17.0, 0,0.05,0, 26]],
-  [b(30),  [0,-0.7,16.2, 0,-0.7,0, 26]],            // carton final : téléphone en haut, texte dessous
-  [DUR,    [0,-0.75,15.6, 0,-0.75,0, 26]] ];
+  [0,      [0.9,-0.05,13.4, 0,-0.18,0, 26]],          // ouverture : l'iPhone entier, en silhouette, révélé par la lumière
+  [b(8)-.001,[-0.5,0.0,12.4, 0,-0.18,0, 26]],         // lent arc de caméra pendant qu'il pivote (une seule prise)
+  [b(8),   [0,0.05,12.9, 0,0.0,0, 26]],              // le drop : le téléphone arrive, toujours entier
+  [b(16)-.3,[0,0.05,12.3, 0,0.0,0, 26]],             // lente poussée
+  [b(16)+.5,[0.25,-0.2,11.2, 0,-0.3,0, 26]],          // léger rapprochement pour les taps (pas de gros plan)
+  [b(24),  [-0.2,-0.2,10.9, 0,-0.3,0, 26]],
+  [b(25.4),[0,0.1,17.8, 0,0.05,0, 26]],             // surprise : changement d'échelle, trois écrans
+  [b(28),  [0,0.1,17.2, 0,0.05,0, 26]],
+  [b(30),  [0,-0.36,14.3, 0,-0.36,0, 26]],          // carton final : téléphone en haut, texte dessous
+  [DUR,    [0,-0.40,13.8, 0,-0.40,0, 26]] ];
 // téléphone principal : [t, [x,y,z, rx,ry,rz]]
 const PH0=[
-  [0,      [0,0,0, 0.10,-0.95,0.02]],
-  [b(8)-.001,[0,0,0, 0.06,0.62,0]],
+  [0,      [0,0,0, 0.06,-1.38,0.0]],                 // presque de profil : la tranche en titane accroche la lumière
+  [b(3),   [0,0,0, 0.05,-0.30,0.02]],                // l'écran se tourne vers nous
+  [b(8)-.001,[0,0,0, 0.04,0.42,0]],
   [b(8),   [0,-1.6,0, 0.30,1.25,0.10]],              // départ hors cadre, avant le ressort
   [b(16),  [0,-0.1,0, 0.03,-0.14,0.04]],
   [b(24),  [0,-0.05,0, 0.02,-0.04,0]],
   [b(28),  [0,0,0.3, 0.02,0.10,0]],
   [b(30),  [0,1.0,0, 0.04,-0.12,0.03]],
   [DUR,    [0,1.02,0, 0.03,0.08,0.02]] ];
+// sol miroir : hauteur du sol (unités 3D) par période, null = pas de sol
+function floorAt(t){ if(t<b(8)) return -1.74; if(t<b(24)) return -1.86; return null; }
 const L={t1:new Kin($('#t1')),t2:new Kin($('#t2')),t3:new Kin($('#t3')),t4:new Kin($('#t4')),t5:new Kin($('#t5')),t6:new Kin($('#t6')),t7:new Kin($('#t7')),c1:new Kin($('#c1')),c2:new Kin($('#c2')),c3:new Kin($('#c3'))};
 let POCHE=[0,0];   // position du point final de « poche »
 function measure(){ // place exacte du point final (invisible) de « poche. », où le point doré va se poser
@@ -198,13 +202,17 @@ function render(t,f=Math.round(t*FPS)){
   for(const [k,side] of [[1,-1],[2,1]]){ const p=PHONES[k]; if(!p) continue;
     const sIn=spring(t,b(24.6)+(k-1)*.12,2.0,.8), mg=E.inOut(P(t,T.merge,.55));
     const vis=t>=b(24.6)&&t<T.merge+.6; p.grp.visible=vis;
-    p.grp.position.set(lerp(side*7.5,side*2.35,sIn)*(1-mg), -0.05+Math.sin(t*.8+k)*.02, lerp(-0.4,-1.2,mg));
+    p.grp.position.set(lerp(side*7.5,side*2.0,sIn)*(1-mg), -0.05+Math.sin(t*.8+k)*.02, lerp(-0.4,-1.2,mg));
     p.grp.rotation.set(.02, side*-0.32*(1-mg), side*.03); }
 
   // carte signal : sort de l'écran vers la caméra (b13 → b15.6)
   if(m){ const ci=spring(t,b(13),2.2,.8), co=E.in(P(t,b(15.4),.35)); const vis=ci>0&&co<1; CARD.mesh.visible=vis;
-    if(vis){ if(!CARD.mesh.parent) m.grp.add(CARD.mesh); CARD.mesh.position.set(lerp(.1,.62,ci),lerp(.2,.42,ci),lerp(.05,.85,ci)-co*.4); CARD.mesh.rotation.set(0,lerp(0,-.22,ci),0); CARD.mat.opacity=clamp(ci*1.4)*(1-co); } }
+    if(vis){ if(!CARD.mesh.parent) m.grp.add(CARD.mesh); CARD.mesh.position.set(lerp(.05,.36,ci),lerp(.2,.46,ci),lerp(.05,.9,ci)-co*.4); CARD.mesh.rotation.set(0,lerp(0,-.22,ci),0); CARD.mat.opacity=clamp(ci*1.4)*(1-co); } }
+  const F=floorAt(t);
+  if(REFLG){ REFLG.visible=F!==null&&!!m; if(REFLG.visible){ const g=m.grp; REFLG.position.set(g.position.x,2*F-g.position.y,g.position.z); REFLG.rotation.set(-g.rotation.x,g.rotation.y,-g.rotation.z); } }
   R.render(SC,CAM3);
+  if(F!==null){ const v=new THREE.Vector3(0,F,0).project(CAM3), fy=(1-v.y)/2*H; op($('#floor'),1); tf($('#floor'),`translateY(${fy}px)`); op($('#pool'),1); tf($('#pool'),`translate(${W/2}px,${fy}px)`); }
+  else { op($('#floor'),0); op($('#pool'),0); }
 
   // textes (un mot par temps dans l'accroche)
   L.t1.render(t,.05,b(3)-.1,B); L.t2.render(t,b(4),b(7)-.15,B);
@@ -212,7 +220,7 @@ function render(t,f=Math.round(t*FPS)){
   L.t5.render(t,b(17),b(20)-.1,.07); L.t6.render(t,b(22),b(24)-.1,.07); L.t7.render(t,b(25),b(28.6),.06);
   L.c1.render(t,b(31),1e9,.07); L.c2.render(t,b(32),1e9,.07); L.c3.render(t,b(33),1e9,.07);
   const closeUp=t>=b(16)&&t<b(24);
-  op($('#shade'),t<T.drop||closeUp?1:clamp(.55+.45*P(t,T.cta,1)));
+  op($('#shade'),clamp(.55+.45*P(t,T.cta,1)));
   op($('#demo'),(t>=b(12)&&t<b(24))?clamp(P(t,b(12),.4))*(1-P(t,b(23.6),.3)):0);
   const lg=spring(t,b(36),1.8,.8); op($('#logo'),clamp(lg*1.3)); tf($('#logo'),`translateY(${(1-lg)*24}px) scale(${lerp(.92,1,lg)})`);
   const u=E.out(P(t,b(36.6),.6)); op($('#url'),u); tf($('#url'),`translateY(${(1-u)*18}px)`);
@@ -222,7 +230,7 @@ function render(t,f=Math.round(t*FPS)){
   const d=$('#dot'); let dv=0, dx=0, dy=0, ds=1;
   if(m && t>=b(15.9) && t<T.tapForm+.5){
     const e1=screenPx(m,347,66), e2=screenPx(m,RING[0],RING[1]), pp=screenPx(m,0,0), pq=screenPx(m,0,100), ptsPx=Math.hypot(pq[0]-pp[0],pq[1]-pp[1])/100;
-    const src=[W/2+190,1540+104*.78];
+    const src=[W/2+185,1572+100*.78];
     const k1=E.inOut(P(t,b(15.9),T.tapEsp-.12-b(15.9))), k2=E.inOut(P(t,T.tapEsp+.45,T.tapForm-.12-T.tapEsp-.45));
     if(t<T.tapEsp+.45){ dx=lerp(src[0],e1[0],k1); dy=lerp(src[1],e1[1],k1)-Math.sin(Math.PI*k1)*160; ds=lerp(1,44*ptsPx/60,k1); }
     else { dx=lerp(e1[0],e2[0],k2); dy=lerp(e1[1],e2[1],k2); ds=44*ptsPx/60; }
