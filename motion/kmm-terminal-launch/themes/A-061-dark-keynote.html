@@ -1,0 +1,35 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><link rel="stylesheet" href="shared.css"><style>.status span:last-child{letter-spacing:2px;font-size:12px}
+.stage{background:radial-gradient(120% 70% at 50% 38%,#121722 0%,#0a0d13 55%,#060709 100%)}
+.cone{position:absolute;left:50%;top:-200px;width:1100px;height:1500px;transform:translateX(-50%);background:conic-gradient(from 168deg at 50% 0%,transparent 0deg,rgba(232,196,104,.10) 12deg,rgba(255,240,205,.16) 24deg,rgba(232,196,104,.10) 36deg,transparent 48deg);filter:blur(18px)}
+.pool{position:absolute;left:50%;top:1500px;width:900px;height:160px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(232,196,104,.22),transparent)}
+.grain{position:absolute;inset:0;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2' seed='4'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.ghost{position:absolute;border-radius:28px;overflow:hidden;filter:blur(7px);opacity:.55;border:1px solid rgba(255,255,255,.08)}
+.edge{position:absolute;left:283px;top:290px;width:513px;height:972px;border-radius:84px;background:conic-gradient(from 210deg,transparent 0 40%,rgba(232,196,104,.0) 45%,rgba(232,196,104,.85) 58%,rgba(245,220,150,.95) 62%,rgba(232,196,104,0) 72%,transparent);filter:blur(16px);transform:scale(1.36) rotate(-4deg)}
+.copy{position:absolute;left:0;right:0;top:1640px;text-align:center;font:700 56px/1.08 Quicksand,sans-serif;letter-spacing:-.01em}
+.copy b{color:var(--gold-m);font-weight:700}
+.tap{position:absolute;width:120px;height:120px;border-radius:50%;border:3px solid var(--gold-m);box-shadow:0 0 40px rgba(232,196,104,.6),inset 0 0 30px rgba(232,196,104,.35)}
+.tap::after{content:"";position:absolute;inset:38px;border-radius:50%;background:var(--gold-m)}
+.ex{position:absolute;left:0;right:0;top:1850px;text-align:center}
+</style></head><body><div class="stage"><div class="cone"></div><div class="pool"></div>
+<div class="ghost" style="left:-60px;top:420px;width:300px;height:420px;transform:rotate(-8deg)"><img src="../assets/captures/terminal-lens.jpg" style="width:300px;margin-top:-90px"></div>
+<div class="ghost" style="left:850px;top:980px;width:300px;height:300px;transform:rotate(7deg);background:#141414"><svg viewBox="0 0 64 64" width="180" height="180" style="margin:60px;transform:rotate(-90deg)"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="5"/><circle cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="5" stroke-dasharray="163.4" stroke-dashoffset="58.8" stroke-linecap="round"/></svg></div>
+<div class="edge"></div>
+<div class="iphone" style="left:323px;top:330px;transform:scale(1.3) rotate(-4deg);transform-origin:50% 50%"><div class="screen"><div class="island"></div><div class="status"><span>21:42</span><span>5G <i style="display:inline-block;width:24px;height:12px;border:1.5px solid #f5f5f0;border-radius:3px;vertical-align:-1px;padding:1.5px"><i style="display:block;height:100%;width:80%;background:#f5f5f0;border-radius:1px"></i></i></span></div><div class="hub"><div class="glow"></div>
+  <svg class="logo" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96"/><stop offset="50%" stop-color="#e8c468"/><stop offset="100%" stop-color="#b8923e"/></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lg)" style="font-family:Quicksand,sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
+  <p class="hello">Bonsoir, Alex</p>
+  <h1>Où veux-tu aller ?</h1>
+  <div class="card"><div class="mock"><svg viewBox="0 0 96 40" width="64" height="28" fill="none"><polyline points="0,32 12,28 24,34 36,20 48,24 60,10 72,16 84,4 96,12" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="96" cy="12" r="3" fill="#34d399"/></svg><div><p class="n">2649.8</p><p class="s" style="color:#34d399">GC · temps réel</p></div></div>
+    <div class="rule"><p class="t">Terminal</p><p class="b">Pressure, DOM, CVD, Footprint, Copilot IA</p></div></div>
+  <div class="card on"><div class="mock"><svg viewBox="0 0 64 64" width="44" height="44" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="58.8"/></svg><div><p class="n">64%</p><p class="s" style="color:var(--dim)">14/22 leçons</p></div></div>
+    <div class="rule"><p class="t">Formation</p><p class="b">Cours, exercices, communauté</p></div></div>
+</div>
+<div class="home"></div></div></div>
+<div class="tap" data-on-formation></div>
+<p class="copy">Ton terminal et ta formation,<br><b>enfin dans ta poche.</b></p>
+<p class="ex tag-ex">061 · DARK KEYNOTE — DONNÉES D'EXEMPLE</p>
+<div class="grain"></div></div><script>
+// Place les marqueurs de tap au centre de l'anneau de la carte Formation du téléphone principal.
+document.fonts.ready.then(()=>{const r=document.querySelector('.iphone .card.on svg').getBoundingClientRect();
+document.querySelectorAll('[data-on-formation]').forEach(e=>{const w=e.offsetWidth,h=e.offsetHeight,dx=+(e.dataset.dx||0),dy=+(e.dataset.dy||0);
+e.style.left=(r.left+r.width/2-w/2+dx)+'px';e.style.top=(r.top+r.height/2-h/2+dy)+'px';});document.body.dataset.ready=1;});
+</script></body></html>

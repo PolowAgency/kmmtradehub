@@ -1,0 +1,9 @@
+<div class="hub"><div class="glow"></div>
+  <svg class="logo" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96"/><stop offset="50%" stop-color="#e8c468"/><stop offset="100%" stop-color="#b8923e"/></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lg)" style="font-family:Quicksand,sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
+  <p class="hello">Bonsoir, Alex</p>
+  <h1>Où veux-tu aller ?</h1>
+  <div class="card"><div class="mock"><svg viewBox="0 0 96 40" width="64" height="28" fill="none"><polyline points="0,32 12,28 24,34 36,20 48,24 60,10 72,16 84,4 96,12" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="96" cy="12" r="3" fill="#34d399"/></svg><div><p class="n">2649.8</p><p class="s" style="color:#34d399">GC · temps réel</p></div></div>
+    <div class="rule"><p class="t">Terminal</p><p class="b">Pressure, DOM, CVD, Footprint, Copilot IA</p></div></div>
+  <div class="card on"><div class="mock"><svg viewBox="0 0 64 64" width="44" height="44" style="transform:rotate(-90deg)"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="58.8"/></svg><div><p class="n">64%</p><p class="s" style="color:var(--dim)">14/22 leçons</p></div></div>
+    <div class="rule"><p class="t">Formation</p><p class="b">Cours, exercices, communauté</p></div></div>
+</div>
