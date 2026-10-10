@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <polygon points="75,0 100,50 75,100 25,100 0,50 25,0" fill="#E8C468"/>
+  <text x="50" y="50" text-anchor="middle" dominant-baseline="central"
+        font-family="'League Spartan', Arial, sans-serif" font-weight="800"
+        font-size="24" letter-spacing="0.5" fill="#0B0B0B">KMM</text>
+</svg>

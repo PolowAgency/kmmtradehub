@@ -63,7 +63,7 @@ html,body{background:#000;overflow:hidden}
   <div id="loupe"><p id="lpl"></p><canvas id="lpc" width="960" height="600"></canvas></div>
   <p class="tag" id="demo" style="top:1712px">DÉMO · DONNÉES DE SIMULATION</p>
   <svg id="logo" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lgc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96"/><stop offset="50%" stop-color="#e8c468"/><stop offset="100%" stop-color="#b8923e"/></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lgc)" style="font-family:Quicksand,sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
-  <p class="tag" id="url" style="top:1612px;font:500 40px/1 Disp,sans-serif;letter-spacing:-.01em;color:#8e8a84">kmmterminal.com</p>
+  <p class="tag" id="url" style="top:1700px;font:500 40px/1 Disp,sans-serif;letter-spacing:-.01em;color:#8e8a84">kmmterminal.com</p>
   <div id="dot"></div>
 </div>
 <canvas id="fx"></canvas>
@@ -147,14 +147,14 @@ const T={drop:b(8), tapSig:b(16), tapDepth:b(20), tapEsp:b(28), tapForm:b(32), t
 const TAPS=[[T.tapSig,[72.3,818.9]],[T.tapDepth,[316.8,818.9]],[T.tapEsp,[340.8,107.3]],[T.tapForm,[150.9,543.2]],[T.tapLesson,[196.5,197.5]],[T.tapAns,[196.5,563.8]],[T.tapComm,[221.4,818.5]]];
 // cartes loupes : [début, fin, côté (+1 = carte à droite), libellé, zone de l'écran {x,y,w,h} en points]
 const LOUPES=[
-  [b(12.3),b(15.6), 1,'HEATMAP DE LIQUIDITÉ',{x:8,y:150,w:250,h:150}],
-  [b(16.6),b(19.6),-1,'SIGNAUX EN DIRECT',{x:8,y:150,w:300,h:104}],
-  [b(20.6),b(23.6), 1,'PRESSION ACHAT / VENTE',{x:8,y:126,w:300,h:104}],
-  [b(24.3),b(27.6),-1,'COPILOT DE MARCHÉ',{x:8,y:688,w:377,h:104}],
-  [b(32.7),b(35.6), 1,'TA PROGRESSION',{x:20,y:262,w:353,h:92}],
-  [b(36.7),b(39.0),-1,'LEÇON DU JOUR 3',{x:28,y:212,w:230,h:150}],
-  [b(42.0),b(43.7), 1,'EXERCICE',{x:20,y:456,w:353,h:190}],
-  [b(44.7),b(47.6),-1,'COMMUNAUTÉ',{x:20,y:224,w:353,h:133}] ];
+  [b(12.3),b(15.6), 1,'HEATMAP DE LIQUIDITÉ',{x:8,y:147.6,w:249,h:184}],
+  [b(16.6),b(19.6),-1,'SIGNAUX EN DIRECT',{x:17.6,y:171.5,w:360.6,h:97.8}],
+  [b(20.6),b(23.6), 1,'PRESSION ACHAT / VENTE',{x:11.8,y:149.5,w:369.2,h:107.4}],
+  [b(24.3),b(27.6),-1,'COPILOT DE MARCHÉ',{x:11.8,y:630.9,w:369.2,h:151.5}],
+  [b(32.7),b(35.6), 1,'TA PROGRESSION',{x:14,y:260,w:365,h:97}],
+  [b(36.7),b(39.0),-1,'LEÇON DU JOUR 3',{x:20,y:207,w:353,h:180}],
+  [b(42.0),b(43.7), 1,'EXERCICE',{x:20,y:455.8,w:353,h:256.5}],
+  [b(44.7),b(47.6),-1,'COMMUNAUTÉ',{x:20,y:223.6,w:353,h:132.9}] ];
 // le téléphone se décale pour laisser la place à la carte (x en unités 3D)
 function phoneSide(t){ let x=0; for(const [a,c,side] of LOUPES){ const k=E.inOut(P(t,a-.45,.5))*(1-E.inOut(P(t,c,.5))); x+= -side*.72*k; } return x; }
 // caméra : [t, [cx,cy,cz, tx,ty,tz, fov]]
@@ -168,8 +168,10 @@ const CAMK=[
   [b(48),  [0,0.05,12.4, 0,0.0,0, 26]],
   [b(49.4),[0,0.1,17.8, 0,0.05,0, 26]],             // surprise : changement d'échelle, trois écrans
   [b(52),  [0,0.1,17.2, 0,0.05,0, 26]],
-  [b(54),  [0,-0.36,14.3, 0,-0.36,0, 26]],          // carton final
-  [DUR,    [0,-0.40,13.8, 0,-0.40,0, 26]] ];
+  [b(54),  [0,-0.36,14.3, 0,-0.36,0, 26]],          // slogan sous le téléphone
+  [b(60.4),[0,-0.36,14.0, 0,-0.36,0, 26]],
+  [b(61.6),[0,0.02,12.2, 0,0.02,0, 26]],             // plan final : l'iPhone au centre, écran KMM TERMINAL
+  [DUR,    [0,0.02,11.6, 0,0.02,0, 26]] ];
 // téléphone principal : [t, [x,y,z, rx,ry,rz]]
 const PH0=[
   [0,      [0,0,0, 0.06,-1.38,0.0]],
@@ -180,8 +182,10 @@ const PH0=[
   [b(48),  [0,-0.08,0, 0.02,-0.04,0]],
   [b(52),  [0,0,0.3, 0.02,0.10,0]],
   [b(54),  [0,1.0,0, 0.04,-0.12,0.03]],
-  [DUR,    [0,1.02,0, 0.03,0.08,0.02]] ];
-function floorAt(t){ if(t<b(8)) return -1.74; if(t<b(48)) return -1.86; return null; }
+  [b(60.4),[0,1.02,0, 0.03,0.04,0.02]],
+  [b(61.6),[0,0.12,0, 0.02,-0.06,0]],
+  [DUR,    [0,0.12,0, 0.02,0.06,0]] ];
+function floorAt(t){ if(t<b(8)) return -1.74; if(t<b(48)) return -1.86; if(t>=b(61)) return -1.62; return null; }
 const L={}; for(const id of ['t1','t2','t3','t8','f1','f2','f3','f4','t5','f5','f6','f7','f9','t7','c1','c2','c3']) L[id]=new Kin($('#'+id));
 let POCHE=[0,0];
 function measure(){ L.c3.render(99,0); const r=$('#c3 .o').getBoundingClientRect(), st=$('#stage').getBoundingClientRect(); const k=W/st.width;
@@ -253,11 +257,11 @@ function render(t,f=Math.round(t*FPS)){
   L.t5.render(t,b(28.4),b(32)-.15,.07);
   L.f5.render(t,b(32.5),b(36)-.15,.06); L.f6.render(t,b(36.5),b(40)-.15,.07); L.f7.render(t,b(40),b(44)-.15,.07); L.f9.render(t,b(44.5),b(48)-.15,.07);
   L.t7.render(t,b(49),b(52.6),.06);
-  L.c1.render(t,b(55),1e9,.07); L.c2.render(t,b(56),1e9,.07); L.c3.render(t,b(57),1e9,.07);
+  L.c1.render(t,b(55),b(60.2),.07); L.c2.render(t,b(56),b(60.3),.07); L.c3.render(t,b(57),b(60.4),.07);
   op($('#shade'),clamp(.55+.45*P(t,T.cta,1)));
   op($('#demo'),(t>=b(12)&&t<b(48))?clamp(P(t,b(12),.4))*(1-P(t,b(47.6),.3)):0);
-  const lg=spring(t,b(60),1.8,.8); op($('#logo'),clamp(lg*1.3)); tf($('#logo'),`translateY(${(1-lg)*24}px) scale(${lerp(.92,1,lg)})`);
-  const u=E.out(P(t,b(60.6),.6)); op($('#url'),u); tf($('#url'),`translateY(${(1-u)*18}px)`);
+  const lg=0; op($('#logo'),0); tf($('#logo'),`translateY(${(1-lg)*24}px) scale(${lerp(.92,1,lg)})`);
+  const u=E.out(P(t,b(61.8),.7)); op($('#url'),u); tf($('#url'),`translateY(${(1-u)*18}px)`);
 
   // point doré, fil rouge : arrive avant chaque tap (depuis le tap précédent s'il est proche), l'écran prend le relais
   // pendant l'appui, puis il devient le point final de « poche. »
@@ -268,8 +272,8 @@ function render(t,f=Math.round(t*FPS)){
       const src=near? screenPx(m,prev[1][0],prev[1][1]) : [W/2,1700];
       const k=E.inOut(P(t,t0-app,app-.12)); dx=lerp(src[0],tgt[0],k); dy=lerp(src[1],tgt[1],k)-Math.sin(Math.PI*k)*(near?60:160); ds=lerp(near?size:1,size,k);
       dv=(t>=t0-.12)?0:1; } }
-  if(t>=b(57.6)){ const s0=spring(t,b(57.6),2.4,.8), dk=E.inOut(P(t,b(57.9),DOCK+.6-b(57.9)));
-    dx=lerp(W/2,POCHE[0],dk); dy=lerp(1000+Math.sin(t*2.2)*8,POCHE[1],dk); ds=s0*lerp(1.5,.30,dk); dv=1; }
+  if(t>=b(57.6)&&t<b(60.4)+.4){ const s0=spring(t,b(57.6),2.4,.8), dk=E.inOut(P(t,b(57.9),DOCK+.6-b(57.9))), out=E.in(P(t,b(60.4),.35));
+    dx=lerp(W/2,POCHE[0],dk); dy=lerp(1000+Math.sin(t*2.2)*8,POCHE[1],dk)-out*60; ds=s0*lerp(1.5,.30,dk); dv=1-out; }
   op(d,dv); tf(d,`translate(${dx}px,${dy}px) scale(${ds})`);
 
   // volet doré puis noir sur le drop : la scène change quand l'écran est couvert
