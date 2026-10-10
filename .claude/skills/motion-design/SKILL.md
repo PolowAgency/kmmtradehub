@@ -1,6 +1,6 @@
 ---
 name: motion-design
-description: Code-only motion design pipeline (no After Effects) for Raphaël / Howseen: launch films, showreels, product promos, LinkedIn/X videos, meme clips. Use when asked to make a motion design video, a promo/launch film, a showreel, "remake this video", a video from a prompt (e.g. "make a 15s motion graphics video…"), to change a video's music/SFX, or to prepare memes for posts. Covers the brief → beat map → stills → seek(t) HTML engine → Playwright render → ffmpeg → music/SFX → QA flow, plus asset sourcing (Mixkit, Pexels, Unsplash, svgl, 21st.dev) and every gotcha hit so far.
+description: Code-only motion design pipeline (no After Effects): launch films, showreels, product promos, LinkedIn/X/Instagram videos, animated logos, meme clips, beat-synced edits. Use whenever the user wants any motion design, motion graphics or animated video in any project, in any language (FR: "motion", "motion design", "vidéo animée", "vidéo promo", "vidéo de lancement", "animer", "faire une vidéo", "refaire cette vidéo"), wants to remake a video, change a video's music/SFX, or prepare memes for posts. For a SaaS/app promo where HyperFrames is installed, saas-motion-video runs the staged process; this skill is the code-only engine (brief → beat map → stills → seek(t) HTML engine → Playwright render → ffmpeg → music/SFX → QA), plus asset sourcing (Mixkit, Pexels, Unsplash, svgl, 21st.dev) and known gotchas.
 ---
 
 # Motion design, 100 % code (Howseen pipeline)
