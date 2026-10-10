@@ -4,7 +4,7 @@ format: 1080x1920              # vertical iPhone ; écrans capturés en iPhone 1
 duration: 20s
 audio: music                   # musique + SFX, sans voix off
 loop: false
-theme: "à choisir à l'étape 3"
+theme: "094 Match Cut"           # cercle doré qui passe d'un plan à l'autre, au même endroit
 ---
 
 # KMM Terminal — lancement de l'appli mobile
@@ -33,7 +33,7 @@ Score /8 = actuel + calme + dans la marque + montre la preuve (0–2 chacun).
 | Communauté / lives (aperçu) | `communaute`, `calendrier` | — | réel, optionnel | seulement si le rythme le permet |
 | Écran de connexion Face ID | `FaceIdToggle`, login | — | non retenu | pas la preuve |
 
-**Brand:** logo officiel `terminalkmm/components/Logo.tsx` / `public/brand/kmm-tradehub-logo.png` / `public/logo-mark.svg` · or KMM #e8c468 (accents, CTA) · fonds #050607 / #0a0c0f (pas de noir pur) · terminal : cyan acheteurs #35c8e0, rouge vendeurs #e5484d, orange #e8822a · texte #f5f5f7 / #86868b · polices Quicksand (titres app), Manrope (texte), JetBrains Mono (chiffres).
+**Brand:** logo officiel `terminalkmm/components/Logo.tsx` / `public/brand/kmm-tradehub-logo.png` / `public/logo-mark.svg` · or KMM #e8c468 (accents, CTA) · fonds #050607 / #0a0c0f (pas de noir pur) · terminal : cyan acheteurs #35c8e0, rouge vendeurs #e5484d, orange #e8822a · texte #f5f5f7 / #86868b · polices : **Inter Display** pour tous les textes de la pub (titres serrés façon Apple) ; à l’intérieur de l’iPhone, les vraies polices de l’appli (Quicksand, Manrope, JetBrains Mono).
 
 **Do / Don't:**
 - Jamais de signal ou de conseil d'achat/vente à l'écran ; le narrateur décrit.
