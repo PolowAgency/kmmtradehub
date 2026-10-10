@@ -26,6 +26,7 @@ html,body{background:#000;overflow:hidden}
 #logo{position:absolute;left:390px;top:1505px;width:300px;height:85px;z-index:6}
 #grain{position:absolute;inset:-60px;z-index:40;opacity:.06;pointer-events:none;mix-blend-mode:overlay}
 #vig{position:absolute;inset:0;z-index:41;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.6))}
+#c3 .o{color:transparent}
 #hud{position:fixed;left:8px;bottom:8px;font:12px monospace;color:#e8c468;z-index:99}
 </style></head><body>
 <!-- MOTEUR POLOW : tout l'état visuel vient de render(t). Aucun timer, aucune animation CSS, aucun Math.random. -->
@@ -40,9 +41,9 @@ html,body{background:#000;overflow:hidden}
   <div class="line" id="t5" style="top:1540px;font-size:104px">Un tap.</div>
   <div class="line" id="t6" style="top:1540px;font-size:104px">Apprends.</div>
   <div class="line" id="t7" style="top:1560px;font-size:84px">Tout au même endroit.</div>
-  <div class="line" id="c1" style="top:1110px;font-size:112px">Ton terminal.</div>
-  <div class="line" id="c2" style="top:1235px;font-size:112px">Ta formation.</div>
-  <div class="line gr" id="c3" style="top:1360px;font-size:112px">Enfin dans ta poche</div>
+  <div class="line" id="c1" style="top:1120px;font-size:100px">Ton terminal.</div>
+  <div class="line" id="c2" style="top:1232px;font-size:100px">Ta formation.</div>
+  <div class="line gr" id="c3" style="top:1344px;font-size:100px">Enfin dans ta poche.</div>
   <p class="tag" id="demo" style="top:1690px">DÉMO · DONNÉES DE SIMULATION</p>
   <svg id="logo" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lgc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96"/><stop offset="50%" stop-color="#e8c468"/><stop offset="100%" stop-color="#b8923e"/></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lgc)" style="font-family:Quicksand,sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
   <p class="tag" id="url" style="top:1612px;font:500 40px/1 Disp,sans-serif;letter-spacing:-.01em;color:#8e8a84">kmmterminal.com</p>
@@ -160,8 +161,9 @@ const PH0=[
   [DUR,    [0,1.02,0, 0.03,0.08,0.02]] ];
 const L={t1:new Kin($('#t1')),t2:new Kin($('#t2')),t3:new Kin($('#t3')),t4:new Kin($('#t4')),t5:new Kin($('#t5')),t6:new Kin($('#t6')),t7:new Kin($('#t7')),c1:new Kin($('#c1')),c2:new Kin($('#c2')),c3:new Kin($('#c3'))};
 let POCHE=[0,0];   // position du point final de « poche »
-function measure(){ const e=document.createElement('canvas').getContext('2d'); e.font='700 112px Disp'; e.letterSpacing='-4.48px';
-  const wd=e.measureText('Enfin dans ta poche').width; POCHE=[W/2+wd/2+40, 1360+112*0.80]; }
+function measure(){ // place exacte du point final (invisible) de « poche. », où le point doré va se poser
+  L.c3.render(99,0); const r=$('#c3 .o').getBoundingClientRect(), st=$('#stage').getBoundingClientRect(); const k=W/st.width;
+  POCHE=[(r.left-st.left+r.width*.42)*k,(r.top-st.top+r.height*.74)*k]; L.c3.render(0,1); }
 
 /* ---------- Particules : poussière dorée en profondeur + étincelles quand le point se pose ---------- */
 const fx=$('#fx'), ctx=fx.getContext('2d'); fx.width=W; fx.height=H;
@@ -205,7 +207,7 @@ function render(t,f=Math.round(t*FPS)){
   R.render(SC,CAM3);
 
   // textes (un mot par temps dans l'accroche)
-  L.t1.render(t,.05,b(3)-.1,B); L.t2.render(t,b(4),b(7.4),B);
+  L.t1.render(t,.05,b(3)-.1,B); L.t2.render(t,b(4),b(7)-.15,B);
   L.t3.render(t,b(9),b(15),B); L.t4.render(t,b(12),b(16)-.1,.07);
   L.t5.render(t,b(17),b(20)-.1,.07); L.t6.render(t,b(22),b(24)-.1,.07); L.t7.render(t,b(25),b(28.6),.06);
   L.c1.render(t,b(31),1e9,.07); L.c2.render(t,b(32),1e9,.07); L.c3.render(t,b(33),1e9,.07);
@@ -224,10 +226,10 @@ function render(t,f=Math.round(t*FPS)){
     const k1=E.inOut(P(t,b(15.9),T.tapEsp-.12-b(15.9))), k2=E.inOut(P(t,T.tapEsp+.45,T.tapForm-.12-T.tapEsp-.45));
     if(t<T.tapEsp+.45){ dx=lerp(src[0],e1[0],k1); dy=lerp(src[1],e1[1],k1)-Math.sin(Math.PI*k1)*160; ds=lerp(1,44*ptsPx/60,k1); }
     else { dx=lerp(e1[0],e2[0],k2); dy=lerp(e1[1],e2[1],k2); ds=44*ptsPx/60; }
-    const press=(Math.abs(t-T.tapEsp)<.45||Math.abs(t-T.tapForm)<.45);   // l'écran prend le relais pendant l'appui
+    const inP=t0=>t>=t0-.12&&t<t0+.45, press=inP(T.tapEsp)||inP(T.tapForm);   // l'écran prend le relais pendant l'appui (mêmes bornes que screen.html)
     dv=press?0:1; }
   if(t>=b(33.6)){ const s0=spring(t,b(33.6),2.4,.8), dk=E.inOut(P(t,b(33.9),DOCK+.6-b(33.9)));
-    dx=lerp(W/2,POCHE[0],dk); dy=lerp(1000+Math.sin(t*2.2)*8,POCHE[1],dk); ds=s0*lerp(1.5,.42,dk); dv=1; }
+    dx=lerp(W/2,POCHE[0],dk); dy=lerp(1000+Math.sin(t*2.2)*8,POCHE[1],dk); ds=s0*lerp(1.5,.30,dk); dv=1; }
   op(d,dv); tf(d,`translate(${dx}px,${dy}px) scale(${ds})`);
 
   // volet doré puis noir sur le drop : la scène change quand l'écran est couvert

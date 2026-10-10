@@ -118,8 +118,10 @@ function render(t){
     else if(t<T.merge+.3) form=1; else hub=1;
     if(hub){ hubBuild(t, t<T.merge? T.tapEsp+.08 : -9); $('#hubFormT').style.color=(t>=T.tapForm&&t<T.tapForm+.4)?'#d4af37':'#f5f5f0'; }
     if(form) formBuild(t, t<T.drop? T.wipeIn+.15 : T.tapForm+.1);
+    // fondu : « Où veux-tu aller ? » reste dessous le temps que la Formation se construise
+    if(form && t>=T.tapForm && t<T.tapForm+.5){ hub=1-E.out(P(t,T.tapForm+.08,.4)); hubBuild(t,-9); }
   }
-  op($('#term'),term); op($('#hub'),hub); op($('#form'),form);
+  op($('#term'),term); op($('#hub'),hub); op($('#form'),form); $('#hub').style.zIndex=1; $('#form').style.zIndex=2;
   if(term) $('#timg').src=`term/t_${String(termFrame(t)+1).padStart(4,'0')}.jpg`;
   // volet doré dans l'écran (terminal → formation, sur le temps 4)
   const w=E.inOut(P(t,T.wipeIn,.36)); tf($('#wipe'),`translateX(${lerp(-420,520,w)}px) skewX(-14deg)`); op($('#wipe'),w>0&&w<1?1:0);
