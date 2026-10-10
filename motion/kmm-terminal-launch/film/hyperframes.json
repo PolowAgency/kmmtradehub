@@ -8,5 +8,12 @@
   },
   "media": {
     "autoProxy": true
-  }
+  },
+  "registryItems": [
+    {
+      "name": "vfx-iphone-device",
+      "type": "hyperframes:block",
+      "target": "compositions/vfx-iphone-device.html"
+    }
+  ]
 }
