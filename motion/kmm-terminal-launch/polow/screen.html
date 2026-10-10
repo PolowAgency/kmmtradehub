@@ -46,6 +46,35 @@ html,body{width:786px;height:1704px;overflow:hidden;background:var(--app)}
 .fh .nav{position:absolute;left:0;right:0;bottom:0;height:84px;border-top:1px solid rgba(255,255,255,.07);background:#0d0d0d;display:flex;justify-content:space-around;padding-top:16px;font-size:11px;color:var(--faint)}
 .fh .nav .on{color:var(--gold)}
 .ring{transform:rotate(-90deg);display:block}
+
+/* Leçon (app/formation/(app)/lecons/[lessonId]/page.tsx) */
+.lesson{overflow:hidden}
+.lesson .sc{position:absolute;left:0;right:0;top:0;padding:62px 20px 120px}
+.lesson .back{font-size:13px;color:var(--dim)}
+.lesson .lh1{margin-top:10px;font:700 24px/1.15 Quicksand,sans-serif}
+.lesson .sum{margin-top:8px;font-size:13px;line-height:1.45;color:var(--dim)}
+.lesson .sheet{margin-top:16px;width:353px;border-radius:14px;display:block;border:1px solid rgba(255,255,255,.08)}
+.lesson .obj{margin-top:18px;font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--faint)}
+.lesson ul{margin-top:8px;padding-left:16px;font-size:13px;line-height:1.6;color:var(--dim)}
+.lesson .exh{margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.07);font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--faint)}
+.lesson .q{margin-top:12px;border-radius:12px;border:1px solid rgba(255,255,255,.07);background:var(--panel);padding:14px}
+.lesson .qp{font-size:14px;font-weight:500;margin-bottom:10px}
+.lesson .opt{display:block;width:100%;margin-top:7px;border-radius:7px;border:1px solid rgba(255,255,255,.1);padding:9px 11px;font-size:13px;color:var(--fg)}
+.lesson .opt.ok{border-color:#34d399;background:rgba(52,211,153,.12);color:#34d399}
+.lesson .expl{margin-top:8px;font-size:12px;color:var(--dim)}
+/* Communauté (app/formation/(app)/communaute/page.tsx) */
+.comm{padding:62px 20px 0}
+.comm .ch1{font:700 26px/1.1 Quicksand,sans-serif}
+.comm .search{margin-top:14px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:var(--panel);padding:9px 12px;font-size:13px;color:var(--faint)}
+.comm .chips{margin-top:12px;display:flex;flex-wrap:wrap;gap:7px}
+.comm .chip{border-radius:999px;border:1px solid rgba(255,255,255,.1);padding:4px 11px;font-size:11px;color:var(--dim)}
+.comm .chip.on{border-color:var(--gold);background:rgba(212,175,55,.1);color:var(--gold)}
+.comm .post{margin-top:12px;border-radius:12px;border:1px solid rgba(255,255,255,.07);background:var(--panel);padding:14px}
+.comm .meta{font-size:11px;color:var(--faint)} .comm .meta b{color:var(--gold);font-weight:500}
+.comm .pt{margin-top:4px;font-size:15px;font-weight:600} .comm .pc{margin-top:4px;font-size:13px;line-height:1.4;color:var(--dim)}
+.comm .rx{margin-top:8px;font-size:11px;color:var(--faint)}
+.fnav{position:absolute;left:0;right:0;bottom:0;height:84px;border-top:1px solid rgba(255,255,255,.07);background:#0d0d0d;display:flex;justify-content:space-around;padding-top:16px;font-size:11px;color:var(--faint);z-index:5}
+.fnav .on{color:var(--gold)}
 #wipe{position:absolute;top:-20%;height:140%;width:80%;background:var(--gold-m);transform:skewX(-14deg);z-index:15}
 #tap{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;z-index:30;
  background:radial-gradient(circle at 35% 30%,#f7e2a6,#e8c468 55%,#b8923e);box-shadow:0 0 14px rgba(232,196,104,.8)}
@@ -72,64 +101,95 @@ html,body{width:786px;height:1704px;overflow:hidden;background:var(--app)}
     <div class="course fe"><svg class="ring" viewBox="0 0 64 64" width="40" height="40"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="6"/><circle class="arc" data-off="61" cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.4"/></svg><div><p class="ctt">Les EMA 9, 21 &amp; 50</p><p class="ctn">5 / 8 leçons</p></div></div>
     <div class="nav fe"><span class="on">Home</span><span>Cours</span><span>Communauté</span><span>Classement</span></div>
   </div>
+
+  <div class="layer lesson" id="lesson"><div class="sc" id="lsc">
+    <p class="back">← Masterclass XAUUSD Gold</p>
+    <p class="lh1">Jour 3 · Structure du marché (les bases)</p>
+    <p class="sum">Les trois types de mouvements, le vocabulaire HH / HL / LH / LL, le BOS, et comment lire la structure sur un graphique.</p>
+    <img class="sheet" src="assets/lessons/jour-3.jpg" alt="">
+    <p class="obj">OBJECTIFS</p>
+    <ul><li>Comprendre les 3 types de tendances</li><li>Savoir identifier HH, HL, LH, LL</li><li>Repérer les BOS</li></ul>
+    <p class="exh">EXERCICE</p>
+    <div class="q"><p class="qp">Que signifie HL (Higher Low) ?</p>
+      <span class="opt">Un sommet plus haut que le précédent</span><span class="opt" id="good">Un creux plus haut que le précédent</span><span class="opt">Un creux plus bas que le précédent</span><span class="opt">Un sommet plus bas que le précédent</span>
+      <p class="expl" id="expl">✓ Bonne réponse</p></div>
+  </div><div class="fnav"><span>Home</span><span class="on">Cours</span><span>Communauté</span><span>Classement</span></div></div>
+  <div class="layer comm" id="comm">
+    <p class="ch1">Communauté</p>
+    <p class="search">Rechercher...</p>
+    <div class="chips"><span class="chip on">Tous</span><span class="chip">📢 Annonces KMM</span><span class="chip">📊 Analyses de marché</span><span class="chip">🧠 Psychologie</span><span class="chip">🛡️ Gestion du risque</span></div>
+    <div class="post ce"><p class="meta"><b>Annonces KMM</b> · KMM · il y a 1 h</p><p class="pt">Live jeudi : lire le carnet d'ordres</p><p class="pc">On décortique ensemble une session sur l'or, en direct.</p><p class="rx">♥ 48 · 💬 12</p></div>
+    <div class="post ce"><p class="meta"><b>Psychologie</b> · Sarah · il y a 3 h</p><p class="pt">Garder sa discipline après une perte</p><p class="pc">Le journal m'aide à rester calme et à suivre mon plan.</p><p class="rx">♥ 31 · 💬 9</p></div>
+    <div class="post ce"><p class="meta"><b>Analyses de marché</b> · Alex · hier</p><p class="pt">Mes niveaux clés de la semaine</p><p class="pc">Je note mes zones et j'attends la confirmation.</p><p class="rx">♥ 22 · 💬 6</p></div>
+    <div class="fnav"><span>Home</span><span>Cours</span><span class="on">Communauté</span><span>Classement</span></div>
+  </div>
   <div id="wipe"></div>
   <div id="ripple"></div><div id="tap"></div>
   <div class="status"><span>21:42</span><span>5G<span class="bat"><i></i></span></span></div>
   <div class="island"></div><div class="homebar"></div>
 </div>
 <script>
-// Même chronologie que film.html (103,7 BPM : un temps = 0,5786 s)
-const B=60/103.7, FPS=30;
-const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), lerp=(a,b,k)=>a+(b-a)*k, P=(t,a,d)=>clamp((t-a)/d);
+// Même chronologie que film.html : 103,7 BPM, 64 temps (un temps = 0,5786 s)
+const B=60/103.7, FPS=30, b=n=>n*B;
+const clamp=(x,a=0,c=1)=>Math.min(c,Math.max(a,x)), lerp=(a,c,k)=>a+(c-a)*k, P=(t,a,d)=>clamp((t-a)/d);
 const E={inOut:k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2,out:k=>1-Math.pow(1-k,3),outExpo:k=>k>=1?1:1-Math.pow(2,-10*k),in:k=>k*k*k};
-function spring(t,t0,f=2.2,z=.78){if(t<=t0)return 0;const w=2*Math.PI*f,s=t-t0,wd=w*Math.sqrt(1-z*z);return 1-Math.exp(-z*w*s)*(Math.cos(wd*s)+z*w/wd*Math.sin(wd*s))}
 const $=s=>document.querySelector(s), tf=(el,s)=>{el.style.transform=s}, op=(el,v)=>{el.style.opacity=v;el.style.display=v<=0.001?'none':''};
 const WHICH=new URLSearchParams(location.search).get('which')||'main';
-// Repères (temps du film)
-const T={wipeIn:3.25*B, drop:8*B, tapEsp:17*B, tapForm:21*B, trio:24*B, merge:28*B};
-const ESP={x:347,y:66};            // bouton « ⇄ Espace » mesuré dans le vrai terminal
-let RING={x:0,y:0};
-function measure(){op($('#hub'),1);const r=$('#hubRing').getBoundingClientRect(),s=$('#scr').getBoundingClientRect();RING={x:(r.left-s.left)/2+r.width/4,y:(r.top-s.top)/2+r.height/4}}
-// image du terminal (captures réelles, 30 i/s, 8 s)
-function termFrame(t){
-  if(WHICH==='left') return clamp(Math.round((t-T.trio)*FPS)+40,0,239);
-  if(t<T.drop) return clamp(Math.round(t*FPS),0,239);
-  return clamp(Math.round((2.8+(t-T.drop))*FPS),0,239);
+// Repères (temps du film) : les taps tombent sur les temps
+const T={wipeIn:b(3.25), drop:b(8), tapSig:b(16), tapDepth:b(20), tapEsp:b(28), tapForm:b(32), tapLesson:b(36), scroll:b(39), tapAns:b(41.5), tapComm:b(44), trio:b(48), merge:b(52)};
+// la capture du terminal est posée à (8,44) et réduite à 0,959 : on convertit ses coordonnées
+const cap=(x,y)=>({x:8+x*.959,y:44+y*.959});
+const POS={esp:cap(347,66), sig:cap(67,808), depth:cap(322,808)};
+let RING={x:0,y:0}, REPR={x:0,y:0}, GOOD={x:0,y:0}, COMMT={x:245,y:808};
+function rel(el){const r=el.getBoundingClientRect(),s=$('#scr').getBoundingClientRect();return{x:(r.left-s.left)/2+r.width/4,y:(r.top-s.top)/2+r.height/4}}
+function measure(){ for(const id of ['#hub','#form','#lesson']) op($(id),1); SMAX=$('#lsc').scrollHeight-852+20;
+  RING=rel($('#hubRing')); REPR=rel($('#form .next'));
+  $('#lsc').style.transform=`translateY(${-scrollMax()}px)`; GOOD=rel($('#good')); $('#lsc').style.transform='';
+  const n=$('#comm .fnav span:nth-child(3)'); op($('#comm'),1); COMMT=rel(n); }
+let SMAX=0; function scrollMax(){return SMAX}
+// images du terminal (captures réelles à 30 i/s)
+function termSrc(t){
+  if(WHICH==='left'){ const f=clamp(Math.round((t-T.trio)*FPS)+40,0,239); return `term/t_${String(f+1).padStart(4,'0')}.jpg`; }
+  if(t<T.drop) return `term/t_${String(clamp(Math.round(t*FPS),0,239)+1).padStart(4,'0')}.jpg`;
+  if(t<T.tapSig+.08) return `term/t_${String(clamp(Math.round((2.8+t-T.drop)*FPS),0,239)+1).padStart(4,'0')}.jpg`;
+  if(t<T.tapDepth+.08) return `sig/t_${String(clamp(Math.round((t-T.tapSig)*FPS)+8,0,164)+1).padStart(4,'0')}.jpg`;
+  return `depth/t_${String(clamp(Math.round((t-T.tapDepth)*FPS)+6,0,164)+1).padStart(4,'0')}.jpg`;
 }
-function formBuild(t,t0){ // l'accueil Formation se construit élément par élément
-  const fe=[...document.querySelectorAll('#form .fe')];
-  fe.forEach((el,i)=>{const k=E.outExpo(P(t,t0+i*.07,.5));el.style.opacity=k;el.style.transform=`translateY(${(1-k)*18}px)`});
+function stagger(sel,t,t0,dy=16,st=.06){[...document.querySelectorAll(sel)].forEach((el,i)=>{const k=E.outExpo(P(t,t0+i*st,.5));el.style.opacity=k;el.style.transform=`translateY(${(1-k)*dy}px)`})}
+function formBuild(t,t0){ stagger('#form .fe',t,t0,18,.07);
   document.querySelectorAll('#form .arc').forEach((el,i)=>{const k=E.out(P(t,t0+.25+i*.08,.8));el.setAttribute('stroke-dashoffset',lerp(163.4,+el.dataset.off,k))});
-  const c=E.out(P(t,t0+.2,.9)); $('#cL').textContent=Math.round(14*c); $('#cS').textContent=Math.round(6*c); $('#cP').textContent=Math.round(64*c)+'%';
-}
-function hubBuild(t,t0){[...document.querySelectorAll('#hub .hb')].forEach((el,i)=>{const k=E.outExpo(P(t,t0+i*.06,.5));el.style.opacity=k;el.style.transform=`translateY(${(1-k)*16}px)`})}
-function tapAt(t,t0,pos){ // le point doré arrive (déjà dans l'écran), appuie, l'onde part
-  const tap=$('#tap'), rip=$('#ripple'); const press=1-.22*Math.sin(Math.PI*P(t,t0,.16));
-  const vis=t>=t0-.12&&t<t0+.45; op(tap,vis?1-P(t,t0+.25,.2):0); tf(tap,`translate(${pos.x}px,${pos.y}px) scale(${press})`);
-  const r=P(t,t0+.02,.45); op(rip,r>0&&r<1?(1-r)*.9:0); tf(rip,`translate(${pos.x}px,${pos.y}px) scale(${1+r*1.8})`);
-}
+  const c=E.out(P(t,t0+.2,.9)); $('#cL').textContent=Math.round(14*c); $('#cS').textContent=Math.round(6*c); $('#cP').textContent=Math.round(64*c)+'%'; }
+function tapAt(t,t0,pos){ const tap=$('#tap'), rip=$('#ripple'); const press=1-.22*Math.sin(Math.PI*P(t,t0,.16));
+  if(t>=t0-.12&&t<t0+.45){ op(tap,1-P(t,t0+.25,.2)); tf(tap,`translate(${pos.x}px,${pos.y}px) scale(${press})`); }
+  const r=P(t,t0+.02,.45); if(r>0&&r<1){ op(rip,(1-r)*.9); tf(rip,`translate(${pos.x}px,${pos.y}px) scale(${1+r*1.8})`); } }
+const TAPS=()=>[[T.tapSig,POS.sig],[T.tapDepth,POS.depth],[T.tapEsp,POS.esp],[T.tapForm,RING],[T.tapLesson,REPR],[T.tapAns,{x:GOOD.x,y:GOOD.y-lessonScroll(T.tapAns)+lessonScroll(1e9)}],[T.tapComm,COMMT]];
+function lessonScroll(t){ return E.inOut(P(t,T.scroll,1.25))*scrollMax(); }
 function render(t){
-  let term=0,hub=0,form=0;
-  if(WHICH==='left'){term=1}
-  else if(WHICH==='right'){hub=1; hubBuild(99,0)}
+  let L={term:0,hub:0,form:0,lesson:0,comm:0};
+  if(WHICH==='left') L.term=1;
+  else if(WHICH==='right'){ L.hub=1; stagger('#hub .hb',99,0); }
   else{
-    if(t<T.wipeIn+.18) term=1; else if(t<T.drop) form=1;
-    else if(t<T.tapEsp+.08) term=1; else if(t<T.tapForm+.08) hub=1;
-    else if(t<T.merge+.3) form=1; else hub=1;
-    if(hub){ hubBuild(t, t<T.merge? T.tapEsp+.08 : -9); $('#hubFormT').style.color=(t>=T.tapForm&&t<T.tapForm+.4)?'#d4af37':'#f5f5f0'; }
-    if(form) formBuild(t, t<T.drop? T.wipeIn+.15 : T.tapForm+.1);
-    // fondu : « Où veux-tu aller ? » reste dessous le temps que la Formation se construise
-    if(form && t>=T.tapForm && t<T.tapForm+.5){ hub=1-E.out(P(t,T.tapForm+.08,.4)); hubBuild(t,-9); }
+    if(t<T.wipeIn+.18) L.term=1; else if(t<T.drop) L.form=1;
+    else if(t<T.tapEsp+.08) L.term=1; else if(t<T.tapForm+.08) L.hub=1;
+    else if(t<T.tapLesson+.08) L.form=1; else if(t<T.tapComm+.08) L.lesson=1;
+    else if(t<T.merge+.3) L.comm=1; else L.hub=1;
+    if(L.hub){ stagger('#hub .hb',t, t<T.merge? T.tapEsp+.08 : -9); $('#hubFormT').style.color=(t>=T.tapForm&&t<T.tapForm+.4)?'#d4af37':'#f5f5f0'; }
+    if(L.form) formBuild(t, t<T.drop? T.wipeIn+.15 : T.tapForm+.1);
+    // fondu : l'écran précédent reste dessous le temps que le suivant se construise
+    if(L.form && t>=T.tapForm && t<T.tapForm+.5){ L.hub=1-E.out(P(t,T.tapForm+.08,.4)); stagger('#hub .hb',t,-9); }
+    if(L.lesson){ stagger('#lesson .sc > *',t,T.tapLesson+.08,14,.05); $('#lsc').style.transform=`translateY(${-lessonScroll(t)}px)`;
+      const ok=t>=T.tapAns+.05; $('#good').classList.toggle('ok',ok); $('#expl').style.opacity=ok?E.out(P(t,T.tapAns+.05,.3)):0; }
+    if(L.comm) stagger('#comm .ce, #comm .chips, #comm .search, #comm .ch1',t,T.tapComm+.08,16,.07);
   }
-  op($('#term'),term); op($('#hub'),hub); op($('#form'),form); $('#hub').style.zIndex=1; $('#form').style.zIndex=2;
-  if(term) $('#timg').src=`term/t_${String(termFrame(t)+1).padStart(4,'0')}.jpg`;
-  // volet doré dans l'écran (terminal → formation, sur le temps 4)
+  for(const k of ['term','hub','form','lesson','comm']) op($('#'+k),L[k]);
+  $('#hub').style.zIndex=1; $('#form').style.zIndex=2;
+  if(L.term) $('#timg').src=termSrc(t);
   const w=E.inOut(P(t,T.wipeIn,.36)); tf($('#wipe'),`translateX(${lerp(-420,520,w)}px) skewX(-14deg)`); op($('#wipe'),w>0&&w<1?1:0);
   op($('#tap'),0); op($('#ripple'),0);
-  if(WHICH==='main'){ if(Math.abs(t-T.tapEsp)<.6) tapAt(t,T.tapEsp,ESP); if(Math.abs(t-T.tapForm)<.6) tapAt(t,T.tapForm,RING); }
+  if(WHICH==='main') for(const [t0,pos] of TAPS()) if(Math.abs(t-t0)<.6) tapAt(t,t0,pos);
 }
-window.renderAt=async(t)=>{render(t);const i=$('#timg');if(i.style.display!=='none'&&$('#term').style.display!=='none'){await i.decode().catch(()=>{})}
+window.renderAt=async(t)=>{render(t);const i=$('#timg');if($('#term').style.display!=='none'){await i.decode().catch(()=>{})}
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))};
-window.ready=(async()=>{await document.fonts.ready;measure();render(0);await $('#timg').decode().catch(()=>{});return true})();
-window.RINGPOS=()=>RING;
+window.ready=(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));measure();render(0);await $('#timg').decode().catch(()=>{});return true})();
+window.POSITIONS=()=>({RING,REPR,GOOD,COMMT,POS,scrollMax:scrollMax()});
 </script></body></html>

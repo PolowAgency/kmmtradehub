@@ -29,6 +29,11 @@ html,body{background:#000;overflow:hidden}
 #grain{position:absolute;inset:-60px;z-index:40;opacity:.06;pointer-events:none;mix-blend-mode:overlay}
 #vig{position:absolute;inset:0;z-index:41;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.6))}
 #c3 .o{color:transparent}
+#links{position:absolute;left:0;top:0;z-index:7;pointer-events:none}
+#loupe{position:absolute;left:0;top:0;width:580px;border-radius:30px;padding:20px 20px 22px;z-index:7;background:linear-gradient(180deg,#141519,#0d0e11);
+ border:1.5px solid rgba(232,196,104,.55);box-shadow:0 40px 90px rgba(0,0,0,.65),0 0 60px rgba(232,196,104,.12);transform-origin:50% 50%}
+#lpl{font:600 21px/1 Mono,monospace;letter-spacing:.14em;color:#e8c468;margin:2px 4px 16px}
+#lpc{display:block;width:540px;border-radius:16px}
 #hud{position:fixed;left:8px;bottom:8px;font:12px monospace;color:#e8c468;z-index:99}
 </style></head><body>
 <!-- MOTEUR POLOW : tout l'état visuel vient de render(t). Aucun timer, aucune animation CSS, aucun Math.random. -->
@@ -39,14 +44,23 @@ html,body{background:#000;overflow:hidden}
   <div id="shade"></div>
   <div class="line" id="t1" style="top:1560px;font-size:128px">Ton terminal.</div>
   <div class="line" id="t2" style="top:1560px;font-size:128px">Ta formation.</div>
-  <div class="line" id="t3" style="top:262px;font-size:150px">KMM Terminal.</div>
-  <div class="line" id="t4" style="top:1572px;font-size:100px">Lis le marché.</div>
-  <div class="line" id="t5" style="top:1572px;font-size:100px">Un tap.</div>
-  <div class="line" id="t6" style="top:1572px;font-size:100px">Apprends.</div>
+  <div class="line" id="t3" style="top:262px;font-size:140px">KMM Terminal.</div>
+  <div class="line" id="t8" style="top:262px;font-size:140px">La Formation.</div>
+  <div class="line" id="f1" style="top:1580px;font-size:96px">Vois la liquidité.</div>
+  <div class="line" id="f2" style="top:1580px;font-size:96px">Repère les signaux.</div>
+  <div class="line" id="f3" style="top:1580px;font-size:96px">Sens la pression.</div>
+  <div class="line" id="f4" style="top:1580px;font-size:96px">Interroge le Copilot.</div>
+  <div class="line" id="t5" style="top:1580px;font-size:96px">Un tap.</div>
+  <div class="line" id="f5" style="top:1580px;font-size:90px">Reprends où tu en es.</div>
+  <div class="line" id="f6" style="top:1580px;font-size:96px">Des leçons claires.</div>
+  <div class="line" id="f7" style="top:1580px;font-size:96px">Teste-toi.</div>
+  <div class="line" id="f9" style="top:1580px;font-size:96px">Progresse ensemble.</div>
   <div class="line" id="t7" style="top:1560px;font-size:84px">Tout au même endroit.</div>
   <div class="line" id="c1" style="top:1120px;font-size:100px">Ton terminal.</div>
   <div class="line" id="c2" style="top:1232px;font-size:100px">Ta formation.</div>
   <div class="line gr" id="c3" style="top:1344px;font-size:100px">Enfin dans ta poche.</div>
+  <svg id="links" width="1080" height="1920" viewBox="0 0 1080 1920"><polygon id="zone" fill="none" stroke="#e8c468" stroke-width="3" stroke-linejoin="round"/><line id="wire" stroke="#e8c468" stroke-width="2.5" stroke-linecap="round"/><circle id="wdot" r="7" fill="#e8c468"/></svg>
+  <div id="loupe"><p id="lpl"></p><canvas id="lpc" width="960" height="600"></canvas></div>
   <p class="tag" id="demo" style="top:1712px">DÉMO · DONNÉES DE SIMULATION</p>
   <svg id="logo" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lgc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96"/><stop offset="50%" stop-color="#e8c468"/><stop offset="100%" stop-color="#b8923e"/></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lgc)" style="font-family:Quicksand,sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
   <p class="tag" id="url" style="top:1612px;font:500 40px/1 Disp,sans-serif;letter-spacing:-.01em;color:#8e8a84">kmmterminal.com</p>
@@ -57,7 +71,7 @@ html,body{background:#000;overflow:hidden}
 <canvas id="grain"></canvas><div id="vig"></div></div>
 <div id="hud"></div>
 <script>
-const W=1080,H=1920,FPS=30, B=60/103.7, DUR=40*B;   // RISK MONEY (Axxo) : 103,7 BPM, 40 temps
+const W=1080,H=1920,FPS=30, B=60/103.7, DUR=64*B;   // RISK MONEY (Axxo) : 103,7 BPM, 64 temps
 const $=s=>document.querySelector(s);
 /* ---------- Briques temps (gabarit POLOW) ---------- */
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), lerp=(a,b,k)=>a+(b-a)*k;
@@ -81,7 +95,7 @@ class Kin{ constructor(el){ const txt=el.textContent.trim(); el.innerHTML=txt.sp
     op(this.el,vis?1:0); } }
 
 /* ---------- Secousse sur les mots claqués ---------- */
-const SLAM=[b(1),b(5),b(9),b(10),b(17)];
+const SLAM=[b(1),b(5),b(9),b(10),b(29)];
 function shake(t){ let x=0,y=0; for(const a of SLAM){const k=t-a; if(k>=0&&k<.22){const d=Math.exp(-k*18)*7; x+=Math.sin(k*120)*d; y+=Math.cos(k*95)*d;}} return [x,y]; }
 
 /* ---------- Clés : interpolation par segments (courbe inOut), coupe franche = deux clés au même temps ---------- */
@@ -123,50 +137,54 @@ const loaded=new Promise(res=>new THREE.GLTFLoader().parse(GLB,'',G=>{
   REFL=PHONES[0].grp.children[0].clone(true); REFLG=new THREE.Group(); REFLG.add(REFL); REFLG.scale.y=-1; SC.add(REFLG);
   res(); },e=>console.log('GLB',e)));
 
-/* Carte signal qui sort de l'écran : vraie carte de l'onglet Signals, dessinée sur canvas */
-const CARD=(()=>{ const c=document.createElement('canvas'); c.width=1040; c.height=340; const tx=new THREE.CanvasTexture(c); tx.encoding=THREE.sRGBEncoding;
-  const mat=new THREE.MeshBasicMaterial({map:tx,transparent:true,toneMapped:false}); const mesh=new THREE.Mesh(new THREE.PlaneGeometry(1.56,.51),mat);
-  return {c,tx,mat,mesh,draw(){ const e=c.getContext('2d'); e.clearRect(0,0,1040,340); e.fillStyle='#111317'; e.strokeStyle='#2a2e35'; e.lineWidth=3;
-    e.beginPath(); e.roundRect(4,4,1032,332,44); e.fill(); e.stroke(); e.fillStyle='#e8822a'; e.fillRect(4,70,8,200);
-    e.font='600 56px Mono'; e.fillStyle='#e8822a'; e.fillText('SWEEP',60,118); e.font='500 36px Mono'; e.fillStyle='#6b7683'; e.fillText('FLOW',290,118);
-    e.font='600 56px Mono'; e.fillStyle='#e8822a'; e.textAlign='right'; e.fillText('76',980,118); e.textAlign='left';
-    e.font='400 40px Mono'; e.fillStyle='#c8d2da'; e.fillText('110 aggressive buys swept',60,196); e.fillText('4 ticks of book',60,252); tx.needsUpdate=true; }}; })();
-
 /* point de l'écran (en points iPhone 393 × 852) → pixels de la page */
 function screenPx(ph,x,y){ const bb=SCREEN_BB; const v=new THREE.Vector3(lerp(bb.min.x,bb.max.x,x/393),lerp(bb.max.y,bb.min.y,y/852),bb.max.z+.002);
   ph.scr.updateWorldMatrix(true,false); v.applyMatrix4(ph.scr.matrixWorld).project(CAM3); return [(v.x+1)/2*W,(1-v.y)/2*H]; }
 
-/* ---------- Chronologie (temps musicaux) ---------- */
-const T={drop:b(8), tapEsp:b(17), tapForm:b(21), trio:b(24), merge:b(28), cta:b(30)};
+/* ---------- Chronologie (64 temps) ---------- */
+const T={drop:b(8), tapSig:b(16), tapDepth:b(20), tapEsp:b(28), tapForm:b(32), tapLesson:b(36), tapAns:b(41.5), tapComm:b(44), trio:b(48), merge:b(52), cta:b(54)};
+// cibles des taps dans l'écran (mesurées dans screen.html)
+const TAPS=[[T.tapSig,[72.3,818.9]],[T.tapDepth,[316.8,818.9]],[T.tapEsp,[340.8,107.3]],[T.tapForm,[150.9,543.2]],[T.tapLesson,[196.5,197.5]],[T.tapAns,[196.5,563.8]],[T.tapComm,[221.4,818.5]]];
+// cartes loupes : [début, fin, côté (+1 = carte à droite), libellé, zone de l'écran {x,y,w,h} en points]
+const LOUPES=[
+  [b(12.3),b(15.6), 1,'HEATMAP DE LIQUIDITÉ',{x:8,y:150,w:250,h:150}],
+  [b(16.6),b(19.6),-1,'SIGNAUX EN DIRECT',{x:8,y:150,w:300,h:104}],
+  [b(20.6),b(23.6), 1,'PRESSION ACHAT / VENTE',{x:8,y:126,w:300,h:104}],
+  [b(24.3),b(27.6),-1,'COPILOT DE MARCHÉ',{x:8,y:688,w:377,h:104}],
+  [b(32.7),b(35.6), 1,'TA PROGRESSION',{x:20,y:262,w:353,h:92}],
+  [b(36.7),b(39.0),-1,'LEÇON DU JOUR 3',{x:28,y:212,w:230,h:150}],
+  [b(42.0),b(43.7), 1,'EXERCICE',{x:20,y:456,w:353,h:190}],
+  [b(44.7),b(47.6),-1,'COMMUNAUTÉ',{x:20,y:224,w:353,h:133}] ];
+// le téléphone se décale pour laisser la place à la carte (x en unités 3D)
+function phoneSide(t){ let x=0; for(const [a,c,side] of LOUPES){ const k=E.inOut(P(t,a-.45,.5))*(1-E.inOut(P(t,c,.5))); x+= -side*.72*k; } return x; }
 // caméra : [t, [cx,cy,cz, tx,ty,tz, fov]]
 const CAMK=[
   [0,      [0.9,-0.05,13.4, 0,-0.18,0, 26]],          // ouverture : l'iPhone entier, en silhouette, révélé par la lumière
-  [b(8)-.001,[-0.5,0.0,12.4, 0,-0.18,0, 26]],         // lent arc de caméra pendant qu'il pivote (une seule prise)
-  [b(8),   [0,0.05,12.9, 0,0.0,0, 26]],              // le drop : le téléphone arrive, toujours entier
-  [b(16)-.3,[0,0.05,12.3, 0,0.0,0, 26]],             // lente poussée
-  [b(16)+.5,[0.25,-0.2,11.2, 0,-0.3,0, 26]],          // léger rapprochement pour les taps (pas de gros plan)
-  [b(24),  [-0.2,-0.2,10.9, 0,-0.3,0, 26]],
-  [b(25.4),[0,0.1,17.8, 0,0.05,0, 26]],             // surprise : changement d'échelle, trois écrans
-  [b(28),  [0,0.1,17.2, 0,0.05,0, 26]],
-  [b(30),  [0,-0.36,14.3, 0,-0.36,0, 26]],          // carton final : téléphone en haut, texte dessous
+  [b(8)-.001,[-0.5,0.0,12.4, 0,-0.18,0, 26]],
+  [b(8),   [0,0.05,12.9, 0,0.0,0, 26]],              // le drop
+  [b(16),  [0.3,0.05,12.4, 0,0.0,0, 26]],             // lente dérive latérale pendant le chapitre Terminal
+  [b(28),  [-0.3,0.05,12.2, 0,0.0,0, 26]],
+  [b(40),  [0.3,0.05,12.2, 0,0.0,0, 26]],             // chapitre Formation
+  [b(48),  [0,0.05,12.4, 0,0.0,0, 26]],
+  [b(49.4),[0,0.1,17.8, 0,0.05,0, 26]],             // surprise : changement d'échelle, trois écrans
+  [b(52),  [0,0.1,17.2, 0,0.05,0, 26]],
+  [b(54),  [0,-0.36,14.3, 0,-0.36,0, 26]],          // carton final
   [DUR,    [0,-0.40,13.8, 0,-0.40,0, 26]] ];
 // téléphone principal : [t, [x,y,z, rx,ry,rz]]
 const PH0=[
-  [0,      [0,0,0, 0.06,-1.38,0.0]],                 // presque de profil : la tranche en titane accroche la lumière
-  [b(3),   [0,0,0, 0.05,-0.30,0.02]],                // l'écran se tourne vers nous
+  [0,      [0,0,0, 0.06,-1.38,0.0]],
+  [b(3),   [0,0,0, 0.05,-0.30,0.02]],
   [b(8)-.001,[0,0,0, 0.04,0.42,0]],
-  [b(8),   [0,-1.6,0, 0.30,1.25,0.10]],              // départ hors cadre, avant le ressort
-  [b(16),  [0,-0.1,0, 0.03,-0.14,0.04]],
-  [b(24),  [0,-0.05,0, 0.02,-0.04,0]],
-  [b(28),  [0,0,0.3, 0.02,0.10,0]],
-  [b(30),  [0,1.0,0, 0.04,-0.12,0.03]],
+  [b(8),   [0,-1.6,0, 0.30,1.25,0.10]],
+  [b(12),  [0,-0.1,0, 0.03,-0.10,0.03]],
+  [b(48),  [0,-0.08,0, 0.02,-0.04,0]],
+  [b(52),  [0,0,0.3, 0.02,0.10,0]],
+  [b(54),  [0,1.0,0, 0.04,-0.12,0.03]],
   [DUR,    [0,1.02,0, 0.03,0.08,0.02]] ];
-// sol miroir : hauteur du sol (unités 3D) par période, null = pas de sol
-function floorAt(t){ if(t<b(8)) return -1.74; if(t<b(24)) return -1.86; return null; }
-const L={t1:new Kin($('#t1')),t2:new Kin($('#t2')),t3:new Kin($('#t3')),t4:new Kin($('#t4')),t5:new Kin($('#t5')),t6:new Kin($('#t6')),t7:new Kin($('#t7')),c1:new Kin($('#c1')),c2:new Kin($('#c2')),c3:new Kin($('#c3'))};
-let POCHE=[0,0];   // position du point final de « poche »
-function measure(){ // place exacte du point final (invisible) de « poche. », où le point doré va se poser
-  L.c3.render(99,0); const r=$('#c3 .o').getBoundingClientRect(), st=$('#stage').getBoundingClientRect(); const k=W/st.width;
+function floorAt(t){ if(t<b(8)) return -1.74; if(t<b(48)) return -1.86; return null; }
+const L={}; for(const id of ['t1','t2','t3','t8','f1','f2','f3','f4','t5','f5','f6','f7','f9','t7','c1','c2','c3']) L[id]=new Kin($('#'+id));
+let POCHE=[0,0];
+function measure(){ L.c3.render(99,0); const r=$('#c3 .o').getBoundingClientRect(), st=$('#stage').getBoundingClientRect(); const k=W/st.width;
   POCHE=[(r.left-st.left+r.width*.42)*k,(r.top-st.top+r.height*.74)*k]; L.c3.render(0,1); }
 
 /* ---------- Particules : poussière dorée en profondeur + étincelles quand le point se pose ---------- */
@@ -179,7 +197,7 @@ function particles(t){ ctx.clearRect(0,0,W,H); ctx.globalCompositeOperation='lig
   const t0=DOCK+.62; for(const p of SPARK){ const k=(t-t0)/p.d; if(k<=0||k>=1) continue; const e=E.outExpo(k);
     ctx.globalAlpha=(1-k)*.85; ctx.fillStyle='#f7e2a6'; ctx.beginPath(); ctx.arc(POCHE[0]+Math.cos(p.a)*p.v*e,POCHE[1]+Math.sin(p.a)*p.v*e,p.s*(1-k*.6),0,7); ctx.fill(); }
   ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over'; }
-const DOCK=b(34.2);
+const DOCK=b(58.2);
 
 /* ---------- SCÈNES ---------- */
 function render(t,f=Math.round(t*FPS)){
@@ -193,50 +211,64 @@ function render(t,f=Math.round(t*FPS)){
   CAM3.position.set(c[0]+Math.sin(t*.6)*.03,c[1]+Math.cos(t*.5)*.02,c[2]); CAM3.lookAt(c[3],c[4],c[5]);
   RIM.position.set(lerp(3.4,-3.4,(Math.sin(t*.45)+1)/2),1.8,-2.2+(t<T.drop?2.6:0));   // le liseré balaie le titane
 
-  // téléphone principal : arrivée sur ressort au drop, puis pose
+  // téléphone principal : arrivée sur ressort au drop, puis pose ; il se décale pour laisser la place aux cartes
   const ph=keys(t,PH0); const m=PHONES[0];
   if(m){ let [x,y,z,rx,ry,rz]=ph;
-    if(t>=T.drop&&t<b(16)){ const s=spring(t,T.drop,1.8,.8), A=[0,-1.6,0,.30,1.25,.10], Z=[0,-0.1,0,.03,-.14,.04]; [x,y,z,rx,ry,rz]=A.map((v,j)=>lerp(v,Z[j],s)); }
+    if(t>=T.drop&&t<b(12)){ const s=spring(t,T.drop,1.8,.8), A=[0,-1.6,0,.30,1.25,.10], Z=[0,-0.1,0,.03,-.10,.03]; [x,y,z,rx,ry,rz]=A.map((v,j)=>lerp(v,Z[j],s)); }
+    const sx2=phoneSide(t); x+=sx2; ry+= -sx2*.16;
     m.grp.position.set(x,y+Math.sin(t*.9)*.015,z); m.grp.rotation.set(rx,ry+Math.sin(t*.4)*.02,rz); }
-  // trio : deux écrans entrent de chaque côté (changement d'échelle), puis rentrent dans le central
   for(const [k,side] of [[1,-1],[2,1]]){ const p=PHONES[k]; if(!p) continue;
-    const sIn=spring(t,b(24.6)+(k-1)*.12,2.0,.8), mg=E.inOut(P(t,T.merge,.55));
-    const vis=t>=b(24.6)&&t<T.merge+.6; p.grp.visible=vis;
+    const sIn=spring(t,b(48.6)+(k-1)*.12,2.0,.8), mg=E.inOut(P(t,T.merge,.55));
+    const vis=t>=b(48.6)&&t<T.merge+.6; p.grp.visible=vis;
     p.grp.position.set(lerp(side*7.5,side*2.0,sIn)*(1-mg), -0.05+Math.sin(t*.8+k)*.02, lerp(-0.4,-1.2,mg));
     p.grp.rotation.set(.02, side*-0.32*(1-mg), side*.03); }
-
-  // carte signal : sort de l'écran vers la caméra (b13 → b15.6)
-  if(m){ const ci=spring(t,b(13),2.2,.8), co=E.in(P(t,b(15.4),.35)); const vis=ci>0&&co<1; CARD.mesh.visible=vis;
-    if(vis){ if(!CARD.mesh.parent) m.grp.add(CARD.mesh); CARD.mesh.position.set(lerp(.05,.36,ci),lerp(.2,.46,ci),lerp(.05,.9,ci)-co*.4); CARD.mesh.rotation.set(0,lerp(0,-.22,ci),0); CARD.mat.opacity=clamp(ci*1.4)*(1-co); } }
   const F=floorAt(t);
   if(REFLG){ REFLG.visible=F!==null&&!!m; if(REFLG.visible){ const g=m.grp; REFLG.position.set(g.position.x,2*F-g.position.y,g.position.z); REFLG.rotation.set(-g.rotation.x,g.rotation.y,-g.rotation.z); } }
   R.render(SC,CAM3);
   if(F!==null){ const v=new THREE.Vector3(0,F,0).project(CAM3), fy=(1-v.y)/2*H; op($('#floor'),1); tf($('#floor'),`translateY(${fy}px)`); op($('#pool'),1); tf($('#pool'),`translate(${W/2}px,${fy}px)`); }
   else { op($('#floor'),0); op($('#pool'),0); }
 
-  // textes (un mot par temps dans l'accroche)
-  L.t1.render(t,.05,b(3)-.1,B); L.t2.render(t,b(4),b(7)-.15,B);
-  L.t3.render(t,b(9),b(15),B); L.t4.render(t,b(12),b(16)-.1,.07);
-  L.t5.render(t,b(17),b(20)-.1,.07); L.t6.render(t,b(22),b(24)-.1,.07); L.t7.render(t,b(25),b(28.6),.06);
-  L.c1.render(t,b(31),1e9,.07); L.c2.render(t,b(32),1e9,.07); L.c3.render(t,b(33),1e9,.07);
-  const closeUp=t>=b(16)&&t<b(24);
-  op($('#shade'),clamp(.55+.45*P(t,T.cta,1)));
-  op($('#demo'),(t>=b(12)&&t<b(24))?clamp(P(t,b(12),.4))*(1-P(t,b(23.6),.3)):0);
-  const lg=spring(t,b(36),1.8,.8); op($('#logo'),clamp(lg*1.3)); tf($('#logo'),`translateY(${(1-lg)*24}px) scale(${lerp(.92,1,lg)})`);
-  const u=E.out(P(t,b(36.6),.6)); op($('#url'),u); tf($('#url'),`translateY(${(1-u)*18}px)`);
+  // carte loupe : la zone de l'écran sort en grand, reliée par un filet doré (composant inventé pour ce film)
+  let lv=0;
+  if(m) for(const [a,c,side,label,z] of LOUPES){ if(t<a-.05||t>=c+.4) continue;
+    const kin=spring(t,a,2.4,.8), kout=E.in(P(t,c,.32)); lv=clamp(kin*1.3)*(1-kout);
+    const q=[screenPx(m,z.x,z.y),screenPx(m,z.x+z.w,z.y),screenPx(m,z.x+z.w,z.y+z.h),screenPx(m,z.x,z.y+z.h)];
+    const zc=[(q[0][0]+q[2][0])/2,(q[0][1]+q[2][1])/2];
+    const lpw=580, lph=20+37+540*z.h/z.w+22; const cx=side>0? W-40-lpw/2 : 40+lpw/2; const cy=clamp(zc[1],380+lph/2,1460-lph/2);
+    const lx=lerp(zc[0],cx,kin), ly=lerp(zc[1],cy,kin), sc=lerp(.25,1,kin)*(1-kout*.15);
+    const lp=$('#loupe'); lp.style.left=(lx-lpw/2)+'px'; lp.style.top=(ly-lph/2)+'px'; tf(lp,`scale(${sc}) rotate(${(1-kin)*side*-3}deg)`);
+    if($('#lpl').textContent!==label) $('#lpl').textContent=label;
+    const cv=$('#lpc'), e=cv.getContext('2d'), ch=Math.round(960*z.h/z.w); if(cv.height!==ch){ cv.height=ch; }
+    const im=m.tex.image; if(im&&im.width) e.drawImage(im,z.x*2,z.y*2,z.w*2,z.h*2,0,0,960,ch);
+    $('#zone').setAttribute('points',q.map(p=>p.join(',')).join(' ')); $('#zone').style.opacity=lv;
+    const edge=[side>0? lx-lpw/2*sc : lx+lpw/2*sc, ly], from=[side>0? Math.max(q[1][0],q[2][0]) : Math.min(q[0][0],q[3][0]), zc[1]];
+    const w=$('#wire'); w.setAttribute('x1',from[0]); w.setAttribute('y1',from[1]); w.setAttribute('x2',lerp(from[0],edge[0],clamp(kin))); w.setAttribute('y2',lerp(from[1],edge[1],clamp(kin))); w.style.opacity=lv;
+    $('#wdot').setAttribute('cx',from[0]); $('#wdot').setAttribute('cy',from[1]); $('#wdot').style.opacity=lv; }
+  op($('#loupe'),lv); op($('#links'),lv>0?1:0);
 
-  // point doré, fil rouge : quitte le « . » de « Lis le marché. », plonge dans l'écran (tap Espace),
-  // glisse jusqu'à l'anneau Formation, puis devient le point final de « poche. »
+  // textes
+  L.t1.render(t,.05,b(3)-.1,B); L.t2.render(t,b(4),b(7)-.15,B);
+  L.t3.render(t,b(9),b(27.4),B); L.t8.render(t,b(33),b(47.4),.07);
+  L.f1.render(t,b(12),b(16)-.15,.07); L.f2.render(t,b(16.5),b(20)-.15,.07); L.f3.render(t,b(20.5),b(24)-.15,.07); L.f4.render(t,b(24.3),b(28)-.15,.07);
+  L.t5.render(t,b(28.4),b(32)-.15,.07);
+  L.f5.render(t,b(32.5),b(36)-.15,.06); L.f6.render(t,b(36.5),b(40)-.15,.07); L.f7.render(t,b(40),b(44)-.15,.07); L.f9.render(t,b(44.5),b(48)-.15,.07);
+  L.t7.render(t,b(49),b(52.6),.06);
+  L.c1.render(t,b(55),1e9,.07); L.c2.render(t,b(56),1e9,.07); L.c3.render(t,b(57),1e9,.07);
+  op($('#shade'),clamp(.55+.45*P(t,T.cta,1)));
+  op($('#demo'),(t>=b(12)&&t<b(48))?clamp(P(t,b(12),.4))*(1-P(t,b(47.6),.3)):0);
+  const lg=spring(t,b(60),1.8,.8); op($('#logo'),clamp(lg*1.3)); tf($('#logo'),`translateY(${(1-lg)*24}px) scale(${lerp(.92,1,lg)})`);
+  const u=E.out(P(t,b(60.6),.6)); op($('#url'),u); tf($('#url'),`translateY(${(1-u)*18}px)`);
+
+  // point doré, fil rouge : arrive avant chaque tap (depuis le tap précédent s'il est proche), l'écran prend le relais
+  // pendant l'appui, puis il devient le point final de « poche. »
   const d=$('#dot'); let dv=0, dx=0, dy=0, ds=1;
-  if(m && t>=b(15.9) && t<T.tapForm+.5){
-    const e1=screenPx(m,347,66), e2=screenPx(m,RING[0],RING[1]), pp=screenPx(m,0,0), pq=screenPx(m,0,100), ptsPx=Math.hypot(pq[0]-pp[0],pq[1]-pp[1])/100;
-    const src=[W/2+185,1572+100*.78];
-    const k1=E.inOut(P(t,b(15.9),T.tapEsp-.12-b(15.9))), k2=E.inOut(P(t,T.tapEsp+.45,T.tapForm-.12-T.tapEsp-.45));
-    if(t<T.tapEsp+.45){ dx=lerp(src[0],e1[0],k1); dy=lerp(src[1],e1[1],k1)-Math.sin(Math.PI*k1)*160; ds=lerp(1,44*ptsPx/60,k1); }
-    else { dx=lerp(e1[0],e2[0],k2); dy=lerp(e1[1],e2[1],k2); ds=44*ptsPx/60; }
-    const inP=t0=>t>=t0-.12&&t<t0+.45, press=inP(T.tapEsp)||inP(T.tapForm);   // l'écran prend le relais pendant l'appui (mêmes bornes que screen.html)
-    dv=press?0:1; }
-  if(t>=b(33.6)){ const s0=spring(t,b(33.6),2.4,.8), dk=E.inOut(P(t,b(33.9),DOCK+.6-b(33.9)));
+  if(m){ const pp=screenPx(m,0,0), pq=screenPx(m,0,100), ptsPx=Math.hypot(pq[0]-pp[0],pq[1]-pp[1])/100, size=44*ptsPx/60;
+    for(let i=0;i<TAPS.length;i++){ const [t0,pos]=TAPS[i]; const app=.62; if(t<t0-app||t>=t0+.45) continue;
+      const tgt=screenPx(m,pos[0],pos[1]); const prev=TAPS[i-1], near=prev&&t0-prev[0]<5;
+      const src=near? screenPx(m,prev[1][0],prev[1][1]) : [W/2,1700];
+      const k=E.inOut(P(t,t0-app,app-.12)); dx=lerp(src[0],tgt[0],k); dy=lerp(src[1],tgt[1],k)-Math.sin(Math.PI*k)*(near?60:160); ds=lerp(near?size:1,size,k);
+      dv=(t>=t0-.12)?0:1; } }
+  if(t>=b(57.6)){ const s0=spring(t,b(57.6),2.4,.8), dk=E.inOut(P(t,b(57.9),DOCK+.6-b(57.9)));
     dx=lerp(W/2,POCHE[0],dk); dy=lerp(1000+Math.sin(t*2.2)*8,POCHE[1],dk); ds=s0*lerp(1.5,.30,dk); dv=1; }
   op(d,dv); tf(d,`translate(${dx}px,${dy}px) scale(${ds})`);
 
@@ -247,14 +279,13 @@ function render(t,f=Math.round(t*FPS)){
   tf($('#grain'),`translate(${-((f*37)%60)}px,${-((f*53)%60)}px)`);
   if(!EXPORT) $('#hud').textContent=`${t.toFixed(2)} s · image ${f}`;
 }
-let RING=[150.9,543.2];   // centre de l'anneau Formation dans « Où veux-tu aller ? » (mesuré dans screen.html)
 
 /* ---------- Textures d'écran : images pré-rendues de screen.html, une par image du film ---------- */
 const imgCache=new Map();
 function loadImg(src){ if(imgCache.has(src)) return imgCache.get(src); const i=new Image(); i.src=src; const p=i.decode().then(()=>i).catch(()=>null); imgCache.set(src,p); if(imgCache.size>24) imgCache.delete(imgCache.keys().next().value); return p; }
 async function feedScreens(t){ const fi=clamp(Math.round(t*FPS),0,Math.round(DUR*FPS)-1);
   const want=[[0,`scr/main/f_${String(fi).padStart(5,'0')}.jpg`]];
-  if(t>=b(24.4)&&t<T.merge+.7) want.push([1,`scr/left/f_${String(fi).padStart(5,'0')}.jpg`],[2,'scr/right.jpg']);
+  if(t>=b(48.4)&&t<T.merge+.7) want.push([1,`scr/left/f_${String(fi).padStart(5,'0')}.jpg`],[2,'scr/right.jpg']);
   for(const [k,src] of want){ const p=PHONES[k]; if(!p||p.cur===src) continue; const im=await loadImg(src); if(im){ p.tex.image=im; p.tex.needsUpdate=true; p.cur=src; } } }
 
 /* ---------- Lecture / export ---------- */
@@ -264,7 +295,7 @@ const EXPORT=location.search.includes('export'); if(EXPORT) $('#hud').remove();
   g.style.width=g.style.height=(Math.max(W,H)+120)+'px';})();
 window.renderAt=async(t,f)=>{ await feedScreens(t); render(t,f===undefined?Math.round(t*FPS):f);
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); };
-window.ready=(async()=>{ await document.fonts.ready; await loaded; CARD.draw(); measure();
+window.ready=(async()=>{ await document.fonts.ready; await loaded; measure();
   await feedScreens(0); render(0); return true; })();
 if(!EXPORT){ let t0=performance.now(), paused=false, tp=0;
   addEventListener('keydown',e=>{ if(e.code==='Space'){paused=!paused; t0=performance.now()-tp*1000}
