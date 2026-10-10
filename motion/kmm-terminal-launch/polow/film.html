@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>KMM Terminal, lancement iPhone</title>
+<script src="assets/js/three.min.js"></script><script src="assets/js/GLTFLoader.js"></script><script src="models/iphone.js"></script>
+<style>
+@font-face{font-family:Disp;src:url(assets/fonts/inter-latin-opsz-normal.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:Quicksand;src:url(assets/fonts/quicksand-latin-wght-normal.woff2) format("woff2");font-weight:300 700}
+@font-face{font-family:Mono;src:url(assets/fonts/jetbrains-mono-latin-wght-normal.woff2) format("woff2");font-weight:100 800}
+:root{--bg:#070707;--ink:#f3f0eb;--g:#8e8a84;--o:#e8c468;--W:1080px;--H:1920px}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#000;overflow:hidden}
+#stage{position:relative;width:var(--W);height:var(--H);background:var(--bg);overflow:hidden;font-family:Disp,sans-serif;color:var(--ink)}
+#cam{position:absolute;inset:0;transform-origin:50% 50%}
+.glow{position:absolute;left:0;top:0;width:1300px;height:1300px;margin:-650px 0 0 -650px;border-radius:50%;background:radial-gradient(circle,rgba(232,196,104,.13),transparent 62%);z-index:0}
+#gl{position:absolute;left:0;top:0;width:1080px;height:1920px;z-index:4}
+.line{position:absolute;left:0;right:0;text-align:center;font-weight:700;letter-spacing:-.04em;font-variation-settings:"opsz" 32;z-index:6;white-space:nowrap}
+.w{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .1em .1em}
+.w>i{display:inline-block;font-style:normal}
+.o{color:var(--o)}
+.gr{color:var(--g)}
+.tag{position:absolute;left:0;right:0;text-align:center;font:500 24px/1 Mono,monospace;letter-spacing:.14em;color:#8e8a84;z-index:6}
+#shade{position:absolute;left:0;right:0;bottom:0;height:900px;z-index:5;background:linear-gradient(180deg,transparent,rgba(5,5,5,.82) 60%,rgba(5,5,5,.92))}
+#dot{position:absolute;left:0;top:0;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;z-index:8;
+ background:radial-gradient(circle at 35% 30%,#f7e2a6,#e8c468 55%,#b8923e);box-shadow:0 0 26px rgba(232,196,104,.85),0 0 80px rgba(232,196,104,.45)}
+#fx{position:absolute;left:0;top:0;z-index:9;pointer-events:none}
+.wipe{position:absolute;top:-30%;height:160%;width:95%;z-index:30;transform:skewX(-14deg)}
+#logo{position:absolute;left:390px;top:1505px;width:300px;height:85px;z-index:6}
+#grain{position:absolute;inset:-60px;z-index:40;opacity:.06;pointer-events:none;mix-blend-mode:overlay}
+#vig{position:absolute;inset:0;z-index:41;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.6))}
+#hud{position:fixed;left:8px;bottom:8px;font:12px monospace;color:#e8c468;z-index:99}
+</style></head><body>
+<!-- MOTEUR POLOW : tout l'état visuel vient de render(t). Aucun timer, aucune animation CSS, aucun Math.random. -->
+<div id="stage"><div id="cam">
+  <div class="glow" id="g1"></div><div class="glow" id="g2"></div>
+  <canvas id="gl" width="1080" height="1920"></canvas>
+  <div id="shade"></div>
+  <div class="line" id="t1" style="top:1390px;font-size:136px">Ton terminal.</div>
+  <div class="line" id="t2" style="top:1390px;font-size:136px">Ta formation.</div>
+  <div class="line" id="t3" style="top:262px;font-size:150px">KMM Terminal.</div>
+  <div class="line" id="t4" style="top:1540px;font-size:104px">Lis le marché.</div>
+  <div class="line" id="t5" style="top:1540px;font-size:104px">Un tap.</div>
+  <div class="line" id="t6" style="top:1540px;font-size:104px">Apprends.</div>
+  <div class="line" id="t7" style="top:1560px;font-size:84px">Tout au même endroit.</div>
+  <div class="line" id="c1" style="top:1110px;font-size:112px">Ton terminal.</div>
+  <div class="line" id="c2" style="top:1235px;font-size:112px">Ta formation.</div>
+  <div class="line gr" id="c3" style="top:1360px;font-size:112px">Enfin dans ta poche</div>
+  <p class="tag" id="demo" style="top:1690px">DÉMO · DONNÉES DE SIMULATION</p>
+  <svg id="logo" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lgc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96"/><stop offset="50%" stop-color="#e8c468"/><stop offset="100%" stop-color="#b8923e"/></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lgc)" style="font-family:Quicksand,sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
+  <p class="tag" id="url" style="top:1612px;font:500 40px/1 Disp,sans-serif;letter-spacing:-.01em;color:#8e8a84">kmmterminal.com</p>
+  <div id="dot"></div>
+</div>
+<canvas id="fx"></canvas>
+<div class="wipe" id="wA" style="background:var(--o)"></div><div class="wipe" id="wB" style="background:#0b0b0b"></div>
+<canvas id="grain"></canvas><div id="vig"></div></div>
+<div id="hud"></div>
+<script>
+const W=1080,H=1920,FPS=30, B=60/103.7, DUR=40*B;   // RISK MONEY (Axxo) : 103,7 BPM, 40 temps
+const $=s=>document.querySelector(s);
+/* ---------- Briques temps (gabarit POLOW) ---------- */
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), lerp=(a,b,k)=>a+(b-a)*k;
+const P=(t,a,d)=>clamp((t-a)/d);
+const E={ inOut:k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2, out:k=>1-Math.pow(1-k,3), in:k=>k*k*k, sine:k=>.5-.5*Math.cos(Math.PI*k),
+  outExpo:k=>k>=1?1:1-Math.pow(2,-10*k), inExpo:k=>k<=0?0:Math.pow(2,10*k-10) };
+function spring(t,t0,f=2.2,z=.78){ if(t<=t0) return 0; const w=2*Math.PI*f, s=t-t0, wd=w*Math.sqrt(1-z*z);
+  return 1-Math.exp(-z*w*s)*(Math.cos(wd*s)+z*w/wd*Math.sin(wd*s)); }
+function mulberry32(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const tf=(el,s)=>{el.style.transform=s}, op=(el,v)=>{el.style.opacity=v; el.style.display=v<=0.001?'none':''};
+const b=n=>n*B;   // temps musical → secondes
+
+/* ---------- Typo cinétique : mots qui sortent d'un masque, point final doré ---------- */
+class Kin{ constructor(el){ const txt=el.textContent.trim(); el.innerHTML=txt.split(' ').map(w=>
+    `<span class="w"><i>${w.replace(/\.$/,'<span class="o">.</span>')}</i></span>`).join(' ');
+    this.el=el; this.ws=[...el.querySelectorAll('.w>i')]; }
+  render(t,tin,tout=1e9,stag=.055){ let vis=false;
+    this.ws.forEach((w,i)=>{ const a=E.outExpo(P(t,tin+i*stag,.55)), q=E.in(P(t,tout+i*stag*.6,.32));
+      const y=(1-a)*108-q*108, r=(1-a)*6; vis=vis||(a>0&&q<1);
+      tf(w,`translateY(${y}%) rotate(${r}deg)`); });
+    op(this.el,vis?1:0); } }
+
+/* ---------- Secousse sur les mots claqués ---------- */
+const SLAM=[b(1),b(5),b(9),b(10),b(17)];
+function shake(t){ let x=0,y=0; for(const a of SLAM){const k=t-a; if(k>=0&&k<.22){const d=Math.exp(-k*18)*7; x+=Math.sin(k*120)*d; y+=Math.cos(k*95)*d;}} return [x,y]; }
+
+/* ---------- Clés : interpolation par segments (courbe inOut), coupe franche = deux clés au même temps ---------- */
+function keys(t,K,ease=E.inOut){ if(t<=K[0][0]) return K[0][1]; for(let i=0;i<K.length-1;i++){ const [a,va]=K[i],[c,vc]=K[i+1];
+    if(t<c){ const k=c-a<1e-6?1:ease(P(t,a,c-a)); return va.map((v,j)=>lerp(v,vc[j],k)); } } return K.at(-1)[1]; }
+
+/* ---------- Scène 3D : le vrai iPhone 15 Pro, titane noir, liseré doré ---------- */
+const R=new THREE.WebGLRenderer({canvas:$('#gl'),antialias:true,alpha:true,preserveDrawingBuffer:true});
+R.setPixelRatio(1); R.setSize(W,H,false); R.outputEncoding=THREE.sRGBEncoding; R.toneMapping=THREE.ACESFilmicToneMapping; R.toneMappingExposure=1.05; R.setClearColor(0,0);
+const SC=new THREE.Scene(), CAM3=new THREE.PerspectiveCamera(26,W/H,.1,100);
+(()=>{ const c=document.createElement('canvas'); c.width=1024; c.height=512; const e=c.getContext('2d');
+  const g=e.createLinearGradient(0,0,1024,0); [[0,'#050505'],[.2,'#3a2e1c'],[.28,'#fff1d6'],[.34,'#2a2218'],[.62,'#0b0b0c'],[.7,'#cfc8bc'],[.74,'#141414'],[1,'#050505']].forEach(([o,col])=>g.addColorStop(o,col));
+  e.fillStyle=g; e.fillRect(0,0,1024,512); const v=e.createLinearGradient(0,0,0,512); v.addColorStop(.5,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(0,0,0,.85)'); e.fillStyle=v; e.fillRect(0,0,1024,512);
+  const tx=new THREE.CanvasTexture(c); tx.mapping=THREE.EquirectangularReflectionMapping; tx.encoding=THREE.sRGBEncoding;
+  const pm=new THREE.PMREMGenerator(R); SC.environment=pm.fromEquirectangular(tx).texture; })();
+const KEY=new THREE.DirectionalLight(0xfff4e6,1.5); KEY.position.set(-4,5,6); SC.add(KEY);
+const RIM=new THREE.PointLight(0xe8c468,42,14,2); SC.add(RIM);
+const RIM2=new THREE.PointLight(0xe8c468,9,12,2); RIM2.position.set(-3,-2,-1.5); SC.add(RIM2);
+SC.add(new THREE.AmbientLight(0xffffff,.07));
+
+const PHONES=[]; let SCREEN_BB=null;
+function planar(mesh){const g=mesh.geometry; g.computeBoundingBox(); const bb=g.boundingBox,p=g.attributes.position,w=bb.max.x-bb.min.x,h=bb.max.y-bb.min.y,uv=new Float32Array(p.count*2);
+  for(let i=0;i<p.count;i++){uv[i*2]=(p.getX(i)-bb.min.x)/w; uv[i*2+1]=(p.getY(i)-bb.min.y)/h;} g.setAttribute('uv',new THREE.BufferAttribute(uv,2)); return bb;}
+function makeTex(){const t=new THREE.Texture(); t.encoding=THREE.sRGBEncoding; t.anisotropy=8; t.minFilter=THREE.LinearFilter; t.generateMipmaps=false; return t;}
+const GLB=Uint8Array.from(atob(window.IPHONE_B64),c=>c.charCodeAt(0)).buffer;
+const loaded=new Promise(res=>new THREE.GLTFLoader().parse(GLB,'',G=>{
+  const base=G.scene; const bx=new THREE.Box3().setFromObject(base); base.scale.setScalar(3.2/bx.getSize(new THREE.Vector3()).y); bx.setFromObject(base); base.position.sub(bx.getCenter(new THREE.Vector3()));
+  const TI=new THREE.MeshStandardMaterial({color:0x2a2927,metalness:1,roughness:.36});
+  base.traverse(c=>{ if(!c.isMesh) return; const n=c.material.name||'';
+    if(/aluminium|lens-ring/.test(n)) c.material=TI;
+    else if(/antenna/.test(n)) c.material=new THREE.MeshStandardMaterial({color:0x1a1a1a,metalness:.2,roughness:.45});
+    else if(/shield-back/.test(n)) c.material=new THREE.MeshPhysicalMaterial({color:0x1b1b1d,roughness:.55,clearcoat:.5,clearcoatRoughness:.45});
+    else if(/apple-logo/.test(n)) c.material=new THREE.MeshPhysicalMaterial({color:0x2c2c2e,metalness:.6,roughness:.2,clearcoat:1}); });
+  base.updateWorldMatrix(true,true); const fp=new THREE.Vector3(),bp=new THREE.Vector3();
+  base.getObjectByName('front-glass').getWorldPosition(fp); base.getObjectByName('rear-window').getWorldPosition(bp); if(fp.z<bp.z) base.rotation.y+=Math.PI;
+  for(let k=0;k<3;k++){ const m=base.clone(true), grp=new THREE.Group(), tex=makeTex(); let scr=null;
+    m.traverse(c=>{ if(c.isMesh&&c.name.indexOf('front-glass')===0){ const bb=planar(c); if(!SCREEN_BB) SCREEN_BB=bb; c.material=new THREE.MeshBasicMaterial({map:tex,toneMapped:false}); scr=c; } });
+    grp.add(m); SC.add(grp); PHONES.push({grp,tex,scr,cur:-1}); }
+  res(); },e=>console.log('GLB',e)));
+
+/* Carte signal qui sort de l'écran : vraie carte de l'onglet Signals, dessinée sur canvas */
+const CARD=(()=>{ const c=document.createElement('canvas'); c.width=1040; c.height=340; const tx=new THREE.CanvasTexture(c); tx.encoding=THREE.sRGBEncoding;
+  const mat=new THREE.MeshBasicMaterial({map:tx,transparent:true,toneMapped:false}); const mesh=new THREE.Mesh(new THREE.PlaneGeometry(1.56,.51),mat);
+  return {c,tx,mat,mesh,draw(){ const e=c.getContext('2d'); e.clearRect(0,0,1040,340); e.fillStyle='#111317'; e.strokeStyle='#2a2e35'; e.lineWidth=3;
+    e.beginPath(); e.roundRect(4,4,1032,332,44); e.fill(); e.stroke(); e.fillStyle='#e8822a'; e.fillRect(4,70,8,200);
+    e.font='600 56px Mono'; e.fillStyle='#e8822a'; e.fillText('SWEEP',60,118); e.font='500 36px Mono'; e.fillStyle='#6b7683'; e.fillText('FLOW',290,118);
+    e.font='600 56px Mono'; e.fillStyle='#e8822a'; e.textAlign='right'; e.fillText('76',980,118); e.textAlign='left';
+    e.font='400 40px Mono'; e.fillStyle='#c8d2da'; e.fillText('110 aggressive buys swept',60,196); e.fillText('4 ticks of book',60,252); tx.needsUpdate=true; }}; })();
+
+/* point de l'écran (en points iPhone 393 × 852) → pixels de la page */
+function screenPx(ph,x,y){ const bb=SCREEN_BB; const v=new THREE.Vector3(lerp(bb.min.x,bb.max.x,x/393),lerp(bb.max.y,bb.min.y,y/852),bb.max.z+.002);
+  ph.scr.updateWorldMatrix(true,false); v.applyMatrix4(ph.scr.matrixWorld).project(CAM3); return [(v.x+1)/2*W,(1-v.y)/2*H]; }
+
+/* ---------- Chronologie (temps musicaux) ---------- */
+const T={drop:b(8), tapEsp:b(17), tapForm:b(21), trio:b(24), merge:b(28), cta:b(30)};
+// caméra : [t, [cx,cy,cz, tx,ty,tz, fov]]
+const CAMK=[
+  [0,      [1.25,1.15,1.95, 0.62,0.88,0, 30]],      // macro : tranche en titane + haut de l'écran, prix en direct
+  [b(4),   [0.95,0.15,2.5, 0.10,0.05,0, 30]],       // glisse le long de la tranche (une seule prise)
+  [b(8)-.001,[-0.85,-1.0,2.15, -0.15,-0.75,0, 30]],
+  [b(8),   [0,0.05,11.8, 0,0.12,0, 26]],             // le drop : le téléphone arrive
+  [b(16)-.35,[0,0.05,10.6, 0,0.10,0, 26]],          // lente poussée
+  [b(16)+.25,[0.15,0.95,5.6, 0,0.78,0, 26]],         // gros plan : haut de l'écran pour le tap
+  [b(19.4),[0.10,0.88,5.3, 0,0.72,0, 26]],
+  [b(20.4),[0,-0.02,8.4, 0,0.02,0, 26]],            // recul : l'écran entier
+  [b(24),  [0,0,8.9, 0,0.02,0, 26]],
+  [b(25.4),[0,0.1,17.5, 0,0.05,0, 26]],             // surprise : changement d'échelle, trois écrans
+  [b(28),  [0,0.1,17.0, 0,0.05,0, 26]],
+  [b(30),  [0,-0.7,16.2, 0,-0.7,0, 26]],            // carton final : téléphone en haut, texte dessous
+  [DUR,    [0,-0.75,15.6, 0,-0.75,0, 26]] ];
+// téléphone principal : [t, [x,y,z, rx,ry,rz]]
+const PH0=[
+  [0,      [0,0,0, 0.10,-0.95,0.02]],
+  [b(8)-.001,[0,0,0, 0.06,0.62,0]],
+  [b(8),   [0,-1.6,0, 0.30,1.25,0.10]],              // départ hors cadre, avant le ressort
+  [b(16),  [0,-0.1,0, 0.03,-0.14,0.04]],
+  [b(24),  [0,-0.05,0, 0.02,-0.04,0]],
+  [b(28),  [0,0,0.3, 0.02,0.10,0]],
+  [b(30),  [0,1.0,0, 0.04,-0.12,0.03]],
+  [DUR,    [0,1.02,0, 0.03,0.08,0.02]] ];
+const L={t1:new Kin($('#t1')),t2:new Kin($('#t2')),t3:new Kin($('#t3')),t4:new Kin($('#t4')),t5:new Kin($('#t5')),t6:new Kin($('#t6')),t7:new Kin($('#t7')),c1:new Kin($('#c1')),c2:new Kin($('#c2')),c3:new Kin($('#c3'))};
+let POCHE=[0,0];   // position du point final de « poche »
+function measure(){ const e=document.createElement('canvas').getContext('2d'); e.font='700 112px Disp'; e.letterSpacing='-4.48px';
+  const wd=e.measureText('Enfin dans ta poche').width; POCHE=[W/2+wd/2+40, 1360+112*0.80]; }
+
+/* ---------- Particules : poussière dorée en profondeur + étincelles quand le point se pose ---------- */
+const fx=$('#fx'), ctx=fx.getContext('2d'); fx.width=W; fx.height=H;
+const DUST=(()=>{const r=mulberry32(7);return Array.from({length:70},()=>({x:r()*W,y:r()*H,s:.8+r()*2.4,v:8+r()*26,ph:r()*6.3}))})();
+const SPARK=(()=>{const r=mulberry32(11);return Array.from({length:46},()=>({a:r()*Math.PI*2,v:80+r()*260,s:1.5+r()*3,d:.5+r()*.5}))})();
+function particles(t){ ctx.clearRect(0,0,W,H); ctx.globalCompositeOperation='lighter';
+  const dv=clamp(P(t,T.drop,.6))*(1-P(t,T.cta+3,1.5))*.55;
+  if(dv>0) for(const p of DUST){ const y=(p.y-t*p.v)%H, yy=y<0?y+H:y; ctx.globalAlpha=dv*(.35+.35*Math.sin(t*1.3+p.ph)); ctx.fillStyle='#e8c468'; ctx.beginPath(); ctx.arc(p.x+Math.sin(t*.5+p.ph)*14,yy,p.s,0,7); ctx.fill(); }
+  const t0=DOCK+.62; for(const p of SPARK){ const k=(t-t0)/p.d; if(k<=0||k>=1) continue; const e=E.outExpo(k);
+    ctx.globalAlpha=(1-k)*.85; ctx.fillStyle='#f7e2a6'; ctx.beginPath(); ctx.arc(POCHE[0]+Math.cos(p.a)*p.v*e,POCHE[1]+Math.sin(p.a)*p.v*e,p.s*(1-k*.6),0,7); ctx.fill(); }
+  ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over'; }
+const DOCK=b(34.2);
+
+/* ---------- SCÈNES ---------- */
+function render(t,f=Math.round(t*FPS)){
+  const [sx,sy]=shake(t); tf($('#cam'),`translate(${sx}px,${sy}px)`);
+  tf($('#g1'),`translate(${300+Math.sin(t*.4)*90}px,${600+Math.cos(t*.3)*70}px)`);
+  tf($('#g2'),`translate(${800+Math.cos(t*.35)*90}px,${1300+Math.sin(t*.5)*80}px)`);
+  op($('#g1'),t<T.drop?.5:1); op($('#g2'),t<T.drop?.5:1);
+
+  // caméra 3D (micro-dérive permanente : rien n'est jamais figé)
+  const c=keys(t,CAMK); CAM3.fov=c[6]; CAM3.updateProjectionMatrix();
+  CAM3.position.set(c[0]+Math.sin(t*.6)*.03,c[1]+Math.cos(t*.5)*.02,c[2]); CAM3.lookAt(c[3],c[4],c[5]);
+  RIM.position.set(lerp(3.4,-3.4,(Math.sin(t*.45)+1)/2),1.8,-2.2+(t<T.drop?2.6:0));   // le liseré balaie le titane
+
+  // téléphone principal : arrivée sur ressort au drop, puis pose
+  const ph=keys(t,PH0); const m=PHONES[0];
+  if(m){ let [x,y,z,rx,ry,rz]=ph;
+    if(t>=T.drop&&t<b(16)){ const s=spring(t,T.drop,1.8,.8), A=[0,-1.6,0,.30,1.25,.10], Z=[0,-0.1,0,.03,-.14,.04]; [x,y,z,rx,ry,rz]=A.map((v,j)=>lerp(v,Z[j],s)); }
+    m.grp.position.set(x,y+Math.sin(t*.9)*.015,z); m.grp.rotation.set(rx,ry+Math.sin(t*.4)*.02,rz); }
+  // trio : deux écrans entrent de chaque côté (changement d'échelle), puis rentrent dans le central
+  for(const [k,side] of [[1,-1],[2,1]]){ const p=PHONES[k]; if(!p) continue;
+    const sIn=spring(t,b(24.6)+(k-1)*.12,2.0,.8), mg=E.inOut(P(t,T.merge,.55));
+    const vis=t>=b(24.6)&&t<T.merge+.6; p.grp.visible=vis;
+    p.grp.position.set(lerp(side*7.5,side*2.35,sIn)*(1-mg), -0.05+Math.sin(t*.8+k)*.02, lerp(-0.4,-1.2,mg));
+    p.grp.rotation.set(.02, side*-0.32*(1-mg), side*.03); }
+
+  // carte signal : sort de l'écran vers la caméra (b13 → b15.6)
+  if(m){ const ci=spring(t,b(13),2.2,.8), co=E.in(P(t,b(15.4),.35)); const vis=ci>0&&co<1; CARD.mesh.visible=vis;
+    if(vis){ if(!CARD.mesh.parent) m.grp.add(CARD.mesh); CARD.mesh.position.set(lerp(.1,.62,ci),lerp(.2,.42,ci),lerp(.05,.85,ci)-co*.4); CARD.mesh.rotation.set(0,lerp(0,-.22,ci),0); CARD.mat.opacity=clamp(ci*1.4)*(1-co); } }
+  R.render(SC,CAM3);
+
+  // textes (un mot par temps dans l'accroche)
+  L.t1.render(t,.05,b(3)-.1,B); L.t2.render(t,b(4),b(7.4),B);
+  L.t3.render(t,b(9),b(15),B); L.t4.render(t,b(12),b(16)-.1,.07);
+  L.t5.render(t,b(17),b(20)-.1,.07); L.t6.render(t,b(22),b(24)-.1,.07); L.t7.render(t,b(25),b(28.6),.06);
+  L.c1.render(t,b(31),1e9,.07); L.c2.render(t,b(32),1e9,.07); L.c3.render(t,b(33),1e9,.07);
+  const closeUp=t>=b(16)&&t<b(24);
+  op($('#shade'),t<T.drop||closeUp?1:clamp(.55+.45*P(t,T.cta,1)));
+  op($('#demo'),(t>=b(12)&&t<b(24))?clamp(P(t,b(12),.4))*(1-P(t,b(23.6),.3)):0);
+  const lg=spring(t,b(36),1.8,.8); op($('#logo'),clamp(lg*1.3)); tf($('#logo'),`translateY(${(1-lg)*24}px) scale(${lerp(.92,1,lg)})`);
+  const u=E.out(P(t,b(36.6),.6)); op($('#url'),u); tf($('#url'),`translateY(${(1-u)*18}px)`);
+
+  // point doré, fil rouge : quitte le « . » de « Lis le marché. », plonge dans l'écran (tap Espace),
+  // glisse jusqu'à l'anneau Formation, puis devient le point final de « poche. »
+  const d=$('#dot'); let dv=0, dx=0, dy=0, ds=1;
+  if(m && t>=b(15.9) && t<T.tapForm+.5){
+    const e1=screenPx(m,347,66), e2=screenPx(m,RING[0],RING[1]), pp=screenPx(m,0,0), pq=screenPx(m,0,100), ptsPx=Math.hypot(pq[0]-pp[0],pq[1]-pp[1])/100;
+    const src=[W/2+190,1540+104*.78];
+    const k1=E.inOut(P(t,b(15.9),T.tapEsp-.12-b(15.9))), k2=E.inOut(P(t,T.tapEsp+.45,T.tapForm-.12-T.tapEsp-.45));
+    if(t<T.tapEsp+.45){ dx=lerp(src[0],e1[0],k1); dy=lerp(src[1],e1[1],k1)-Math.sin(Math.PI*k1)*160; ds=lerp(1,44*ptsPx/60,k1); }
+    else { dx=lerp(e1[0],e2[0],k2); dy=lerp(e1[1],e2[1],k2); ds=44*ptsPx/60; }
+    const press=(Math.abs(t-T.tapEsp)<.45||Math.abs(t-T.tapForm)<.45);   // l'écran prend le relais pendant l'appui
+    dv=press?0:1; }
+  if(t>=b(33.6)){ const s0=spring(t,b(33.6),2.4,.8), dk=E.inOut(P(t,b(33.9),DOCK+.6-b(33.9)));
+    dx=lerp(W/2,POCHE[0],dk); dy=lerp(1000+Math.sin(t*2.2)*8,POCHE[1],dk); ds=s0*lerp(1.5,.42,dk); dv=1; }
+  op(d,dv); tf(d,`translate(${dx}px,${dy}px) scale(${ds})`);
+
+  // volet doré puis noir sur le drop : la scène change quand l'écran est couvert
+  const wA=E.inOut(P(t,T.drop-.42,.62)), wB=E.inOut(P(t,T.drop-.3,.62));
+  tf($('#wA'),`translateX(${lerp(-1400,1600,wA)}px) skewX(-14deg)`); tf($('#wB'),`translateX(${lerp(-1400,1600,wB)}px) skewX(-14deg)`);
+  particles(t);
+  tf($('#grain'),`translate(${-((f*37)%60)}px,${-((f*53)%60)}px)`);
+  if(!EXPORT) $('#hud').textContent=`${t.toFixed(2)} s · image ${f}`;
+}
+let RING=[150.9,543.2];   // centre de l'anneau Formation dans « Où veux-tu aller ? » (mesuré dans screen.html)
+
+/* ---------- Textures d'écran : images pré-rendues de screen.html, une par image du film ---------- */
+const imgCache=new Map();
+function loadImg(src){ if(imgCache.has(src)) return imgCache.get(src); const i=new Image(); i.src=src; const p=i.decode().then(()=>i).catch(()=>null); imgCache.set(src,p); if(imgCache.size>24) imgCache.delete(imgCache.keys().next().value); return p; }
+async function feedScreens(t){ const fi=clamp(Math.round(t*FPS),0,Math.round(DUR*FPS)-1);
+  const want=[[0,`scr/main/f_${String(fi).padStart(5,'0')}.jpg`]];
+  if(t>=b(24.4)&&t<T.merge+.7) want.push([1,`scr/left/f_${String(fi).padStart(5,'0')}.jpg`],[2,'scr/right.jpg']);
+  for(const [k,src] of want){ const p=PHONES[k]; if(!p||p.cur===src) continue; const im=await loadImg(src); if(im){ p.tex.image=im; p.tex.needsUpdate=true; p.cur=src; } } }
+
+/* ---------- Lecture / export ---------- */
+const EXPORT=location.search.includes('export'); if(EXPORT) $('#hud').remove();
+(()=>{const g=$('#grain'); g.width=g.height=512; const c=g.getContext('2d'), im=c.createImageData(512,512), r=mulberry32(3);
+  for(let i=0;i<im.data.length;i+=4){const v=r()*255; im.data[i]=im.data[i+1]=im.data[i+2]=v; im.data[i+3]=255} c.putImageData(im,0,0);
+  g.style.width=g.style.height=(Math.max(W,H)+120)+'px';})();
+window.renderAt=async(t,f)=>{ await feedScreens(t); render(t,f===undefined?Math.round(t*FPS):f);
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); };
+window.ready=(async()=>{ await document.fonts.ready; await loaded; CARD.draw(); measure();
+  await feedScreens(0); render(0); return true; })();
+if(!EXPORT){ let t0=performance.now(), paused=false, tp=0;
+  addEventListener('keydown',e=>{ if(e.code==='Space'){paused=!paused; t0=performance.now()-tp*1000}
+    if(e.key==='ArrowRight'||e.key==='ArrowLeft'){paused=true; tp=clamp(tp+(e.key==='ArrowRight'?1:-1)/FPS,0,DUR); window.renderAt(tp)}
+    if(e.key==='r'){t0=performance.now(); paused=false} });
+  window.ready.then(()=>{ (async function loop(){ if(!paused){ tp=((performance.now()-t0)/1000)%DUR; await window.renderAt(tp) } requestAnimationFrame(loop) })(); });
+  const fit=()=>{const s=Math.min(innerWidth/W,innerHeight/H); $('#stage').style.transform=`scale(${s})`; $('#stage').style.transformOrigin='0 0'}; fit(); addEventListener('resize',fit);
+}
+</script></body></html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>KMM Terminal, écran iPhone</title>
+<style>
+@font-face{font-family:Quicksand;src:url(assets/fonts/quicksand-latin-wght-normal.woff2) format("woff2");font-weight:300 700}
+@font-face{font-family:Manrope;src:url(assets/fonts/manrope-latin-wght-normal.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:Mono;src:url(assets/fonts/jetbrains-mono-latin-wght-normal.woff2) format("woff2");font-weight:100 800}
+:root{--app:#0a0a0a;--panel:#171717;--fg:#f5f5f0;--dim:#8b8b8b;--faint:#6b6b6b;--gold:#d4af37;--gold-m:#e8c468}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:786px;height:1704px;overflow:hidden;background:var(--app)}
+/* l'écran est mis en page en points iPhone (393 × 852) puis zoomé 2x pour une texture nette */
+#scr{position:relative;width:393px;height:852px;overflow:hidden;background:var(--app);zoom:2;font-family:Manrope,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased}
+.layer{position:absolute;inset:0}
+#term img{position:absolute;left:8px;top:44px;width:377px;height:818px}
+.status{position:absolute;top:0;left:0;right:0;height:54px;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:0 34px 0 40px;font:600 15px/1 Manrope,sans-serif;color:#f5f5f0}
+.status .bat{display:inline-block;width:24px;height:12px;border:1.5px solid #f5f5f0;border-radius:3.5px;padding:1.5px;vertical-align:-1px;margin-left:6px}
+.status .bat i{display:block;height:100%;width:78%;background:#f5f5f0;border-radius:1px}
+.island{position:absolute;top:11px;left:134.5px;width:124px;height:36px;border-radius:20px;background:#000;z-index:21}
+.homebar{position:absolute;bottom:8px;left:129.5px;width:134px;height:5px;border-radius:3px;background:rgba(245,245,240,.85);z-index:21}
+/* Où veux-tu aller ? (app/espace/page.tsx) */
+.hub{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 26px 60px;text-align:center}
+.hub .glow{position:absolute;left:0;right:0;top:0;height:420px;background:radial-gradient(60% 55% at 50% 0%,rgba(212,175,55,.28),transparent 70%)}
+.hub .logo{width:196px;height:56px;position:relative;display:block}
+.hub .hello{margin-top:22px;font-size:14px;color:var(--dim)}
+.hub .h1{font:700 34px/1.1 Quicksand,sans-serif;letter-spacing:-.01em;margin-top:4px}
+.hub .card{width:100%;margin-top:30px}
+.hub .mock{height:56px;display:flex;align-items:center;justify-content:center;gap:12px}
+.hub .n{font:600 18px/1 Mono,monospace;text-align:left}
+.hub .s{font:400 11px/1 Mono,monospace;margin-top:4px;text-align:left}
+.hub .rule{margin-top:12px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px}
+.hub .t{font:700 20px/1 Manrope,sans-serif}
+.hub .b{margin-top:6px;font-size:14px;color:var(--dim)}
+/* Accueil Formation (app/formation/(app)/page.tsx) */
+.fh{padding:70px 20px 0}
+.fh .top{display:flex;justify-content:space-between;align-items:flex-end}
+.fh .g{font-size:16px;color:var(--dim)} .fh .nm{font:700 30px/1.1 Quicksand,sans-serif}
+.fh .streak{color:#fb923c;font-size:14px;font-weight:600;padding-bottom:4px}
+.fh .next{margin-top:26px;display:flex;gap:14px;align-items:center;padding:18px;border-radius:18px;border:1px solid rgba(212,175,55,.25);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(212,175,55,.03))}
+.fh .rp{font-size:11px;font-weight:600;letter-spacing:.18em;color:rgba(212,175,55,.7)}
+.fh .lt{font-size:15px;font-weight:600;margin-top:3px} .fh .ct{font-size:12px;color:var(--dim)}
+.fh .stats{margin-top:22px;display:flex;align-items:center;padding:18px 10px;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:var(--panel)}
+.fh .st{flex:1;text-align:center} .fh .v{font-size:24px;font-weight:700} .fh .k{font-size:11px;color:var(--dim);letter-spacing:.06em}
+.fh .sep{width:1px;height:36px;background:rgba(255,255,255,.08)}
+.fh .h2{margin-top:26px;font:700 20px/1 Quicksand,sans-serif}
+.fh .course{margin-top:12px;display:flex;gap:14px;align-items:center;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.07);background:var(--panel)}
+.fh .ctt{font-size:14px;font-weight:600} .fh .ctn{font-size:12px;color:var(--dim);margin-top:2px}
+.fh .nav{position:absolute;left:0;right:0;bottom:0;height:84px;border-top:1px solid rgba(255,255,255,.07);background:#0d0d0d;display:flex;justify-content:space-around;padding-top:16px;font-size:11px;color:var(--faint)}
+.fh .nav .on{color:var(--gold)}
+.ring{transform:rotate(-90deg);display:block}
+#wipe{position:absolute;top:-20%;height:140%;width:80%;background:var(--gold-m);transform:skewX(-14deg);z-index:15}
+#tap{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;z-index:30;
+ background:radial-gradient(circle at 35% 30%,#f7e2a6,#e8c468 55%,#b8923e);box-shadow:0 0 14px rgba(232,196,104,.8)}
+#ripple{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:2px solid var(--gold-m);z-index:30}
+</style></head><body>
+<div id="scr">
+  <div class="layer" id="term"><img id="timg" alt=""></div>
+  <div class="layer hub" id="hub">
+    <div class="glow"></div>
+    <svg class="logo hb" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96"/><stop offset="50%" stop-color="#e8c468"/><stop offset="100%" stop-color="#b8923e"/></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lg)" style="font-family:Quicksand,sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
+    <p class="hello hb">Bonsoir, Alex</p>
+    <p class="h1 hb">Où veux-tu aller ?</p>
+    <div class="card hb"><div class="mock"><svg viewBox="0 0 96 40" width="64" height="28" fill="none"><polyline points="0,32 12,28 24,34 36,20 48,24 60,10 72,16 84,4 96,12" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="96" cy="12" r="3" fill="#34d399"/></svg><div><p class="n">2651.9</p><p class="s" style="color:#34d399">GC · temps réel</p></div></div>
+      <div class="rule"><p class="t">Terminal</p><p class="b">Pressure, DOM, CVD, Footprint, Copilot IA</p></div></div>
+    <div class="card hb"><div class="mock"><svg id="hubRing" class="ring" viewBox="0 0 64 64" width="44" height="44"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="58.8"/></svg><div><p class="n">64%</p><p class="s" style="color:var(--dim)">14/22 leçons</p></div></div>
+      <div class="rule"><p class="t" id="hubFormT">Formation</p><p class="b">Cours, exercices, communauté</p></div></div>
+  </div>
+  <div class="layer fh" id="form">
+    <div class="top fe"><div><p class="g">Bonsoir,</p><p class="nm">Alex</p></div><p class="streak">🔥 6j de suite</p></div>
+    <div class="next fe"><svg class="ring" viewBox="0 0 64 64" width="52" height="52"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle class="arc" data-off="98" cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="5" stroke-linecap="round" stroke-dasharray="163.4"/></svg><div><p class="rp">REPRENDRE</p><p class="lt">Lire le marché</p><p class="ct">Masterclass XAUUSD Gold</p></div></div>
+    <div class="stats fe"><div class="st"><p class="v" id="cL">14</p><p class="k">LEÇONS</p></div><div class="sep"></div><div class="st"><p class="v" id="cS">6</p><p class="k">STREAK</p></div><div class="sep"></div><div class="st"><p class="v" id="cP">64%</p><p class="k">COMPLÉTÉ</p></div></div>
+    <p class="h2 fe">Mes cours</p>
+    <div class="course fe"><svg class="ring" viewBox="0 0 64 64" width="40" height="40"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="6"/><circle class="arc" data-off="66" cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.4"/></svg><div><p class="ctt">Masterclass XAUUSD Gold</p><p class="ctn">9 / 15 leçons</p></div></div>
+    <div class="course fe"><svg class="ring" viewBox="0 0 64 64" width="40" height="40"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="6"/><circle class="arc" data-off="61" cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.4"/></svg><div><p class="ctt">Les EMA 9, 21 &amp; 50</p><p class="ctn">5 / 8 leçons</p></div></div>
+    <div class="nav fe"><span class="on">Home</span><span>Cours</span><span>Communauté</span><span>Classement</span></div>
+  </div>
+  <div id="wipe"></div>
+  <div id="ripple"></div><div id="tap"></div>
+  <div class="status"><span>21:42</span><span>5G<span class="bat"><i></i></span></span></div>
+  <div class="island"></div><div class="homebar"></div>
+</div>
+<script>
+// Même chronologie que film.html (103,7 BPM : un temps = 0,5786 s)
+const B=60/103.7, FPS=30;
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), lerp=(a,b,k)=>a+(b-a)*k, P=(t,a,d)=>clamp((t-a)/d);
+const E={inOut:k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2,out:k=>1-Math.pow(1-k,3),outExpo:k=>k>=1?1:1-Math.pow(2,-10*k),in:k=>k*k*k};
+function spring(t,t0,f=2.2,z=.78){if(t<=t0)return 0;const w=2*Math.PI*f,s=t-t0,wd=w*Math.sqrt(1-z*z);return 1-Math.exp(-z*w*s)*(Math.cos(wd*s)+z*w/wd*Math.sin(wd*s))}
+const $=s=>document.querySelector(s), tf=(el,s)=>{el.style.transform=s}, op=(el,v)=>{el.style.opacity=v;el.style.display=v<=0.001?'none':''};
+const WHICH=new URLSearchParams(location.search).get('which')||'left';
+// Repères (temps du film)
+const T={wipeIn:3.25*B, drop:8*B, tapEsp:17*B, tapForm:21*B, trio:24*B, merge:28*B};
+const ESP={x:347,y:66};            // bouton « ⇄ Espace » mesuré dans le vrai terminal
+let RING={x:0,y:0};
+function measure(){op($('#hub'),1);const r=$('#hubRing').getBoundingClientRect(),s=$('#scr').getBoundingClientRect();RING={x:(r.left-s.left)/2+r.width/4,y:(r.top-s.top)/2+r.height/4}}
+// image du terminal (captures réelles, 30 i/s, 8 s)
+function termFrame(t){
+  if(WHICH==='left') return clamp(Math.round((t-T.trio)*FPS)+40,0,239);
+  if(t<T.drop) return clamp(Math.round(t*FPS),0,239);
+  return clamp(Math.round((2.8+(t-T.drop))*FPS),0,239);
+}
+function formBuild(t,t0){ // l'accueil Formation se construit élément par élément
+  const fe=[...document.querySelectorAll('#form .fe')];
+  fe.forEach((el,i)=>{const k=E.outExpo(P(t,t0+i*.07,.5));el.style.opacity=k;el.style.transform=`translateY(${(1-k)*18}px)`});
+  document.querySelectorAll('#form .arc').forEach((el,i)=>{const k=E.out(P(t,t0+.25+i*.08,.8));el.setAttribute('stroke-dashoffset',lerp(163.4,+el.dataset.off,k))});
+  const c=E.out(P(t,t0+.2,.9)); $('#cL').textContent=Math.round(14*c); $('#cS').textContent=Math.round(6*c); $('#cP').textContent=Math.round(64*c)+'%';
+}
+function hubBuild(t,t0){[...document.querySelectorAll('#hub .hb')].forEach((el,i)=>{const k=E.outExpo(P(t,t0+i*.06,.5));el.style.opacity=k;el.style.transform=`translateY(${(1-k)*16}px)`})}
+function tapAt(t,t0,pos){ // le point doré arrive (déjà dans l'écran), appuie, l'onde part
+  const tap=$('#tap'), rip=$('#ripple'); const press=1-.22*Math.sin(Math.PI*P(t,t0,.16));
+  const vis=t>=t0-.12&&t<t0+.45; op(tap,vis?1-P(t,t0+.25,.2):0); tf(tap,`translate(${pos.x}px,${pos.y}px) scale(${press})`);
+  const r=P(t,t0+.02,.45); op(rip,r>0&&r<1?(1-r)*.9:0); tf(rip,`translate(${pos.x}px,${pos.y}px) scale(${1+r*1.8})`);
+}
+function render(t){
+  let term=0,hub=0,form=0;
+  if(WHICH==='left'){term=1}
+  else if(WHICH==='right'){hub=1; hubBuild(99,0)}
+  else{
+    if(t<T.wipeIn+.18) term=1; else if(t<T.drop) form=1;
+    else if(t<T.tapEsp+.08) term=1; else if(t<T.tapForm+.08) hub=1;
+    else if(t<T.merge+.3) form=1; else hub=1;
+    if(hub){ hubBuild(t, t<T.merge? T.tapEsp+.08 : -9); $('#hubFormT').style.color=(t>=T.tapForm&&t<T.tapForm+.4)?'#d4af37':'#f5f5f0'; }
+    if(form) formBuild(t, t<T.drop? T.wipeIn+.15 : T.tapForm+.1);
+  }
+  op($('#term'),term); op($('#hub'),hub); op($('#form'),form);
+  if(term) $('#timg').src=`term/t_${String(termFrame(t)+1).padStart(4,'0')}.jpg`;
+  // volet doré dans l'écran (terminal → formation, sur le temps 4)
+  const w=E.inOut(P(t,T.wipeIn,.36)); tf($('#wipe'),`translateX(${lerp(-420,520,w)}px) skewX(-14deg)`); op($('#wipe'),w>0&&w<1?1:0);
+  op($('#tap'),0); op($('#ripple'),0);
+  if(WHICH==='main'){ if(Math.abs(t-T.tapEsp)<.6) tapAt(t,T.tapEsp,ESP); if(Math.abs(t-T.tapForm)<.6) tapAt(t,T.tapForm,RING); }
+}
+window.renderAt=async(t)=>{render(t);const i=$('#timg');if(i.style.display!=='none'&&$('#term').style.display!=='none'){await i.decode().catch(()=>{})}
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))};
+window.ready=(async()=>{await document.fonts.ready;measure();render(0);await $('#timg').decode().catch(()=>{});return true})();
+window.RINGPOS=()=>RING;
+</script></body></html>
