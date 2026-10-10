@@ -10,7 +10,7 @@ You are the producer. The user is the creative director. Run the stages in order
 **The one rule of this kit: no two films should feel like the same film.** Don't repeat effects, transitions or components (within the film, or from the user's recent films). Invent at least one new component per film. Decide the message and the tone before choosing any effect. Read `creative/README.md` before stage 4.
 
 ## Before starting
-- All kit paths below (`playbook/`, `creative/`, `tools/`, `templates/`, `components/`, `docs/themes/data/`, `docs/transitions/`) are relative to this skill's folder, `.claude/skills/saas-motion-video/`. Run the tools as `python .claude/skills/saas-motion-video/tools/<script>.py …`. The full visual theme gallery is online: https://tugrawork-creator.github.io/saas-motion-kit/
+- All kit paths below (`playbook/`, `creative/`, `tools/`, `templates/`, `components/`, `docs/themes/data/`, `docs/transitions/`) are relative to this skill's own folder (the directory containing this SKILL.md, e.g. `.claude/skills/saas-motion-video/` in a project). Run the tools from there: `python <skill-folder>/tools/<script>.py …`. The full visual theme gallery is online: https://tugrawork-creator.github.io/saas-motion-kit/
 - The HyperFrames skills must be installed (`npx skills add heygen-com/hyperframes`). If `/hyperframes` is not available, ask the user to install them and restart the session.
 - Read `playbook/README.md`. Read each stage file when you reach that stage.
 
