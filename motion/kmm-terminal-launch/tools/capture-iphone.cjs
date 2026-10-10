@@ -9,6 +9,10 @@ const fs = require('fs');
     userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1' });
   const p = await ctx.newPage();
   await p.goto(url); await p.waitForTimeout(+warm * 1000);
+  // Masque l'indicateur de développement Next.js (badge « N ») et mesure le bouton Espace.
+  await p.addStyleTag({ content: 'nextjs-portal{display:none!important}' });
+  const esp = await p.evaluate(() => { const el = [...document.querySelectorAll('a,button')].find(e => /Espace/.test(e.textContent)); if (!el) return null; const r = el.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+  console.log('espace', JSON.stringify(esp));
   const cdp = await ctx.newCDPSession(p);
   const acts = actions ? JSON.parse(actions) : [];   // [{t:2.0, tap:[x,y]}]
   await cdp.send('Emulation.setVirtualTimePolicy', { policy: 'pause' });

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>KMM Terminal — lancement iPhone</title>
+    <script src="assets/js/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Inter Display"; src: url(assets/fonts/inter-latin-opsz-normal.woff2) format("woff2"); font-weight: 100 900; }
+      @font-face { font-family: Quicksand; src: url(assets/fonts/quicksand-latin-wght-normal.woff2) format("woff2"); font-weight: 300 700; }
+      @font-face { font-family: Manrope; src: url(assets/fonts/manrope-latin-wght-normal.woff2) format("woff2"); font-weight: 200 800; }
+      @font-face { font-family: "JetBrains Mono"; src: url(assets/fonts/jetbrains-mono-latin-wght-normal.woff2) format("woff2"); font-weight: 100 800; }
+
+      :root {
+        --ink: #0c0d0f; --app: #0a0a0a; --panel: #171717; --fg: #f5f5f0; --dim: #8b8b8b; --faint: #6b6b6b;
+        --gold: #d4af37; --gold-m: #e8c468; --up: #34d399; --grey: #86868b; --white: #f5f5f7;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { margin: 0; background: var(--ink); color: var(--white); font-family: Manrope, sans-serif; -webkit-font-smoothing: antialiased; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .full { position: absolute; inset: 0; }
+      #bg { background: radial-gradient(90% 55% at 50% 42%, #14161b 0%, #0c0d0f 60%, #08090a 100%); }
+
+      /* Titres de la pub : Inter Display, serré, façon Apple */
+      .head { position: absolute; left: 0; right: 0; text-align: center; font-family: "Inter Display", sans-serif; font-variation-settings: "opsz" 32; font-weight: 700; letter-spacing: -0.035em; color: var(--white); }
+      .head .ln { display: block; }
+      .gold { color: var(--gold-m); }
+      .grey { color: var(--grey); }
+      .mask { overflow: hidden; display: block; }
+      .tag { position: absolute; left: 0; right: 0; text-align: center; font: 500 22px/1 "JetBrains Mono", monospace; letter-spacing: 0.08em; color: #8e8e93; }
+
+      /* Plan 1 : macro sur le vrai terminal */
+      #s1 { overflow: hidden; }
+      #macroWrap { position: absolute; left: -1803px; top: -585px; width: 2596px; height: 5623px; transform-origin: 2343px 1485px; }
+      #vMacro { width: 2596px; height: 5623px; display: block; }
+      #s1 .veil { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12, 13, 15, 0.15) 0%, rgba(12, 13, 15, 0.35) 45%, rgba(12, 13, 15, 0.92) 78%); }
+      #t1 { top: 1300px; font-size: 128px; }
+
+      /* Plan 2 : l'anneau de progression */
+      #bigRing { position: absolute; left: 190px; top: 550px; width: 700px; height: 700px; }
+      #t2 { top: 1300px; font-size: 128px; }
+
+      /* Cercle doré (motif) : centre P = (540, 900) */
+      #gc { position: absolute; left: 465px; top: 825px; width: 150px; height: 150px; border-radius: 50%; border: 6px solid var(--gold-m); }
+      #gcFill { position: absolute; inset: -6px; border-radius: 50%; background: var(--gold-m); opacity: 0; }
+
+      /* Plan 3+ : la scène iPhone, ouverte en iris depuis le cercle */
+      #stage { position: absolute; inset: 0; clip-path: circle(0px at 540px 900px); }
+      .reg { position: absolute; width: 44px; height: 44px; }
+      .reg::before, .reg::after { content: ""; position: absolute; background: var(--gold-m); }
+      .reg::before { left: 21px; top: 0; width: 2px; height: 44px; }
+      .reg::after { top: 21px; left: 0; height: 2px; width: 44px; }
+      .reg i { position: absolute; inset: 10px; border: 2px solid var(--gold-m); border-radius: 50%; }
+      #orbit { position: absolute; left: 150px; top: 760px; width: 780px; height: 240px; border-radius: 50%; border: 2px dashed rgba(232, 196, 104, 0.4); opacity: 0; }
+
+      /* iPhone 15 Pro : écran 393 × 852 pt, deux faces pour le retournement */
+      #rig { position: absolute; left: 323.5px; top: 434px; width: 433px; height: 892px; transform-style: preserve-3d; }
+      .face { position: absolute; inset: 0; border-radius: 68px; padding: 20px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+        background: linear-gradient(145deg, #5b5852, #2c2b29 30%, #46443f 60%, #1d1c1b);
+        box-shadow: inset 0 0 0 2px #8a877f, inset 0 0 0 5px #1a1918, 0 70px 140px -30px rgba(0, 0, 0, 0.75); }
+      .face.back { transform: rotateY(180deg); }
+      .screen { position: relative; width: 393px; height: 852px; border-radius: 50px; overflow: hidden; background: var(--app); }
+      .island { position: absolute; top: 11px; left: 134.5px; width: 124px; height: 36px; border-radius: 20px; background: #050505; z-index: 20; }
+      .homebar { position: absolute; bottom: 8px; left: 129.5px; width: 134px; height: 5px; border-radius: 3px; background: rgba(245, 245, 240, 0.85); z-index: 20; }
+      .layer { position: absolute; inset: 0; }
+      #vTerm, .shot { position: absolute; left: 0; top: 0; width: 393px; height: 852px; display: block; }
+
+      /* Écran « Où veux-tu aller ? » (app/espace/page.tsx) */
+      .hub { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 26px 60px; text-align: center; font-family: Manrope, sans-serif; color: var(--fg); }
+      .hub .glow { position: absolute; left: 0; right: 0; top: 0; height: 420px; background: radial-gradient(60% 55% at 50% 0%, rgba(212, 175, 55, 0.28), transparent 70%); }
+      .hub .logo { width: 196px; height: 56px; position: relative; display: block; }
+      .hub .hello { margin-top: 22px; font-size: 14px; color: var(--dim); }
+      .hub .h1 { font: 700 34px/1.1 Quicksand, sans-serif; letter-spacing: -0.01em; margin-top: 4px; }
+      .hub .card { width: 100%; margin-top: 30px; }
+      .hub .mock { height: 56px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+      .hub .n { font: 600 18px/1 "JetBrains Mono", monospace; text-align: left; }
+      .hub .s { font: 400 11px/1 "JetBrains Mono", monospace; margin-top: 4px; text-align: left; }
+      .hub .rule { margin-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px; }
+      .hub .t { font: 700 20px/1 Manrope, sans-serif; }
+      .hub .b { margin-top: 6px; font-size: 14px; color: var(--dim); }
+
+      /* Accueil Formation (app/formation/(app)/page.tsx) */
+      .fh { padding: 70px 20px 0; font-family: Manrope, sans-serif; color: var(--fg); }
+      .fh .top { display: flex; justify-content: space-between; align-items: flex-end; }
+      .fh .g { font-size: 16px; color: var(--dim); }
+      .fh .nm { font: 700 30px/1.1 Quicksand, sans-serif; }
+      .fh .streak { color: #fb923c; font-size: 14px; font-weight: 600; padding-bottom: 4px; }
+      .fh .next { margin-top: 26px; display: flex; gap: 14px; align-items: center; padding: 18px; border-radius: 18px; border: 1px solid rgba(212, 175, 55, 0.25); background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(212, 175, 55, 0.03)); }
+      .fh .rp { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; color: rgba(212, 175, 55, 0.7); }
+      .fh .lt { font-size: 15px; font-weight: 600; margin-top: 3px; }
+      .fh .ct { font-size: 12px; color: var(--dim); }
+      .fh .stats { margin-top: 22px; display: flex; align-items: center; padding: 18px 10px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.07); background: var(--panel); }
+      .fh .stats .st { flex: 1; text-align: center; }
+      .fh .stats .v { font-size: 24px; font-weight: 700; }
+      .fh .stats .k { font-size: 11px; color: var(--dim); letter-spacing: 0.06em; }
+      .fh .stats .sep { width: 1px; height: 36px; background: rgba(255, 255, 255, 0.08); }
+      .fh .h2 { margin-top: 26px; font: 700 20px/1 Quicksand, sans-serif; }
+      .fh .course { margin-top: 12px; display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.07); background: var(--panel); }
+      .fh .ctt { font-size: 14px; font-weight: 600; }
+      .fh .ctn { font-size: 12px; color: var(--dim); margin-top: 2px; }
+      .fh .nav { position: absolute; left: 0; right: 0; bottom: 0; height: 84px; border-top: 1px solid rgba(255, 255, 255, 0.07); background: #0d0d0d; display: flex; justify-content: space-around; padding-top: 16px; font-size: 11px; color: var(--faint); }
+      .fh .nav .on { color: var(--gold); }
+      .ring { transform: rotate(-90deg); display: block; }
+
+      /* Point de tap et marqueur doré à l'intérieur de l'écran */
+      #tap { position: absolute; left: 0; top: 0; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; background: rgba(232, 196, 104, 0.3); border: 2px solid var(--gold-m); z-index: 30; opacity: 0; }
+      #ripple { position: absolute; left: 0; top: 0; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 2px solid var(--gold-m); z-index: 30; opacity: 0; }
+      #ringMark { position: absolute; left: 0; top: 0; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; border: 3px solid var(--gold-m); z-index: 25; opacity: 0; }
+
+      /* Carte signal qui sort de l'écran (onglet Signals du vrai terminal) */
+      #sig { position: absolute; left: 470px; top: 760px; width: 520px; padding: 26px 30px; border-radius: 22px; background: #111317; border: 1px solid #2a2e35; box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6); font-family: "JetBrains Mono", monospace; opacity: 0; }
+      #sig .row { display: flex; justify-content: space-between; align-items: baseline; }
+      #sig .k { color: #e8822a; font-weight: 600; font-size: 28px; letter-spacing: 0.04em; }
+      #sig .k span { color: #6b7683; font-size: 18px; margin-left: 10px; }
+      #sig .sc { color: #e8822a; font-size: 28px; }
+      #sig .d { color: #c8d2da; font-size: 22px; margin-top: 10px; line-height: 1.35; }
+
+      #t3 { top: 1600px; font-size: 92px; }
+      #t5 { top: 1600px; font-size: 92px; }
+      #cta { position: absolute; inset: 0; }
+      #tagline { top: 1010px; font-size: 112px; line-height: 1.02; }
+      #ctaLogo { position: absolute; left: 390px; top: 1500px; width: 300px; height: 85px; display: block; }
+      #ctaUrl { position: absolute; left: 0; right: 0; top: 1620px; text-align: center; font: 500 38px/1 "Inter Display", sans-serif; letter-spacing: -0.01em; color: var(--grey); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="20.25">
+      <div id="bg" class="clip full" data-start="0" data-duration="20.25" data-track-index="0"></div>
+
+      <!-- Plan 1 · 0:00 · « Ton terminal. » -->
+      <section id="s1" class="full">
+        <div id="macroWrap" data-layout-allow-overflow><video id="vMacro" src="assets/video/terminal-lens.mp4" muted playsinline data-start="0" data-duration="1.157" data-media-start="4"></video></div>
+        <div class="veil"></div>
+        <p id="t1" class="head">Ton terminal.</p>
+        <p class="tag" style="top: 1840px">DONNÉES D'EXEMPLE</p>
+      </section>
+
+      <!-- Plan 2 · 0:01.2 · « Ta formation. » -->
+      <section id="s2" class="clip full" data-start="1.157" data-duration="0.579" data-track-index="1">
+        <svg id="bigRing" viewBox="0 0 64 64" class="ring"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="5" /><circle id="bigArc" cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4" /></svg>
+        <p id="t2" class="head"><span class="mask"><span id="t2in" class="ln gold">Ta formation.</span></span></p>
+      </section>
+
+      <!-- Scène iPhone (plans 3 à 7) -->
+      <div id="stage">
+        <div id="regs">
+          <div class="reg" style="left: 70px; top: 70px"><i></i></div>
+          <div class="reg" style="right: 70px; top: 70px"><i></i></div>
+          <div class="reg" style="left: 70px; top: 1490px"><i></i></div>
+          <div class="reg" style="right: 70px; top: 1490px"><i></i></div>
+        </div>
+        <div id="orbit"></div>
+        <div id="rig">
+          <div class="face front">
+            <div class="screen" id="screenF">
+              <div class="island"></div>
+              <div class="layer" id="scrTerm"><video id="vTerm" src="assets/video/terminal-lens.mp4" muted playsinline data-start="1.736" data-duration="6.364" data-media-start="0"></video></div>
+              <div class="layer hub" id="scrHub">
+                <div class="glow"></div>
+                <svg class="logo hb" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lgHub" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96" /><stop offset="50%" stop-color="#e8c468" /><stop offset="100%" stop-color="#b8923e" /></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lgHub)" style="font-family: Quicksand, sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
+                <p class="hello hb">Bonsoir, Alex</p>
+                <p class="h1 hb">Où veux-tu aller ?</p>
+                <div class="card hb">
+                  <div class="mock"><svg viewBox="0 0 96 40" width="64" height="28" fill="none"><polyline points="0,32 12,28 24,34 36,20 48,24 60,10 72,16 84,4 96,12" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><circle cx="96" cy="12" r="3" fill="#34d399" /></svg><div><p class="n">2651.9</p><p class="s" style="color: #34d399">GC · temps réel</p></div></div>
+                  <div class="rule"><p class="t">Terminal</p><p class="b">Pressure, DOM, CVD, Footprint, Copilot IA</p></div>
+                </div>
+                <div class="card hb" id="hubForm">
+                  <div class="mock"><svg id="hubRing" class="ring" viewBox="0 0 64 64" width="44" height="44"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5" /><circle cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="58.8" /></svg><div><p class="n">64%</p><p class="s" style="color: var(--dim)">14/22 leçons</p></div></div>
+                  <div class="rule"><p class="t" id="hubFormT">Formation</p><p class="b">Cours, exercices, communauté</p></div>
+                </div>
+              </div>
+              <div class="layer fh" id="scrForm">
+                <div class="top fe"><div><p class="g">Bonsoir,</p><p class="nm">Alex</p></div><p class="streak">🔥 <span id="cStreak2">6</span>j de suite</p></div>
+                <div class="next fe" id="fNext"><svg id="fRing" class="ring" viewBox="0 0 64 64" width="52" height="52"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5" /><circle id="fArc" cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4" /></svg><div><p class="rp">REPRENDRE</p><p class="lt">Jour 3 — Structure du marché (les bases)</p><p class="ct">Masterclass XAUUSD Gold</p></div></div>
+                <div class="stats fe"><div class="st"><p class="v" id="cLess">0</p><p class="k">LEÇONS</p></div><div class="sep"></div><div class="st"><p class="v" id="cStreak">0</p><p class="k">STREAK</p></div><div class="sep"></div><div class="st"><p class="v" id="cPct">0%</p><p class="k">COMPLÉTÉ</p></div></div>
+                <p class="h2 fe">Mes cours</p>
+                <div class="course fe"><svg class="ring" viewBox="0 0 64 64" width="40" height="40"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6" /><circle class="cArc" data-off="66" cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4" /></svg><div><p class="ctt">Masterclass XAUUSD Gold</p><p class="ctn">9 / 15 leçons</p></div></div>
+                <div class="course fe"><svg class="ring" viewBox="0 0 64 64" width="40" height="40"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6" /><circle class="cArc" data-off="61" cx="32" cy="32" r="26" fill="none" stroke="#d4af37" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4" /></svg><div><p class="ctt">Les EMA 9, 21 &amp; 50</p><p class="ctn">5 / 8 leçons</p></div></div>
+                <div class="nav fe"><span class="on">Home</span><span>Cours</span><span>Communauté</span><span>Classement</span></div>
+              </div>
+              <div id="ringMark"></div>
+              <div id="tap"></div>
+              <div id="ripple"></div>
+              <div class="homebar"></div>
+            </div>
+          </div>
+          <div class="face back">
+            <div class="screen"><div class="island"></div><img class="shot" src="assets/terminal-signals.jpg" alt="" /><div class="homebar"></div></div>
+          </div>
+        </div>
+        <div id="sig"><div class="row"><p class="k">SWEEP<span>FLOW</span></p><p class="sc">76</p></div><p class="d">110 aggressive buys swept 4 ticks of book</p></div>
+      </div>
+
+      <p id="tag3" class="tag clip" data-start="1.736" data-duration="13.886" data-track-index="3" style="top: 1840px">DONNÉES D'EXEMPLE</p>
+      <p id="t3" class="head clip" data-start="2.9" data-duration="4.9" data-track-index="4"><span id="t3in" class="ln">Lis le marché.</span></p>
+      <p id="t5" class="head clip" data-start="12.25" data-duration="3.2" data-track-index="4"><span class="mask"><span id="t5in" class="ln">Apprends.</span></span></p>
+
+      <!-- Plan 7 · CTA -->
+      <section id="cta" class="clip" data-start="17.358" data-duration="2.892" data-track-index="5">
+        <p id="tagline" class="head"><span class="ln" id="l1">Ton terminal.</span><span class="ln" id="l2">Ta formation.</span><span class="ln grey" id="l3"><span id="l3txt">Enfin dans ta poche</span></span></p>
+        <svg id="ctaLogo" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lgCta" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96" /><stop offset="50%" stop-color="#e8c468" /><stop offset="100%" stop-color="#b8923e" /></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lgCta)" style="font-family: Quicksand, sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
+        <p id="ctaUrl">kmmterminal.com</p>
+      </section>
+
+      <div id="gc"><div id="gcFill"></div></div>
+    </div>
+
+    <script>
+      // Tempo de « RISK MONEY » (Axxo) : 103,7 BPM → un temps = 0,5786 s. Les coupes tombent sur les temps.
+      const B = 60 / 103.7;
+      const T = { s2: 2 * B, s3: 3 * B, s4: 14 * B, s5: 20 * B, s6: 27 * B, s7: 30 * B, end: 35 * B };
+
+      // Position d'un élément dans l'écran du téléphone (coordonnées de mise en page, insensibles aux transformations 3D).
+      function inScreen(el) {
+        // Mesuré avant toute transformation du téléphone (au début de build), relatif à l'écran.
+        const r = el.getBoundingClientRect(), sr = document.getElementById("screenF").getBoundingClientRect();
+        return { x: r.left - sr.left + r.width / 2, y: r.top - sr.top + r.height / 2 };
+      }
+      // Instant où une interpolation (avec son ease) atteint une valeur donnée.
+      function timeAt(ease, from, to, start, dur, value) {
+        const f = gsap.parseEase(ease); let lo = 0, hi = 1;
+        for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; (from + (to - from) * f(m) < value) ? (lo = m) : (hi = m); }
+        return start + dur * lo;
+      }
+
+      function build() {
+        // Positions à mesurer avant que la timeline ne transforme le téléphone
+        gsap.set(["#scrHub", "#scrForm"], { opacity: 1 });
+        const formPos = inScreen(document.getElementById("hubRing"));
+        const fPos = inScreen(document.getElementById("fRing"));
+        gsap.set(["#scrHub", "#scrForm"], { opacity: 0 });
+        const tl = gsap.timeline({ paused: true });
+        const P = { x: 540, y: 900 };
+
+        // ── Plan 1 · le vrai terminal en macro, le cercle doré sur le prix
+        tl.set("#s1", { opacity: 0 }, T.s2);
+        tl.fromTo("#macroWrap", { scale: 1 }, { scale: 1.08, duration: T.s2, ease: "none" }, 0);
+        tl.fromTo("#t1", { scale: 1.25, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.05);
+        tl.fromTo("#gc", { scale: 0, opacity: 1 }, { scale: 1, duration: 0.4, ease: "power4.out" }, 0.08);
+
+        // ── Plan 2 · coupe sèche : le cercle devient le centre de l'anneau de progression
+        tl.fromTo("#bigArc", { attr: { "stroke-dashoffset": 163.4 } }, { attr: { "stroke-dashoffset": 58.8 }, duration: 0.5, ease: "power4.out" }, T.s2);
+        tl.fromTo("#t2in", { yPercent: 105 }, { yPercent: 0, duration: 0.32, ease: "power4.out" }, T.s2 + 0.02);
+
+        // ── Plan 3 · iris depuis le cercle, l'iPhone arrive de profil et pivote (ref:01)
+        tl.fromTo("#stage", { clipPath: "circle(75px at 540px 900px)" }, { clipPath: "circle(1500px at 540px 900px)", duration: 0.6, ease: "power3.inOut" }, T.s3);
+        tl.to("#gc", { scale: 9, opacity: 0, duration: 0.6, ease: "power3.inOut" }, T.s3);
+        tl.fromTo("#regs", { opacity: 0 }, { opacity: 0.35, duration: 0.8, ease: "sine.inOut" }, T.s3 + 0.3);
+        tl.fromTo("#rig", { rotationY: 88, rotationZ: 0, scale: 1.12, x: 140, y: 0, transformPerspective: 2400 },
+          { rotationY: -12, rotationZ: -3, scale: 1.3, x: 0, duration: 1.7, ease: "power3.inOut" }, T.s3 + 0.05);
+        tl.to("#rig", { rotationY: -5, y: -16, duration: 2.6, ease: "sine.inOut" }, T.s3 + 1.75);
+        tl.fromTo("#t3in", { opacity: 0, filter: "blur(14px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.7, ease: "power2.out" }, 2.95);
+        tl.to("#t3in", { opacity: 0, duration: 0.3, ease: "power2.in" }, 7.45);
+        tl.fromTo("#sig", { opacity: 0, x: -120, scale: 0.7, rotationY: -14, transformPerspective: 1600 },
+          { opacity: 1, x: 0, scale: 1, duration: 0.6, ease: "power3.out" }, 4.35);
+        tl.to("#sig", { opacity: 0, x: -60, duration: 0.35, ease: "power2.in" }, 6.85);
+        // retour de face pour le tap
+        tl.to("#rig", { rotationY: 0, rotationZ: 0, y: 0, duration: 0.8, ease: "power2.inOut" }, 7.0);
+        // point de tap sur « ⇄ Espace » (mesuré dans le vrai terminal : 347, 66)
+        tl.fromTo("#tap", { x: 250, y: 260, opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" }, 7.15);
+        tl.to("#tap", { x: 347, y: 66, duration: 0.45, ease: "power2.inOut" }, 7.3);
+        tl.to("#tap", { scale: 0.75, duration: 0.08, ease: "power2.in" }, 7.8);
+        tl.to("#tap", { scale: 1, duration: 0.15, ease: "power2.out" }, 7.88);
+        tl.fromTo("#ripple", { x: 347, y: 66, scale: 1, opacity: 0.9 }, { scale: 2.6, opacity: 0, duration: 0.45, ease: "power2.out" }, 7.82);
+
+        // ── Plan 4 · l'écran « Où veux-tu aller ? » (cursor carry : le tap ouvre l'espace)
+        tl.set("#scrTerm", { opacity: 0 }, T.s4);
+        tl.set("#scrHub", { opacity: 1 }, T.s4);
+        tl.fromTo("#scrHub .hb", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.11 }, T.s4 + 0.02);
+        tl.to("#tap", { x: formPos.x, y: formPos.y, duration: 0.55, ease: "power2.inOut" }, T.s4 + 1.5);
+        tl.to("#tap", { scale: 0.75, duration: 0.08, ease: "power2.in" }, T.s4 + 2.15);
+        tl.to("#tap", { scale: 1, duration: 0.15, ease: "power2.out" }, T.s4 + 2.23);
+        tl.fromTo("#ripple", { x: formPos.x, y: formPos.y, scale: 1, opacity: 0.9 }, { scale: 2.6, opacity: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, T.s4 + 2.17);
+        tl.fromTo("#hubFormT", { color: "#f5f5f0" }, { color: "#d4af37", duration: 0.2, ease: "power2.out" }, T.s4 + 2.17);
+        tl.fromTo("#ringMark", { x: formPos.x, y: formPos.y, scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "power3.out" }, T.s4 + 2.25);
+        tl.to("#tap", { opacity: 0, duration: 0.25, ease: "power2.in" }, T.s4 + 2.6);
+
+        // ── Plan 5 · raccord de forme : le marqueur doré glisse sur l'anneau de la leçon, l'accueil Formation se construit
+        tl.set("#scrHub", { opacity: 0 }, T.s5);
+        tl.set("#scrForm", { opacity: 1 }, T.s5);
+        tl.to("#ringMark", { x: fPos.x, y: fPos.y, duration: 0.4, ease: "power3.inOut" }, T.s5);
+        const fe = gsap.utils.toArray("#scrForm .fe");
+        const dirs = [{ y: -18 }, { x: 34 }, { scaleY: 0.6 }, { x: -24 }, { y: 26 }, { y: 26 }, { y: 40 }];
+        fe.forEach((el, i) => {
+          tl.fromTo(el, { opacity: 0, x: 0, y: 0, scaleY: 1, ...dirs[i] }, { opacity: 1, x: 0, y: 0, scaleY: 1, duration: 0.45, ease: i % 2 ? "power2.out" : "power3.out" }, T.s5 + 0.05 + i * 0.12);
+        });
+        tl.fromTo("#fArc", { attr: { "stroke-dashoffset": 163.4 } }, { attr: { "stroke-dashoffset": 98 }, duration: 0.9, ease: "power2.out" }, T.s5 + 0.3);
+        gsap.utils.toArray(".cArc").forEach((el, i) => {
+          tl.fromTo(el, { attr: { "stroke-dashoffset": 163.4 } }, { attr: { "stroke-dashoffset": +el.dataset.off }, duration: 0.8, ease: "power2.out" }, T.s5 + 0.75 + i * 0.12);
+        });
+        const cnt = { l: 0, s: 0, p: 0 };
+        tl.fromTo(cnt, { l: 0, s: 0, p: 0 }, { l: 14, s: 6, p: 64, duration: 1.0, ease: "power2.out",
+          onUpdate: () => {
+            document.getElementById("cLess").textContent = Math.round(cnt.l);
+            document.getElementById("cStreak").textContent = Math.round(cnt.s);
+            document.getElementById("cPct").textContent = Math.round(cnt.p) + "%";
+          } }, T.s5 + 0.35);
+        tl.fromTo("#t5in", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "power3.out" }, 12.3);
+        tl.to("#t5in", { opacity: 0, duration: 0.25, ease: "power2.in" }, 15.15);
+        tl.to("#ringMark", { opacity: 0, duration: 0.3, ease: "power2.in" }, 14.9);
+        // accélération vers le retournement (speed ramp)
+        tl.to("#rig", { rotationY: -28, duration: T.s6 - 14.7, ease: "expo.in" }, 14.7);
+
+        // ── Plan 6 · arrêt sur image, puis l'iPhone tourne comme une pièce (composant nouveau : coin-flip-phone)
+        const flipStart = T.s6 + 0.35, flipDur = 1.3;
+        tl.fromTo("#orbit", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, flipStart);
+        tl.to("#orbit", { opacity: 0, duration: 0.3, ease: "power2.in" }, flipStart + flipDur - 0.2);
+        tl.to("#rig", { rotationY: 720, duration: flipDur, ease: "expo.inOut" }, flipStart);
+        tl.to("#rig", { y: -70, duration: flipDur / 2, ease: "power2.out" }, flipStart);
+        tl.to("#rig", { y: 0, duration: flipDur / 2, ease: "power2.in" }, flipStart + flipDur / 2);
+        // la face avant passe sur « Où veux-tu aller ? » pendant qu'elle est cachée (rotation ≈ 540°)
+        const swap = timeAt("expo.inOut", -28, 720, flipStart, flipDur, 540);
+        tl.set("#scrForm", { opacity: 0 }, swap);
+        tl.set("#scrHub", { opacity: 1 }, swap);
+        tl.set("#hubFormT", { color: "#f5f5f0" }, swap);
+
+        // ── Plan 7 · le slogan ; le cercle doré devient le point final de « poche. »
+        tl.to("#rig", { y: -360, scale: 0.78, duration: 0.9, ease: "power2.inOut" }, T.s7);
+        tl.to("#regs", { opacity: 0, duration: 0.4, ease: "power2.in" }, T.s7);
+        tl.fromTo("#l1", { opacity: 0, y: 46 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, T.s7 + 0.25);
+        tl.fromTo("#l2", { opacity: 0, y: 46 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, T.s7 + 0.25 + B / 2);
+        tl.fromTo("#l3", { opacity: 0, y: 46 }, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, T.s7 + 0.25 + B);
+        const txt = document.getElementById("l3txt");
+        const end = { x: txt.offsetLeft + txt.offsetWidth + 18, y: txt.offsetTop + txt.offsetHeight * 0.78 };
+        let n = txt.offsetParent; while (n && n.id !== "root") { end.x += n.offsetLeft; end.y += n.offsetTop; n = n.offsetParent; }
+        const gcT = T.s7 + 0.25 + B + 0.35;
+        tl.fromTo("#gc", { x: 0, y: 0, scale: 1.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, gcT);
+        tl.to("#gc", { x: end.x - P.x, y: end.y - P.y, scale: 0.13, duration: 0.6, ease: "power3.inOut" }, gcT + 0.3);
+        tl.to("#gcFill", { opacity: 1, duration: 0.25, ease: "power2.out" }, gcT + 0.7);
+        tl.fromTo("#ctaLogo", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, gcT + 0.75);
+        tl.fromTo("#ctaUrl", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "sine.inOut" }, gcT + 0.95);
+
+        window.__timelines["main"] = tl;
+      }
+
+      // États de départ hors timeline (les tweens fromTo les reprennent)
+      gsap.set("#scrHub", { opacity: 0 });
+      gsap.set("#scrForm", { opacity: 0 });
+      document.fonts.ready.then(build);
+    </script>
+  </body>
+</html>
