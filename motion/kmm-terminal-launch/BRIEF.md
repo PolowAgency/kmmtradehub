@@ -1,6 +1,6 @@
 ---
 workflow: product-launch-video
-format: 1080x1920
+format: 1080x1920              # vertical iPhone ; écrans capturés en iPhone 15 Pro 393x852 @3x (1179x2556)
 duration: 20s
 audio: music                   # musique + SFX, sans voix off
 loop: false
@@ -40,5 +40,7 @@ Score /8 = actuel + calme + dans la marque + montre la preuve (0–2 chacun).
 - Toute donnée de démo est marquée « données d'exemple » ; rien de simulé présenté comme réel.
 - Pas de noir ni de blanc purs, pas de dégradé dans le texte, pas de barre de progression, pas de rebond sur l'UI.
 - Logo officiel uniquement.
+
+**Captures :** vrais écrans enregistrés image par image en temps virtuel (`tools/capture-iphone.cjs`, 30 i/s, 1179×2556), puis posés dans un cadre iPhone. Masquer le badge de dev Next.js avant les prises.
 
 **Deliverables:** master 1080×1920 (rendu 4K puis réduit), MP4 H.264, ~20 s. Déclinaison 16:9 possible ensuite.
