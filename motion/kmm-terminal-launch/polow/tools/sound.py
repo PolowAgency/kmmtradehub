@@ -14,7 +14,7 @@ import soundfile as sf
 SR = 48000
 B = 60 / 103.7
 b = lambda n: n * B
-DUR = 64 * B
+DUR = 68 * B
 N = int(DUR * SR) + SR
 rng = np.random.default_rng(11)          # graine fixe : même son à chaque rendu
 
@@ -87,20 +87,20 @@ def logo():          # écran KMM TERMINAL : accord grave et brillant
     return room(ch + sub, .4, .25), .01
 
 # ---------- Chronologie (identique à film.html) ----------
-LOUPES = [12.3, 16.6, 20.6, 26.0, 32.7, 36.7, 42.0, 44.7]
-TAPS = [16, 20, 24, 25.5, 28, 32, 36, 41.5, 44]   # SIGNALS, COPILOT, EXPERT, FLOW, Espace, Formation, Reprendre, réponse, Communauté
+LOUPES = [11.5, 18.6, 25.6, 38.7, 46.4]
+TAPS = [18, 25, 32, 36, 38, 47.5]   # SIGNALS, COPILOT, Espace, Formation, Reprendre, réponse
 HITS = []
 HITS += [(b(0), word, .5), (b(1), word, .7), (b(4), word, .5), (b(5), word, .7)]       # « Ton » « terminal. » « Ta » « formation. »
 HITS += [(b(8) - .3, whoosh, .9), (b(8), riser, .4), (b(8), impact, .75)]               # volet + montée + drop
 HITS += [(b(9), boom, .55), (b(10), boom, .7)]                                         # « KMM » « Terminal. »
 for a in LOUPES: HITS += [(b(a) - .45, whoosh, .45), (b(a) + .05, glass, .9)]          # le téléphone glisse, la loupe sort
 HITS += [(b(t), tap, .7) for t in TAPS]
-HITS += [(b(41.5) + .05, confirm, .7), (b(33), boom, .5)]                              # bonne réponse, « La Formation. »
-HITS += [(b(48.7), whoosh, .9), (b(48.6) + .15, whoosh, .6), (b(48.6) + .3, whoosh, .6)]  # recul + deux téléphones
-HITS += [(b(52) + .45, suck, .8), (b(52) + .5, boom, .8)]                              # fusion
-HITS += [(b(54.3), logo, .75)]                                                          # écran KMM TERMINAL
-HITS += [(b(55), word, .45), (b(56), word, .45), (b(57), word, .45), (b(58.8), sparkle, .8)]  # slogan + point doré
-HITS += [(b(61), whoosh, .7), (b(61.8), sparkle, .45)]                                 # plan final + URL
+HITS += [(b(47.5) + .05, confirm, .7), (b(37), boom, .5)]                              # bonne réponse, « La Formation. »
+HITS += [(b(52.7), whoosh, .9), (b(52.6) + .15, whoosh, .6), (b(52.6) + .3, whoosh, .6)]  # recul + deux téléphones
+HITS += [(b(56) + .45, suck, .8), (b(56) + .5, boom, .8)]                              # fusion
+HITS += [(b(58.3), logo, .75)]                                                          # écran KMM TERMINAL
+HITS += [(b(59), word, .45), (b(60), word, .45), (b(61), word, .45), (b(62.8), sparkle, .8)]  # slogan + point doré
+HITS += [(b(65), whoosh, .7), (b(65.8), sparkle, .45)]                                 # plan final + URL
 
 def place(buf, sig, t, gain, pan=0.):
     s, peak = sig() if callable(sig) else sig
@@ -123,12 +123,12 @@ def beat_track():
     clap = lambda: (room(hp(rng.standard_normal(int(.25 * SR)), 3) * env(T(.25), .002, .05) * .45, .2, .06), .002)
     roots = [55, 49, 43.65, 49]   # la, sol, fa, sol (basse)
     pad_ch = [[220, 261.6, 329.6], [196, 246.9, 293.7], [174.6, 220, 261.6], [196, 246.9, 329.6]]
-    for bar in range(16):
+    for bar in range(17):
         t0 = b(bar * 4); r = roots[bar % 4]
         # nappe partout (douce), sauf les 2 dernières secondes
         d = b(4); tt = T(d); pad = sum(np.sin(2 * np.pi * f * tt + .4 * np.sin(2 * np.pi * .25 * tt)) for f in pad_ch[bar % 4]) * .035 * np.minimum(tt / .3, 1) * np.minimum((d - tt) / .3, 1)
         place(buf, (pad, 0), t0, 1, .3); place(buf, (pad * .9, 0), t0, 1, -.3)
-        if 2 <= bar < 12 or 13 <= bar < 15:          # beat plein après le drop ; respiration pendant le trio (mesure 12)
+        if 2 <= bar < 13 or 14 <= bar < 16:          # beat plein après le drop ; respiration pendant le trio (mesure 13)
             for k in range(4):
                 tb = t0 + b(k)
                 place(buf, kick(), tb, .9)

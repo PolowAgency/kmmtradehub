@@ -34,6 +34,7 @@ html,body{background:#000;overflow:hidden}
  border:1.5px solid rgba(232,196,104,.55);box-shadow:0 40px 90px rgba(0,0,0,.65),0 0 60px rgba(232,196,104,.12);transform-origin:50% 50%}
 #lpl{font:600 21px/1 Mono,monospace;letter-spacing:.14em;color:#e8c468;margin:2px 4px 16px}
 #lpc{display:block;width:540px;border-radius:16px}
+#lps{font:600 25px/1.2 Disp,sans-serif;letter-spacing:-.015em;color:var(--ink);margin:18px 4px 2px;white-space:nowrap;font-variation-settings:"opsz" 28}
 #hud{position:fixed;left:8px;bottom:8px;font:12px monospace;color:#e8c468;z-index:99}
 </style></head><body>
 <!-- MOTEUR POLOW : tout l'état visuel vient de render(t). Aucun timer, aucune animation CSS, aucun Math.random. -->
@@ -49,18 +50,15 @@ html,body{background:#000;overflow:hidden}
   <div class="line" id="f1" style="top:1580px;font-size:96px">Vois la structure.</div>
   <div class="line" id="f2" style="top:1580px;font-size:96px">Repère les signaux.</div>
   <div class="line" id="f3" style="top:1580px;font-size:96px">Interroge le Copilot.</div>
-  <div class="line" id="f4" style="top:1580px;font-size:90px">Passe en mode expert.</div>
   <div class="line" id="t5" style="top:1580px;font-size:96px">Un tap.</div>
-  <div class="line" id="f5" style="top:1580px;font-size:90px">Reprends où tu en es.</div>
   <div class="line" id="f6" style="top:1580px;font-size:96px">Des leçons claires.</div>
   <div class="line" id="f7" style="top:1580px;font-size:96px">Teste-toi.</div>
-  <div class="line" id="f9" style="top:1580px;font-size:96px">Progresse ensemble.</div>
   <div class="line" id="t7" style="top:1560px;font-size:84px">Tout au même endroit.</div>
   <div class="line" id="c1" style="top:1120px;font-size:100px">Ton terminal.</div>
   <div class="line" id="c2" style="top:1232px;font-size:100px">Ta formation.</div>
   <div class="line gr" id="c3" style="top:1344px;font-size:100px">Enfin dans ta poche.</div>
   <svg id="links" width="1080" height="1920" viewBox="0 0 1080 1920"><polygon id="zone" fill="none" stroke="#e8c468" stroke-width="3" stroke-linejoin="round"/><line id="wire" stroke="#e8c468" stroke-width="2.5" stroke-linecap="round"/><circle id="wdot" r="7" fill="#e8c468"/></svg>
-  <div id="loupe"><p id="lpl"></p><canvas id="lpc" width="960" height="600"></canvas></div>
+  <div id="loupe"><p id="lpl"></p><canvas id="lpc" width="960" height="600"></canvas><p id="lps"></p></div>
   <p class="tag" id="demo" style="top:1712px">DÉMO · DONNÉES DE SIMULATION</p>
   <svg id="logo" viewBox="0 0 225 64" role="img" aria-label="KMM Trade Hub"><defs><linearGradient id="lgc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc96"/><stop offset="50%" stop-color="#e8c468"/><stop offset="100%" stop-color="#b8923e"/></linearGradient></defs><text x="4" y="44" font-size="26" font-weight="600" fill="url(#lgc)" style="font-family:Quicksand,sans-serif"><tspan>KMM</tspan><tspan letter-spacing="1.5" dx="7">TRADEHUB</tspan></text></svg>
   <p class="tag" id="url" style="top:1700px;font:500 40px/1 Disp,sans-serif;letter-spacing:-.01em;color:#8e8a84">kmmterminal.com</p>
@@ -71,7 +69,7 @@ html,body{background:#000;overflow:hidden}
 <canvas id="grain"></canvas><div id="vig"></div></div>
 <div id="hud"></div>
 <script>
-const W=1080,H=1920,FPS=30, B=60/103.7, DUR=64*B;   // RISK MONEY (Axxo) : 103,7 BPM, 64 temps
+const W=1080,H=1920,FPS=30, B=60/103.7, DUR=68*B;   // RISK MONEY (Axxo) : 103,7 BPM, 68 temps
 const $=s=>document.querySelector(s);
 /* ---------- Briques temps (gabarit POLOW) ---------- */
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), lerp=(a,b,k)=>a+(b-a)*k;
@@ -95,7 +93,7 @@ class Kin{ constructor(el){ const txt=el.textContent.trim(); el.innerHTML=txt.sp
     op(this.el,vis?1:0); } }
 
 /* ---------- Secousse sur les mots claqués ---------- */
-const SLAM=[b(1),b(5),b(9),b(10),b(29)];
+const SLAM=[b(1),b(5),b(9),b(10),b(33)];
 function shake(t){ let x=0,y=0; for(const a of SLAM){const k=t-a; if(k>=0&&k<.22){const d=Math.exp(-k*18)*7; x+=Math.sin(k*120)*d; y+=Math.cos(k*95)*d;}} return [x,y]; }
 
 /* ---------- Clés : interpolation par segments (courbe inOut), coupe franche = deux clés au même temps ---------- */
@@ -141,21 +139,19 @@ const loaded=new Promise(res=>new THREE.GLTFLoader().parse(GLB,'',G=>{
 function screenPx(ph,x,y){ const bb=SCREEN_BB; const v=new THREE.Vector3(lerp(bb.min.x,bb.max.x,x/393),lerp(bb.max.y,bb.min.y,y/852),bb.max.z+.002);
   ph.scr.updateWorldMatrix(true,false); v.applyMatrix4(ph.scr.matrixWorld).project(CAM3); return [(v.x+1)/2*W,(1-v.y)/2*H]; }
 
-/* ---------- Chronologie (64 temps) ---------- */
-const T={drop:b(8), tapSig:b(16), tapCop:b(20), tapExp:b(24), tapFlow:b(25.5), tapEsp:b(28), tapForm:b(32), tapLesson:b(36), tapAns:b(41.5), tapComm:b(44), trio:b(48), merge:b(52), cta:b(54)};
+/* ---------- Chronologie (68 temps : 5 temps forts, ~3 s chacun, le temps de lire) ---------- */
+const T={drop:b(8), tapSig:b(18), tapCop:b(25), tapEsp:b(32), tapForm:b(36), tapLesson:b(38), tapAns:b(47.5), trio:b(52), merge:b(56), cta:b(58)};
 // cibles des taps dans l'écran (mesurées dans screen.html)
 const cp=(x,y)=>[8+x*.959,44+y*.959];   // coordonnées de la capture → points de l'écran
-const TAPS=[[T.tapSig,cp(197,830)],[T.tapCop,cp(328,830)],[T.tapExp,cp(334,133)],[T.tapFlow,cp(118,830)],[T.tapEsp,cp(340.5,70)],[T.tapForm,[150.9,543.2]],[T.tapLesson,[196.5,197.5]],[T.tapAns,[196.5,563.8]],[T.tapComm,[221.4,818.5]]];
+const TAPS=[[T.tapSig,cp(197,830)],[T.tapCop,cp(328,830)],[T.tapEsp,cp(340.5,70)],[T.tapForm,[150.9,543.2]],[T.tapLesson,[196.5,197.5]],[T.tapAns,[196.5,563.8]]];
 // cartes loupes : [début, fin, côté (+1 = carte à droite), libellé, zone de l'écran {x,y,w,h} en points]
+// cartes loupes : [début, fin, côté (+1 = carte à droite), libellé, zone de l'écran {x,y,w,h} en points, phrase d'explication]
 const LOUPES=[
-  [b(12.3),b(15.6), 1,'MARKET STRUCTURE',{x:11.8,y:437.2,w:368.3,h:182.2}],
-  [b(16.6),b(19.6),-1,'TOP 3 PRIORITY',{x:11.8,y:212.8,w:368.3,h:142.9}],
-  [b(20.6),b(23.6), 1,'KMM COPILOT',{x:11.8,y:232,w:368.3,h:147.7}],
-  [b(26.0),b(27.6),-1,'EXECUTION FLOW',{x:11.8,y:232,w:368.3,h:310.7}],
-  [b(32.7),b(35.6), 1,'TA PROGRESSION',{x:14,y:260,w:365,h:97}],
-  [b(36.7),b(39.0),-1,'LEÇON DU JOUR 3',{x:20,y:207,w:353,h:180}],
-  [b(42.0),b(43.7), 1,'EXERCICE',{x:20,y:455.8,w:353,h:256.5}],
-  [b(44.7),b(47.6),-1,'COMMUNAUTÉ',{x:20,y:223.6,w:353,h:132.9}] ];
+  [b(11.5),b(17.0), 1,'MARKET STRUCTURE',{x:11.8,y:437.2,w:368.3,h:182.2},'Les niveaux clés du prix, en un regard.'],
+  [b(18.6),b(24.0),-1,'TOP 3 PRIORITY',{x:11.8,y:212.8,w:368.3,h:142.9},'Les 3 signaux à surveiller, classés.'],
+  [b(25.6),b(31.0), 1,'KMM COPILOT',{x:11.8,y:232,w:368.3,h:147.7},'Qui contrôle le marché, dit en clair.'],
+  [b(38.7),b(43.5),-1,'LEÇON DU JOUR 3',{x:20,y:207,w:353,h:180},'Des fiches visuelles, une notion à la fois.'],
+  [b(46.4),b(51.4), 1,'EXERCICE',{x:20,y:455.8,w:353,h:256.5},'Un quiz après chaque leçon pour valider.'] ];
 // le téléphone se décale pour laisser la place à la carte (x en unités 3D)
 function phoneSide(t){ let x=0; for(const [a,c,side] of LOUPES){ const k=E.inOut(P(t,a-.45,.5))*(1-E.inOut(P(t,c,.5))); x+= -side*.72*k; } return x; }
 // caméra : [t, [cx,cy,cz, tx,ty,tz, fov]]
@@ -163,16 +159,16 @@ const CAMK=[
   [0,      [0.9,-0.05,13.4, 0,-0.18,0, 26]],          // ouverture : l'iPhone entier, en silhouette, révélé par la lumière
   [b(8)-.001,[-0.5,0.0,12.4, 0,-0.18,0, 26]],
   [b(8),   [0,0.05,12.9, 0,0.0,0, 26]],              // le drop
-  [b(16),  [0.3,0.05,12.4, 0,0.0,0, 26]],             // lente dérive latérale pendant le chapitre Terminal
-  [b(28),  [-0.3,0.05,12.2, 0,0.0,0, 26]],
-  [b(40),  [0.3,0.05,12.2, 0,0.0,0, 26]],             // chapitre Formation
-  [b(48),  [0,0.05,12.4, 0,0.0,0, 26]],
-  [b(49.4),[0,0.1,17.8, 0,0.05,0, 26]],             // surprise : changement d'échelle, trois écrans
-  [b(52),  [0,0.1,17.2, 0,0.05,0, 26]],
-  [b(54),  [0,-0.36,14.3, 0,-0.36,0, 26]],          // slogan sous le téléphone
-  [b(60.4),[0,-0.36,14.0, 0,-0.36,0, 26]],
-  [b(61.6),[0,0.02,12.2, 0,0.02,0, 26]],             // plan final : l'iPhone au centre, écran KMM TERMINAL
-  [DUR,    [0,0.02,11.6, 0,0.02,0, 26]] ];
+  [b(18),  [0.3,0.05,12.4, 0,0.0,0, 26]],             // lente dérive latérale pendant le chapitre Terminal
+  [b(32),  [-0.3,0.05,12.2, 0,0.0,0, 26]],
+  [b(44),  [0.3,0.05,12.2, 0,0.0,0, 26]],             // chapitre Formation
+  [b(52),  [0,0.05,12.4, 0,0.0,0, 26]],
+  [b(53.4),[0,0.1,17.8, 0,0.05,0, 26]],             // surprise : changement d'échelle, trois écrans
+  [b(56),  [0,0.1,17.2, 0,0.05,0, 26]],
+  [b(58),  [0,-0.36,14.3, 0,-0.36,0, 26]],          // slogan sous le téléphone
+  [b(64.4),[0,-0.36,14.0, 0,-0.36,0, 26]],
+  [b(65.6),[0,0.02,12.2, 0,0.02,0, 26]],             // plan final : l'iPhone au centre, écran KMM TERMINAL
+  [DUR,    [0,0.02,11.8, 0,0.02,0, 26]] ];
 // téléphone principal : [t, [x,y,z, rx,ry,rz]]
 const PH0=[
   [0,      [0,0,0, 0.06,-1.38,0.0]],
@@ -180,14 +176,14 @@ const PH0=[
   [b(8)-.001,[0,0,0, 0.04,0.42,0]],
   [b(8),   [0,-1.6,0, 0.30,1.25,0.10]],
   [b(12),  [0,-0.1,0, 0.03,-0.10,0.03]],
-  [b(48),  [0,-0.08,0, 0.02,-0.04,0]],
-  [b(52),  [0,0,0.3, 0.02,0.10,0]],
-  [b(54),  [0,1.0,0, 0.04,-0.12,0.03]],
-  [b(60.4),[0,1.02,0, 0.03,0.04,0.02]],
-  [b(61.6),[0,0.12,0, 0.02,-0.06,0]],
+  [b(52),  [0,-0.08,0, 0.02,-0.04,0]],
+  [b(56),  [0,0,0.3, 0.02,0.10,0]],
+  [b(58),  [0,1.0,0, 0.04,-0.12,0.03]],
+  [b(64.4),[0,1.02,0, 0.03,0.04,0.02]],
+  [b(65.6),[0,0.12,0, 0.02,-0.06,0]],
   [DUR,    [0,0.12,0, 0.02,0.06,0]] ];
-function floorAt(t){ if(t<b(8)) return -1.74; if(t<b(48)) return -1.86; if(t>=b(61)) return -1.62; return null; }
-const L={}; for(const id of ['t1','t2','t3','t8','f1','f2','f3','f4','t5','f5','f6','f7','f9','t7','c1','c2','c3']) L[id]=new Kin($('#'+id));
+function floorAt(t){ if(t<b(8)) return -1.74; if(t<b(52)) return -1.86; if(t>=b(65)) return -1.62; return null; }
+const L={}; for(const id of ['t1','t2','t3','t8','f1','f2','f3','t5','f6','f7','t7','c1','c2','c3']) L[id]=new Kin($('#'+id));
 let POCHE=[0,0];
 function measure(){ L.c3.render(99,0); const r=$('#c3 .o').getBoundingClientRect(), st=$('#stage').getBoundingClientRect(); const k=W/st.width;
   POCHE=[(r.left-st.left+r.width*.42)*k,(r.top-st.top+r.height*.74)*k]; L.c3.render(0,1); }
@@ -202,7 +198,7 @@ function particles(t){ ctx.clearRect(0,0,W,H); ctx.globalCompositeOperation='lig
   const t0=DOCK+.62; for(const p of SPARK){ const k=(t-t0)/p.d; if(k<=0||k>=1) continue; const e=E.outExpo(k);
     ctx.globalAlpha=(1-k)*.85; ctx.fillStyle='#f7e2a6'; ctx.beginPath(); ctx.arc(POCHE[0]+Math.cos(p.a)*p.v*e,POCHE[1]+Math.sin(p.a)*p.v*e,p.s*(1-k*.6),0,7); ctx.fill(); }
   ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over'; }
-const DOCK=b(58.2);
+const DOCK=b(62.2);
 
 /* ---------- SCÈNES ---------- */
 function render(t,f=Math.round(t*FPS)){
@@ -223,8 +219,8 @@ function render(t,f=Math.round(t*FPS)){
     const sx2=phoneSide(t); x+=sx2; ry+= -sx2*.16;
     m.grp.position.set(x,y+Math.sin(t*.9)*.015,z); m.grp.rotation.set(rx,ry+Math.sin(t*.4)*.02,rz); }
   for(const [k,side] of [[1,-1],[2,1]]){ const p=PHONES[k]; if(!p) continue;
-    const sIn=spring(t,b(48.6)+(k-1)*.12,2.0,.8), mg=E.inOut(P(t,T.merge,.55));
-    const vis=t>=b(48.6)&&t<T.merge+.6; p.grp.visible=vis;
+    const sIn=spring(t,b(52.6)+(k-1)*.12,2.0,.8), mg=E.inOut(P(t,T.merge,.55));
+    const vis=t>=b(52.6)&&t<T.merge+.6; p.grp.visible=vis;
     p.grp.position.set(lerp(side*7.5,side*2.0,sIn)*(1-mg), -0.05+Math.sin(t*.8+k)*.02, lerp(-0.4,-1.2,mg));
     p.grp.rotation.set(.02, side*-0.32*(1-mg), side*.03); }
   const F=floorAt(t);
@@ -235,14 +231,15 @@ function render(t,f=Math.round(t*FPS)){
 
   // carte loupe : la zone de l'écran sort en grand, reliée par un filet doré (composant inventé pour ce film)
   let lv=0;
-  if(m) for(const [a,c,side,label,z] of LOUPES){ if(t<a-.05||t>=c+.4) continue;
+  if(m) for(const [a,c,side,label,z,say] of LOUPES){ if(t<a-.05||t>=c+.4) continue;
     const kin=spring(t,a,2.4,.8), kout=E.in(P(t,c,.32)); lv=clamp(kin*1.3)*(1-kout);
     const q=[screenPx(m,z.x,z.y),screenPx(m,z.x+z.w,z.y),screenPx(m,z.x+z.w,z.y+z.h),screenPx(m,z.x,z.y+z.h)];
     const zc=[(q[0][0]+q[2][0])/2,(q[0][1]+q[2][1])/2];
-    const lpw=580, lph=20+37+540*z.h/z.w+22; const cx=side>0? W-40-lpw/2 : 40+lpw/2; const cy=clamp(zc[1],380+lph/2,1460-lph/2);
+    const lpw=580, lph=20+37+540*z.h/z.w+22+51; const cx=side>0? W-40-lpw/2 : 40+lpw/2; const cy=clamp(zc[1],380+lph/2,1460-lph/2);
     const lx=lerp(zc[0],cx,kin), ly=lerp(zc[1],cy,kin), sc=lerp(.25,1,kin)*(1-kout*.15);
     const lp=$('#loupe'); lp.style.left=(lx-lpw/2)+'px'; lp.style.top=(ly-lph/2)+'px'; tf(lp,`scale(${sc}) rotate(${(1-kin)*side*-3}deg)`);
-    if($('#lpl').textContent!==label) $('#lpl').textContent=label;
+    if($('#lpl').textContent!==label){ $('#lpl').textContent=label; $('#lps').textContent=say; }
+    const sk=E.outExpo(P(t,a+.35,.6)); $('#lps').style.opacity=sk; tf($('#lps'),`translateY(${(1-sk)*14}px)`);
     const cv=$('#lpc'), e=cv.getContext('2d'), ch=Math.round(960*z.h/z.w); if(cv.height!==ch){ cv.height=ch; }
     const im=m.tex.image; if(im&&im.width) e.drawImage(im,z.x*2,z.y*2,z.w*2,z.h*2,0,0,960,ch);
     $('#zone').setAttribute('points',q.map(p=>p.join(',')).join(' ')); $('#zone').style.opacity=lv;
@@ -253,16 +250,16 @@ function render(t,f=Math.round(t*FPS)){
 
   // textes
   L.t1.render(t,.05,b(3)-.1,B); L.t2.render(t,b(4),b(7)-.15,B);
-  L.t3.render(t,b(9),b(27.4),B); L.t8.render(t,b(33),b(47.4),.07);
-  L.f1.render(t,b(12),b(16)-.15,.07); L.f2.render(t,b(16.5),b(20)-.15,.07); L.f3.render(t,b(20.5),b(24)-.15,.07); L.f4.render(t,b(24.3),b(28)-.15,.07);
-  L.t5.render(t,b(28.4),b(32)-.15,.07);
-  L.f5.render(t,b(32.5),b(36)-.15,.06); L.f6.render(t,b(36.5),b(40)-.15,.07); L.f7.render(t,b(40),b(44)-.15,.07); L.f9.render(t,b(44.5),b(48)-.15,.07);
-  L.t7.render(t,b(49),b(52.6),.06);
-  L.c1.render(t,b(55),b(60.2),.07); L.c2.render(t,b(56),b(60.3),.07); L.c3.render(t,b(57),b(60.4),.07);
+  L.t3.render(t,b(9),b(31.4),B); L.t8.render(t,b(37),b(51.4),.07);
+  L.f1.render(t,b(11.3),b(18)-.15,.07); L.f2.render(t,b(18.5),b(25)-.15,.07); L.f3.render(t,b(25.5),b(32)-.15,.07);
+  L.t5.render(t,b(32.4),b(36)-.15,.07);
+  L.f6.render(t,b(38.5),b(46)-.15,.07); L.f7.render(t,b(46.2),b(52)-.15,.07);
+  L.t7.render(t,b(53),b(56.6),.06);
+  L.c1.render(t,b(59),b(64.2),.07); L.c2.render(t,b(60),b(64.3),.07); L.c3.render(t,b(61),b(64.4),.07);
   op($('#shade'),clamp(.55+.45*P(t,T.cta,1)));
-  op($('#demo'),(t>=b(12)&&t<b(48))?clamp(P(t,b(12),.4))*(1-P(t,b(47.6),.3)):0);
+  op($('#demo'),(t>=b(11.3)&&t<b(52))?clamp(P(t,b(11.3),.4))*(1-P(t,b(51.6),.3)):0);
   const lg=0; op($('#logo'),0); tf($('#logo'),`translateY(${(1-lg)*24}px) scale(${lerp(.92,1,lg)})`);
-  const u=E.out(P(t,b(61.8),.7)); op($('#url'),u); tf($('#url'),`translateY(${(1-u)*18}px)`);
+  const u=E.out(P(t,b(65.8),.7)); op($('#url'),u); tf($('#url'),`translateY(${(1-u)*18}px)`);
 
   // point doré, fil rouge : arrive avant chaque tap (depuis le tap précédent s'il est proche), l'écran prend le relais
   // pendant l'appui, puis il devient le point final de « poche. »
@@ -273,7 +270,7 @@ function render(t,f=Math.round(t*FPS)){
       const src=near? screenPx(m,prev[1][0],prev[1][1]) : [W/2,1700];
       const k=E.inOut(P(t,t0-app,app-.12)); dx=lerp(src[0],tgt[0],k); dy=lerp(src[1],tgt[1],k)-Math.sin(Math.PI*k)*(near?60:160); ds=lerp(near?size:1,size,k);
       dv=(t>=t0-.12)?0:1; } }
-  if(t>=b(57.6)&&t<b(60.4)+.4){ const s0=spring(t,b(57.6),2.4,.8), dk=E.inOut(P(t,b(57.9),DOCK+.6-b(57.9))), out=E.in(P(t,b(60.4),.35));
+  if(t>=b(61.6)&&t<b(64.4)+.4){ const s0=spring(t,b(61.6),2.4,.8), dk=E.inOut(P(t,b(61.9),DOCK+.6-b(61.9))), out=E.in(P(t,b(64.4),.35));
     dx=lerp(W/2,POCHE[0],dk); dy=lerp(1000+Math.sin(t*2.2)*8,POCHE[1],dk)-out*60; ds=s0*lerp(1.5,.30,dk); dv=1-out; }
   op(d,dv); tf(d,`translate(${dx}px,${dy}px) scale(${ds})`);
 
@@ -290,7 +287,7 @@ const imgCache=new Map();
 function loadImg(src){ if(imgCache.has(src)) return imgCache.get(src); const i=new Image(); i.src=src; const p=i.decode().then(()=>i).catch(()=>null); imgCache.set(src,p); if(imgCache.size>24) imgCache.delete(imgCache.keys().next().value); return p; }
 async function feedScreens(t){ const fi=clamp(Math.round(t*FPS),0,Math.round(DUR*FPS)-1);
   const want=[[0,`scr/main/f_${String(fi).padStart(5,'0')}.jpg`]];
-  if(t>=b(48.4)&&t<T.merge+.7) want.push([1,`scr/left/f_${String(fi).padStart(5,'0')}.jpg`],[2,'scr/right.jpg']);
+  if(t>=b(52.4)&&t<T.merge+.7) want.push([1,`scr/left/f_${String(fi).padStart(5,'0')}.jpg`],[2,'scr/right.jpg']);
   for(const [k,src] of want){ const p=PHONES[k]; if(!p||p.cur===src) continue; const im=await loadImg(src); if(im){ p.tex.image=im; p.tex.needsUpdate=true; p.cur=src; } } }
 
 /* ---------- Lecture / export ---------- */
