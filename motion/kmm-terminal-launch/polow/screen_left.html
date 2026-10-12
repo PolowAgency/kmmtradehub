@@ -156,11 +156,15 @@ function measure(){ for(const id of ['#hub','#form','#lesson']) op($(id),1); SMA
 let SMAX=0; function scrollMax(){return SMAX}
 // images du terminal (captures réelles à 30 i/s)
 function termSrc(t){
-  // prise continue du nouveau terminal : image 0 = temps du drop (t8), taps réels sur SIGNALS, COPILOT, EXPERT puis FLOW
-  const fr=i=>`nterm/t_${String(clamp(i,0,368)+1).padStart(4,'0')}.jpg`;
-  if(WHICH==='left') return fr(Math.round((t-T.trio)*FPS)+40);
-  if(t<T.drop) return fr(30+Math.round(t*FPS));
-  return fr(Math.round((t-T.drop)*FPS));
+  // prises par onglet du nouveau terminal ; raccord sec au temps exact de chaque tap (comme dans l'appli)
+  const fr=(seg,i,max)=>`nterm/seg_${seg}/f${String(clamp(i,0,max)).padStart(5,'0')}.jpg`;
+  if(WHICH==='left') return fr('s1',Math.round((t-T.trio)*FPS)+40,155);
+  if(t<T.drop) return fr('s1',30+Math.round(t*FPS),155);
+  if(t<T.tapSig) return fr('s1',Math.round((t-T.drop)*FPS),155);
+  if(t<T.tapCop) return fr('s2',Math.round((t-T.tapSig)*FPS),77);
+  if(t<T.tapExp) return fr('s3',Math.round((t-T.tapCop)*FPS),77);
+  if(t<T.tapFlow) return fr('s4',Math.round((t-T.tapExp)*FPS),35);
+  return fr('s5',Math.round((t-T.tapFlow)*FPS),89);
 }
 function stagger(sel,t,t0,dy=16,st=.06){[...document.querySelectorAll(sel)].forEach((el,i)=>{const k=E.outExpo(P(t,t0+i*st,.5));el.style.opacity=k;el.style.transform=`translateY(${(1-k)*dy}px)`})}
 function formBuild(t,t0){ stagger('#form .fe',t,t0,18,.07);

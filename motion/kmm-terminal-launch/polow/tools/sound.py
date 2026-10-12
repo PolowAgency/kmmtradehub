@@ -87,8 +87,8 @@ def logo():          # écran KMM TERMINAL : accord grave et brillant
     return room(ch + sub, .4, .25), .01
 
 # ---------- Chronologie (identique à film.html) ----------
-LOUPES = [12.3, 16.6, 20.6, 24.3, 32.7, 36.7, 42.0, 44.7]
-TAPS = [16, 20, 28, 32, 36, 41.5, 44]
+LOUPES = [12.3, 16.6, 20.6, 26.0, 32.7, 36.7, 42.0, 44.7]
+TAPS = [16, 20, 24, 25.5, 28, 32, 36, 41.5, 44]   # SIGNALS, COPILOT, EXPERT, FLOW, Espace, Formation, Reprendre, réponse, Communauté
 HITS = []
 HITS += [(b(0), word, .5), (b(1), word, .7), (b(4), word, .5), (b(5), word, .7)]       # « Ton » « terminal. » « Ta » « formation. »
 HITS += [(b(8) - .3, whoosh, .9), (b(8), riser, .4), (b(8), impact, .75)]               # volet + montée + drop
