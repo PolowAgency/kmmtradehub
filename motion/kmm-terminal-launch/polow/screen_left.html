@@ -143,10 +143,10 @@ function spring(t,t0,f=2.2,z=.78){if(t<=t0)return 0;const w=2*Math.PI*f,s=t-t0,w
 const $=s=>document.querySelector(s), tf=(el,s)=>{el.style.transform=s}, op=(el,v)=>{el.style.opacity=v;el.style.display=v<=0.001?'none':''};
 const WHICH=new URLSearchParams(location.search).get('which')||'left';
 // Repères (temps du film) : les taps tombent sur les temps
-const T={wipeIn:b(3.25), drop:b(8), tapSig:b(16), tapDepth:b(20), tapEsp:b(28), tapForm:b(32), tapLesson:b(36), scroll:b(39), tapAns:b(41.5), tapComm:b(44), trio:b(48), merge:b(52), splash:b(54.2)};
+const T={wipeIn:b(3.25), drop:b(8), tapSig:b(16), tapCop:b(20), tapExp:b(24), tapFlow:b(25.5), tapEsp:b(28), tapForm:b(32), tapLesson:b(36), scroll:b(39), tapAns:b(41.5), tapComm:b(44), trio:b(48), merge:b(52), splash:b(54.2)};
 // la capture du terminal est posée à (8,44) et réduite à 0,959 : on convertit ses coordonnées
 const cap=(x,y)=>({x:8+x*.959,y:44+y*.959});
-const POS={esp:cap(347,66), sig:cap(67,808), depth:cap(322,808)};
+const POS={esp:cap(340.5,70), sig:cap(197,830), cop:cap(328,830), exp:cap(334,133), flow:cap(118,830)};
 let RING={x:0,y:0}, REPR={x:0,y:0}, GOOD={x:0,y:0}, COMMT={x:245,y:808};
 function rel(el){const r=el.getBoundingClientRect(),s=$('#scr').getBoundingClientRect();return{x:(r.left-s.left)/2+r.width/4,y:(r.top-s.top)/2+r.height/4}}
 function measure(){ for(const id of ['#hub','#form','#lesson']) op($(id),1); SMAX=$('#lsc').scrollHeight-852+20;
@@ -156,11 +156,11 @@ function measure(){ for(const id of ['#hub','#form','#lesson']) op($(id),1); SMA
 let SMAX=0; function scrollMax(){return SMAX}
 // images du terminal (captures réelles à 30 i/s)
 function termSrc(t){
-  if(WHICH==='left'){ const f=clamp(Math.round((t-T.trio)*FPS)+40,0,239); return `term/t_${String(f+1).padStart(4,'0')}.jpg`; }
-  if(t<T.drop) return `term/t_${String(clamp(Math.round(t*FPS),0,239)+1).padStart(4,'0')}.jpg`;
-  if(t<T.tapSig+.08) return `term/t_${String(clamp(Math.round((2.8+t-T.drop)*FPS),0,239)+1).padStart(4,'0')}.jpg`;
-  if(t<T.tapDepth+.08) return `sig/t_${String(clamp(Math.round((t-T.tapSig)*FPS)+8,0,164)+1).padStart(4,'0')}.jpg`;
-  return `depth/t_${String(clamp(Math.round((t-T.tapDepth)*FPS)+6,0,164)+1).padStart(4,'0')}.jpg`;
+  // prise continue du nouveau terminal : image 0 = temps du drop (t8), taps réels sur SIGNALS, COPILOT, EXPERT puis FLOW
+  const fr=i=>`nterm/t_${String(clamp(i,0,368)+1).padStart(4,'0')}.jpg`;
+  if(WHICH==='left') return fr(Math.round((t-T.trio)*FPS)+40);
+  if(t<T.drop) return fr(30+Math.round(t*FPS));
+  return fr(Math.round((t-T.drop)*FPS));
 }
 function stagger(sel,t,t0,dy=16,st=.06){[...document.querySelectorAll(sel)].forEach((el,i)=>{const k=E.outExpo(P(t,t0+i*st,.5));el.style.opacity=k;el.style.transform=`translateY(${(1-k)*dy}px)`})}
 function formBuild(t,t0){ stagger('#form .fe',t,t0,18,.07);
@@ -169,7 +169,7 @@ function formBuild(t,t0){ stagger('#form .fe',t,t0,18,.07);
 function tapAt(t,t0,pos){ const tap=$('#tap'), rip=$('#ripple'); const press=1-.22*Math.sin(Math.PI*P(t,t0,.16));
   if(t>=t0-.12&&t<t0+.45){ op(tap,1-P(t,t0+.25,.2)); tf(tap,`translate(${pos.x}px,${pos.y}px) scale(${press})`); }
   const r=P(t,t0+.02,.45); if(r>0&&r<1){ op(rip,(1-r)*.9); tf(rip,`translate(${pos.x}px,${pos.y}px) scale(${1+r*1.8})`); } }
-const TAPS=()=>[[T.tapSig,POS.sig],[T.tapDepth,POS.depth],[T.tapEsp,POS.esp],[T.tapForm,RING],[T.tapLesson,REPR],[T.tapAns,{x:GOOD.x,y:GOOD.y-lessonScroll(T.tapAns)+lessonScroll(1e9)}],[T.tapComm,COMMT]];
+const TAPS=()=>[[T.tapSig,POS.sig],[T.tapCop,POS.cop],[T.tapExp,POS.exp],[T.tapFlow,POS.flow],[T.tapEsp,POS.esp],[T.tapForm,RING],[T.tapLesson,REPR],[T.tapAns,{x:GOOD.x,y:GOOD.y-lessonScroll(T.tapAns)+lessonScroll(1e9)}],[T.tapComm,COMMT]];
 function lessonScroll(t){ return E.inOut(P(t,T.scroll,1.25))*scrollMax(); }
 function render(t){
   let L={term:0,hub:0,form:0,lesson:0,comm:0,splash:0};

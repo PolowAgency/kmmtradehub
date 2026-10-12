@@ -46,10 +46,10 @@ html,body{background:#000;overflow:hidden}
   <div class="line" id="t2" style="top:1560px;font-size:128px">Ta formation.</div>
   <div class="line" id="t3" style="top:262px;font-size:140px">KMM Terminal.</div>
   <div class="line" id="t8" style="top:262px;font-size:140px">La Formation.</div>
-  <div class="line" id="f1" style="top:1580px;font-size:96px">Vois la liquidité.</div>
+  <div class="line" id="f1" style="top:1580px;font-size:96px">Vois la structure.</div>
   <div class="line" id="f2" style="top:1580px;font-size:96px">Repère les signaux.</div>
-  <div class="line" id="f3" style="top:1580px;font-size:96px">Sens la pression.</div>
-  <div class="line" id="f4" style="top:1580px;font-size:96px">Interroge le Copilot.</div>
+  <div class="line" id="f3" style="top:1580px;font-size:96px">Interroge le Copilot.</div>
+  <div class="line" id="f4" style="top:1580px;font-size:90px">Passe en mode expert.</div>
   <div class="line" id="t5" style="top:1580px;font-size:96px">Un tap.</div>
   <div class="line" id="f5" style="top:1580px;font-size:90px">Reprends où tu en es.</div>
   <div class="line" id="f6" style="top:1580px;font-size:96px">Des leçons claires.</div>
@@ -142,15 +142,16 @@ function screenPx(ph,x,y){ const bb=SCREEN_BB; const v=new THREE.Vector3(lerp(bb
   ph.scr.updateWorldMatrix(true,false); v.applyMatrix4(ph.scr.matrixWorld).project(CAM3); return [(v.x+1)/2*W,(1-v.y)/2*H]; }
 
 /* ---------- Chronologie (64 temps) ---------- */
-const T={drop:b(8), tapSig:b(16), tapDepth:b(20), tapEsp:b(28), tapForm:b(32), tapLesson:b(36), tapAns:b(41.5), tapComm:b(44), trio:b(48), merge:b(52), cta:b(54)};
+const T={drop:b(8), tapSig:b(16), tapCop:b(20), tapExp:b(24), tapFlow:b(25.5), tapEsp:b(28), tapForm:b(32), tapLesson:b(36), tapAns:b(41.5), tapComm:b(44), trio:b(48), merge:b(52), cta:b(54)};
 // cibles des taps dans l'écran (mesurées dans screen.html)
-const TAPS=[[T.tapSig,[72.3,818.9]],[T.tapDepth,[316.8,818.9]],[T.tapEsp,[340.8,107.3]],[T.tapForm,[150.9,543.2]],[T.tapLesson,[196.5,197.5]],[T.tapAns,[196.5,563.8]],[T.tapComm,[221.4,818.5]]];
+const cp=(x,y)=>[8+x*.959,44+y*.959];   // coordonnées de la capture → points de l'écran
+const TAPS=[[T.tapSig,cp(197,830)],[T.tapCop,cp(328,830)],[T.tapExp,cp(334,133)],[T.tapFlow,cp(118,830)],[T.tapEsp,cp(340.5,70)],[T.tapForm,[150.9,543.2]],[T.tapLesson,[196.5,197.5]],[T.tapAns,[196.5,563.8]],[T.tapComm,[221.4,818.5]]];
 // cartes loupes : [début, fin, côté (+1 = carte à droite), libellé, zone de l'écran {x,y,w,h} en points]
 const LOUPES=[
-  [b(12.3),b(15.6), 1,'HEATMAP DE LIQUIDITÉ',{x:8,y:147.6,w:249,h:184}],
-  [b(16.6),b(19.6),-1,'SIGNAUX EN DIRECT',{x:17.6,y:171.5,w:360.6,h:97.8}],
-  [b(20.6),b(23.6), 1,'PRESSION ACHAT / VENTE',{x:11.8,y:149.5,w:369.2,h:107.4}],
-  [b(24.3),b(27.6),-1,'COPILOT DE MARCHÉ',{x:11.8,y:630.9,w:369.2,h:151.5}],
+  [b(12.3),b(15.6), 1,'MARKET STRUCTURE',{x:11.8,y:437.2,w:368.3,h:182.2}],
+  [b(16.6),b(19.6),-1,'TOP 3 PRIORITY',{x:11.8,y:212.8,w:368.3,h:142.9}],
+  [b(20.6),b(23.6), 1,'KMM COPILOT',{x:11.8,y:232,w:368.3,h:147.7}],
+  [b(26.0),b(27.6),-1,'EXECUTION FLOW',{x:11.8,y:232,w:368.3,h:310.7}],
   [b(32.7),b(35.6), 1,'TA PROGRESSION',{x:14,y:260,w:365,h:97}],
   [b(36.7),b(39.0),-1,'LEÇON DU JOUR 3',{x:20,y:207,w:353,h:180}],
   [b(42.0),b(43.7), 1,'EXERCICE',{x:20,y:455.8,w:353,h:256.5}],
