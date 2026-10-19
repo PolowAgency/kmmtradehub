@@ -46,7 +46,7 @@ function Stars() {
 
 export function SocialProofSection() {
   return (
-    <section className="py-20 sm:py-28 px-4 sm:px-6 bg-surface">
+    <section className="py-20 sm:py-20 px-4 sm:px-6 bg-surface">
       <div className="max-w-5xl mx-auto">
 
         <motion.p

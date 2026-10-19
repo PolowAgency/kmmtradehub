@@ -35,7 +35,7 @@ export function FAQSection() {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <section className="py-20 sm:py-28 px-4 sm:px-6">
+    <section className="py-20 sm:py-20 px-4 sm:px-6">
       <div className="max-w-3xl mx-auto">
 
         <motion.p

@@ -44,7 +44,7 @@ const OFFER_ITEMS = [
 
 export function OfferContentSection({ first = false }: { first?: boolean }) {
   return (
-    <section className={`${first ? "pt-10 pb-20 sm:pt-12 sm:pb-28" : "py-20 sm:py-28"} px-4 sm:px-6`}>
+    <section className={`${first ? "pt-10 pb-20 sm:pt-12 sm:pb-28" : "py-20 sm:py-20"} px-4 sm:px-6`}>
       <div className="max-w-5xl mx-auto">
         {/* Label */}
         <motion.p
